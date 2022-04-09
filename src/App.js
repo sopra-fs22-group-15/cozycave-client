@@ -1,11 +1,13 @@
 import React from 'react';
-import Navbar from "./Navbar";
+import Navbar from "./components/layout/Navbar";
 import LandingPage from "./LandingPage";
 
+
 const App = () => {
+
     return (
         <>
-            <Navbar/>
+            <Navbar style="transparent" brandName="Cozy Cave"/>
             <LandingPage/>
         </>
     )
