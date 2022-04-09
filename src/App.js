@@ -1,8 +1,13 @@
 import React from 'react';
+import Navbar from "./Navbar";
+import LandingPage from "./LandingPage";
 
 const App = () => {
     return (
-        <h1>Cozy Cave</h1>
+        <>
+            <Navbar/>
+            <LandingPage/>
+        </>
     )
 }
 

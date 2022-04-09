@@ -1,0 +1,23 @@
+.landing-page-bg {
+  // TODO: fix landing page background image not working.
+  //background: url("../assets/landing_page_background.svg") no-repeat center fixed;
+  background-size: cover;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 300px;
+  transform: translate(-50%, -80%);
+  text-align: center;
+  color: #000000;
+  z-index: 1;
+
+  .logo {
+    width: 50%;
+    margin-bottom: 20px;
+  }
+}
