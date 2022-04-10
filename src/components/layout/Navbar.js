@@ -38,11 +38,6 @@ const Navbar = props => {
             <SearchBar style="nav-search"/>
             <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle" height="40"/>
         </div>
-
-
-
-
-
     )
 
     return (
