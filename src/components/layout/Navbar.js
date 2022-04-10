@@ -2,6 +2,10 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
+import SearchBar from "../../SearchBar";
+
+
+
 
 
 /**
@@ -11,33 +15,45 @@ import PropTypes from "prop-types";
  *<Navbar style="transparent" brandName="Cozy Cave"/>
  */
 
-let loggedInStatus = false;
 
-const navContent = !loggedInStatus ? (
-    <>
-        <Button type="button" outlined={true} variant="primary" opts="me-2">Sign In</Button>
-        <Button type="button" variant="primary">Sign Up</Button>
-    </>
-) : (
-    // TODO: implement custom navbar to change when logged in.
-    <div>
-        Logged In
-    </div>
-)
 
 // TODO: change navbar content when user is not on landing page.
 
 const Navbar = props => {
+
+    let loggedInStatus = false;
+
+    const authInputGroup = (
+        <div className="d-flex">
+            <Button type="button" outlined={true} variant="primary" opts="me-2">Sign In</Button>
+            <Button type="button" variant="primary">Sign Up</Button>
+        </div>
+    )
+
+    const navContent = !loggedInStatus || !props.isLandingPage  ? (
+        authInputGroup
+    ) : (
+        // TODO: implement custom navbar to change when logged in.
+        <div className="d-flex">
+            <SearchBar style="nav-search"/>
+            <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle" height="40"/>
+        </div>
+
+
+
+
+
+    )
+
     return (
         <nav className={`navbar navbar-expand-lg navbar-light bg-${props.style} justify-content-between fixed-top`}>
-            <div className="container-fluid">
+            <div className="container-fluid flex-nowrap">
                 <a className="navbar-brand">
                     {props.brandName}
+                    <img src="/assets/cozy_cave_logo_v1.svg" alt="logo" className="d-inline-block align-text-top" width="50" height="32"/>
                 </a>
-                <div className="d-flex">
-                    <div className="container-fluid">
-                        {navContent}
-                    </div>
+                <div className={`${loggedInStatus && props.isLandingPage ? "container-fluid" : "d-flex"}`}>
+                    {navContent}
                 </div>
             </div>
         </nav>

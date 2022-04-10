@@ -1,13 +1,28 @@
 import React from 'react';
+import "./styles/SearchBar.scss";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSearch} from '@fortawesome/free-solid-svg-icons'
+import Button from "./components/util/Button";
+import { useNavigate } from 'react-router-dom';
 
-const SearchBar = () => {
+
+const SearchBar = props => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        console.log("Click!")
+        navigate('/overview');
+    }
+
+
     return (
-        <div className="input-group mb-3">
-            <input type="text" className="form-control" placeholder="Find your new home... "
+        <div className="input-group">
+            <input type="text" className={`form-control input-group ${props.style ? "nav-search" : ""}`}
+                   placeholder="Find your new home... "
                    aria-label="Find your new home... " aria-describedby="button-addon2"/>
-                <button className="btn btn-primary" type="button" id="button-addon2">
-                    Search
-                </button>
+            <Button variant="primary" type="button" id="button-addon2" onClick={handleClick}>
+                <FontAwesomeIcon icon={faSearch}/>
+            </Button>
         </div>
     )
 }

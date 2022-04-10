@@ -15,7 +15,7 @@ const Button = (props) => {
 
     let classNameString = `${!variant ? "primary" : ""}${outlined ? "btn-outline-" + variant : "btn-" + variant}${size || ""} ${opts || ""}`;
     return (
-        <button type={type}
+        <button type={type} onClick={props.onClick}
                 className={"btn " + classNameString}>
             {children}
         </button>
@@ -53,7 +53,12 @@ Button.propTypes = {
      * Content of the button.
      *
      * */
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    /**
+     * Pass an onClick function to the button component.
+     *
+     * */
+    onClick: PropTypes.func
 };
 
 export default Button;

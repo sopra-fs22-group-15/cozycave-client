@@ -1,0 +1,6 @@
+.nav-search {
+  max-width: 600px;
+  @media (max-width: 600px) {
+    max-width: 200px;
+  }
+}
