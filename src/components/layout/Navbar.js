@@ -4,8 +4,7 @@ import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import SearchBar from "../../SearchBar";
 import LoginForm from "../../LoginForm.js";
-
-
+import RegisterForm from "../../RegisterForm.js";
 
 
 
@@ -27,12 +26,16 @@ const Navbar = props => {
         setLoginIsOpen(false)
     }
 
+    const hideRegister = () => {
+        setRegisterIsOpen(false)
+    }
+
     let loggedInStatus = false;
 
     const authInputGroup = (
         <div className="d-flex">
             <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary" opts="me-2">Sign In</Button>
-            <Button type="button" variant="primary">Sign Up</Button>
+            <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign Up</Button>
         </div>
     )
 
@@ -60,6 +63,7 @@ const Navbar = props => {
             </div>
         </nav>
         <LoginForm loginOpen={loginIsOpen} hideLogin={hideLogin}/>
+        <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
         </div>
     )
 }
