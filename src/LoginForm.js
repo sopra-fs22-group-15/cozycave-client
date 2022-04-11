@@ -1,11 +1,12 @@
 import {Modal, Button, Form, FormGroup, FormControl, ControlLabel} from 'react-bootstrap'
-const LoginForm = (props) => {
+function LoginForm(props){
     const toggleLogin = () => {
-        props.isOpen=false
+        
     }
+
     return (
         <div>
-          <Modal show={props.isOpen}>// isOpen prop is determined by the container element
+          <Modal show={props.loginOpen} onHide={props.hideLogin}>
             <Form>
                 <Form.Group className="mb-3" controlId="formEmail">
                 <Form.Label>Email address</Form.Label>

@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import SearchBar from "../../SearchBar";
+import LoginForm from "../../LoginForm.js";
 
 
 
@@ -20,12 +21,17 @@ import SearchBar from "../../SearchBar";
 // TODO: change navbar content when user is not on landing page.
 
 const Navbar = props => {
+    const[loginIsOpen, setLoginIsOpen] = useState(false)
+    const[registerIsOpen, setRegisterIsOpen] = useState(false)
+    const hideLogin = () => {
+        setLoginIsOpen(false)
+    }
 
     let loggedInStatus = false;
 
     const authInputGroup = (
         <div className="d-flex">
-            <Button type="button" outlined={true} variant="primary" opts="me-2">Sign In</Button>
+            <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary" opts="me-2">Sign In</Button>
             <Button type="button" variant="primary">Sign Up</Button>
         </div>
     )
@@ -41,6 +47,7 @@ const Navbar = props => {
     )
 
     return (
+        <div>
         <nav className={`navbar navbar-expand-lg navbar-light bg-${props.style} justify-content-between fixed-top`}>
             <div className="container-fluid flex-nowrap">
                 <a className="navbar-brand">
@@ -52,7 +59,8 @@ const Navbar = props => {
                 </div>
             </div>
         </nav>
-
+        <LoginForm loginOpen={loginIsOpen} hideLogin={hideLogin}/>
+        </div>
     )
 }
 
