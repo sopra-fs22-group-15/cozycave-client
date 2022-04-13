@@ -1,4 +1,4 @@
-import { Modal, Button, Form, FormGroup, FormControl, ControlLabel, Dropdown } from 'react-bootstrap'
+import { Modal, Button, Form, Row, Col, Dropdown, FormLabel } from 'react-bootstrap'
 function RegisterForm(props) {
     const handleRegister = () => {
 
@@ -7,54 +7,63 @@ function RegisterForm(props) {
     return (
         <div>
             <Modal show={props.registerOpen} onHide={props.hideRegister}>
-                <Form>
-                    <Form.Group className="mb-3" controlId="formName">
-                        <Form.Label>First Name</Form.Label>
-                        <Form.Control type="firstname" placeholder="First name" />
-                    </Form.Group>
+                <Form fluid style={{paddingLeft: 30, paddingRight: 30, paddingTop: 30, paddingBottom: 30}}>
+                    <Row classname='g-2' style={{paddingBottom:10}}>
+                        <Col md>
+                            <FormLabel controlId="firstNameInput">First Name</FormLabel>
+                            <Form.Control type="firstName" placeholder="Jane" />
 
-                    <Form.Group className="mb-3" controlId="formName">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="lastname" placeholder="Last name" />
-                    </Form.Group>
+                        </Col>
+                        <Col md>
+                            <FormLabel controlId="lastNameInput" label="Last Name">Last Name</FormLabel>
+                            <Form.Control type="lastName" placeholder="Doe" />
 
-                    <Form.Group className="mb-3" controlId="formEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" placeholder="Email" />
-                    </Form.Group>
+                        </Col>
+                    </Row>
 
-                    <Form.Group className="mb-3" controlId="formPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" />
-                    </Form.Group>
-                    
-                    <Form.Group className="mb-3" controlId="formAddress">
-                        <Form.Label>Address</Form.Label>
-                        <Form.Control type="address" placeholder="Address" />
-                    </Form.Group>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="success" id="gender-dropdown">
-                            Gender
-                        </Dropdown.Toggle>
+                    <Row classname='g-2'>
+                        <Form.Group className="mb-3" controlId="formEmail">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control type="email" placeholder="jane.doe@gmail.com" />
+                        </Form.Group>
+                    </Row>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">Male</Dropdown.Item>
-                            <Dropdown.Item href="#/action-2">Female</Dropdown.Item>
-                            <Dropdown.Item href="#/action-2">Prefer not to answer</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <Row classname='g-2'>
+                        <Form.Group className="mb-3" controlId="formPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" />
+                        </Form.Group>
+                    </Row>
 
-                    <Dropdown>
-                        <Dropdown.Toggle variant="success" id="account-dropdown">
-                            Account Type
-                        </Dropdown.Toggle>
+                    <Row classname='g-2'>
+                        <Col md>
+                            <Form.Label>Street Name</Form.Label>
+                            <Form.Control type="streetName" placeholder="Irchelstrasse"/>
+                        </Col>
+                        <Col md>
+                            <Form.Label>House Number</Form.Label>
+                            <Form.Control type="houseNr" placeholder="10"/>
+                        </Col>
+                    </Row>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">Landlord Account</Dropdown.Item>
-                            <Dropdown.Item href="#/action-2">Student Account</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <Row classname='g-2' style={{paddingTop: 30}}>
+                        <Col></Col>
+                        <Col>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="success" id="gender-dropdown">
+                                Gender
+                            </Dropdown.Toggle>
 
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1">Male</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">Female</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">Other</Dropdown.Item>
+                                <Dropdown.Item href="#/action-4">Prefer not to answer</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        </Col>
+                        <Col></Col>
+                    </Row>
                 </Form>
                 <Button variant="primary" onClick={() => handleRegister()}>Register</Button>
             </Modal>
