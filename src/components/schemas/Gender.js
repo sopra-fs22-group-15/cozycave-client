@@ -4,7 +4,6 @@
  */
 class Gender {
     constructor(data = {}) {
-        this.binary = null;
         this.gender = null;
         Object.assign(this, data);
     }

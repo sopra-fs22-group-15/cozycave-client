@@ -3,15 +3,17 @@ import User from './models/User';
 import { useNavigate } from 'react-router-dom'
 import React, { useState } from 'react';
 import { api, handleError } from './helpers/api'
+import { SHA3 } from 'sha3';
 
 function LoginForm(props) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const navigate = useNavigate();
-  const toggleLogin = async () => {
+  const requestLogin = async () => {
     try {
-      //TODO: hash the password
-      const requestBody = JSON.stringify({ email, password });
+      const password_hashed = new SHA3(512);
+      password_hashed.update(password);
+      const requestBody = JSON.stringify({ email, password_hashed });
       const response = await api.put('/login/', requestBody);
 
       // Get the returned user and update a new object.
@@ -30,7 +32,7 @@ function LoginForm(props) {
   return (
     <div>
       <Modal show={props.loginOpen} onHide={props.hideLogin}>
-        <Form fluid style={{ paddingLeft: 30, paddingRight: 30, paddingTop: 30, paddingBottom: 20 }}>
+        <Form fluid='true' style={{ paddingLeft: 30, paddingRight: 30, paddingTop: 30, paddingBottom: 20 }}>
           <Form.Label>Email address</Form.Label>
           <InputGroup className='mb-3'>
             <InputGroup.Text>Symbol</InputGroup.Text>
@@ -46,7 +48,7 @@ function LoginForm(props) {
           </Form.Group>
 
         </Form>
-        <Button variant="primary" onClick={() => toggleLogin()}>Log In</Button>
+        <Button variant="primary" onClick={() => requestLogin()} disabled={!email|!password}>Log In</Button>
 
       </Modal>
     </div>
