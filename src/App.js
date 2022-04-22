@@ -15,6 +15,7 @@ const App = () => {
         <Router>
             <Navbar style="transparent" brandName="Cozy Cave"/>
             <Routes>
+                <Route path="/overview" element={<ResultsPage/>}/>
                 <Route path="/" element={<LandingPage/>}/>
             </Routes>
         </Router>

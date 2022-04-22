@@ -22,10 +22,10 @@ import RegisterForm from "../../RegisterForm.js";
 const Navbar = props => {
     const[loginIsOpen, setLoginIsOpen] = useState(false)
     const[registerIsOpen, setRegisterIsOpen] = useState(false)
+    //The following two functions are passed down to the modals as props, and handle the display/hide behavior
     const hideLogin = () => {
         setLoginIsOpen(false)
     }
-
     const hideRegister = () => {
         setRegisterIsOpen(false)
     }
