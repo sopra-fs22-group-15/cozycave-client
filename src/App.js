@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from "./components/layout/Navbar";
 import LandingPage from "./LandingPage";
+import ResultsPage from './ResultsPage';
 
 import {
     BrowserRouter as Router,

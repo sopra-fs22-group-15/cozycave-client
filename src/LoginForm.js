@@ -1,5 +1,5 @@
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
-import User from './models/User';
+import User from './components/schemas/User'
 import { useNavigate } from 'react-router-dom'
 import React, { useState } from 'react';
 import { api, handleError } from './helpers/api'

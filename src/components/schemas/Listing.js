@@ -23,6 +23,7 @@ import Gender from "./Gender";
         this.available = null; //boolean
         this.rent = null;
         this.deposit = null;
+        this.rooms = null;
       Object.assign(this, data);
     }
   }
