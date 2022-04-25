@@ -1,0 +1,15 @@
+.profile-card {
+  margin: 100px auto;
+  @media (min-width: 768px) {
+    width: 100%;
+    min-width: 500px;
+    max-width: 700px;
+  }
+
+  .profile-avatar {
+
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: black 0px 0px 3px;
+  }
+}

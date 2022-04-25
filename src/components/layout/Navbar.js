@@ -69,7 +69,7 @@ const Navbar = props => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <Dropdown.Item href={`/profile-page/${localStorage.getItem('id')}`}>My Profile</Dropdown.Item>
+                    <Dropdown.Item href={`/profile-page/${localStorage.getItem('id') ? localStorage.getItem('id') : 1}`}>My Profile</Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
                     <Dropdown.Divider />
