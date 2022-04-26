@@ -9,7 +9,7 @@ import { SHA3 } from 'sha3';
 function ResultsPage(props) {
     const navigate = useNavigate();
     const [listings, setListings] = useState([])
-
+    //TODO: Link to server
     const requestResults = async () => {
         try {
             if (!props.query) {
@@ -50,7 +50,7 @@ function ResultsPage(props) {
                         "rooms": 3.5
                     },
                     {
-                        "uuid": 1,
+                        "uuid": 2,
                         "creation_date": "30.10.2000",
                         "name": "flat name",
                         "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich",
@@ -74,10 +74,10 @@ function ResultsPage(props) {
                         "rooms": 3.5
                     },
                     {
-                        "uuid": 1,
+                        "uuid": 3,
                         "creation_date": "30.10.2000",
                         "name": "flat name",
-                        "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich",
+                        "description": "This is a nice flat for students",
                         "address": {
                             "houseNr": 11,
                             "streetName": "Langstrasse",
@@ -98,7 +98,7 @@ function ResultsPage(props) {
                         "rooms": 3.5
                     },
                     {
-                        "uuid": 1,
+                        "uuid": 4,
                         "creation_date": "30.10.2000",
                         "name": "flat name",
                         "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich",
@@ -141,21 +141,25 @@ function ResultsPage(props) {
             )
         } else {
             return (
-                    <Badge bg="success">Room</Badge>
-               )
+                <Badge bg="success">Room</Badge>
+            )
         }
     };
 
+    const openAdOverview = (any) => {
+        navigate('/listings/' + any);
+    }
+
     return (
         <div>
-            <Container fluid style={{ paddingLeft: 40, paddingRight: 0, paddingTop: 50 }}>
+            <Container fluid style={{ paddingLeft: 40, paddingRight: 0, paddingTop: 60 }}>
                 {listings.map((listing) => (
-                    <div className='d-inline-block border border-dark' style={{ marginRight: 20, width: "45%" }}>
+                    <div className='d-inline-block border border-dark rounded' style={{ marginRight: 20, marginBottom: 3, width: "45%" }} onClick={() => openAdOverview(listing.uuid)}>
                         <Row>
                             <Col md={6}>
                                 <div>
                                     <Figure>
-                                        <Figure.Image 
+                                        <Figure.Image
                                             alt="Cannot load image"
                                             src="https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg"
                                         />
@@ -163,7 +167,7 @@ function ResultsPage(props) {
                                 </div>
                             </Col>
                             <Col md={6}>
-                                <Row classname='g-2'>
+                                <Row className='g-2'>
                                     <Col md={5}>
                                         <h4>{listing.rent} CHF</h4>
                                     </Col>
@@ -174,25 +178,29 @@ function ResultsPage(props) {
                                         <p>{listing.rooms} Rooms</p>
                                     </Col>
                                 </Row>
-                                <Row classname='g-2'>
+                                <Row className='g-2'>
                                     <h5>{listing.address.streetName} {listing.address.houseNr}, {listing.address.postcode} {listing.address.city}</h5>
                                 </Row>
-                                <Row classname='g-2'>
+                                <Row className='g-2'>
                                     <div>
                                         {decideColor(listing.type.type)}
                                     </div>
 
                                 </Row>
-                                <Row>
+                                <Row className='g-2'>
                                     <p>{listing.description}</p>
                                 </Row>
-                                <Row classname='g-2'>
+                                <Row>
+                                    <Col></Col>
                                     <Col>
-                                    </Col>
-                                    <Col>
-                                        <Button type="button" outlined={true} variant="primary" opts="me-2">Contact Info</Button>
+                                        <Row></Row>
+                                        <Row className='w-100'><Button type="button" outlined={true} variant="primary" opts="me-2">Contact Info</Button></Row>
                                     </Col>
                                 </Row>
+                                    
+                                
+                               
+
                             </Col>
                         </Row>
 
