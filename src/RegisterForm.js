@@ -21,7 +21,13 @@ function RegisterForm(props) {
     const requestRegister = async () => {
         try {
             const gender = new Gender();
-            gender.gender= genderState;
+            if(genderState==='Male'){
+                gender.gender=Gender.Male;
+            }else if(genderState==='Female'){
+                gender.gender=Gender.Female;
+            }else{
+                gender.gender=Gender.Other;
+            }
             const address = new Address();
             address.streetName=streetName;
             address.houseNr=houseNr;
