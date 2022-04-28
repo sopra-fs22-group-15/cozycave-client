@@ -1,0 +1,8 @@
+.menu-card {
+  margin: 100px auto;
+  @media (min-width: 768px) {
+    width: 100%;
+    min-width: 500px;
+    max-width: 700px;
+  }
+}
