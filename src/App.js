@@ -9,19 +9,19 @@ import {
     Route,
     Routes,
 } from "react-router-dom";
-import ProfilePage from "./ProfilePage";
+import CreateAd from "./components/crud/CreateAd";
 
 
 const App = () => {
 
     return (
         <Router>
-            <Navbar style="transparent" brandName="Cozy Cave" isLandingPage={true}/>
+            <Navbar style="transparent" brandName="Cozy Cave"/>
             <Routes>
                 <Route path="/overview" element={<ResultsPage/>}/>
                 <Route path="/" element={<LandingPage/>}/>
-                <Route path="/profile-page/1" element={<ProfilePage/>}/>
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
+                <Route path="/create-listing" element={<CreateAd/>}/>
             </Routes>
         </Router>
     )
