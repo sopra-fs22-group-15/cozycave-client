@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Row, Col, Dropdown, FormLabel, InputGroup, Figure, Container } from 'react-bootstrap'
+import { Modal, Button, Form, Row, Col, Dropdown, FormLabel, InputGroup, Figure, Container, Badge } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import { api, handleError } from './helpers/api'
@@ -44,7 +44,39 @@ function AdOverviewPage(props) {
         } catch (error) {
             alert(`Something went wrong during page loading: \n${handleError(error)}`);
         }
+
+
     }
+
+    const decideColor = (any) => {
+        if (any === "FLAT") {
+            return (
+                <Badge bg="primary">Flat</Badge>
+            )
+        } else {
+            return (
+                <Badge bg="success">Room</Badge>
+            )
+        }
+    };
+
+    const processGender = (any) => {
+        if (any.length == 3) {
+            return (
+                "Any"
+            )
+        } else if (any[0] === "FEMALE") {
+            return (
+                "Female"
+            )
+
+        } else {
+            return (
+                "Male"
+            )
+        }
+    };
+
 
     useEffect(() => {
         requestListing();
@@ -59,12 +91,12 @@ function AdOverviewPage(props) {
                             <Col>
                                 <Figure>
                                     <Figure.Image
-                                        alt="Cannot load image"
+                                        alt="Listing image"
                                         src={ad.pictures[0]}
                                     />
                                 </Figure>
                             </Col>
-                            <Col style={{marginRight:20}}>
+                            <Col style={{ marginRight: 20 }}>
                                 <div className='border-bottom border-dark'>
                                     <Row>
                                         <Col>
@@ -81,28 +113,52 @@ function AdOverviewPage(props) {
                                         </Col>
                                     </Row>
                                 </div>
-                                
-                                <Row class='mt-2'>
-                                    <h4 class='opacity-50'>Address</h4>
-                                </Row>
-                                <Row>
-                                    <h3>{ad.address.streetName} {ad.address.houseNr}, {ad.address.postcode} {ad.address.city}</h3>
-                                </Row>
-                                <Row>
-                                <h4 class='opacity-50'>Description</h4>
-                                </Row>
-                                <Row>
-                                    <p>{ad.description}</p>
-                                </Row>
-                                <Row>
-                                    <Col></Col>
-                                    <Col></Col>
-                                    <Col md='auto'>
-                                    <Button type="button" size='lg' variant="primary">Apply</Button>
-                                    <span> </span>
-                                    <Button type="button" size='lg' variant="outline-danger">Report</Button>
+                                <div className='border-bottom border-dark'>
+                                    <Row class='mt-2'>
+                                        <h4 class='opacity-50'>Address</h4>
+                                    </Row>
+                                    <Row>
+                                        <h3>{ad.address.streetName} {ad.address.houseNr}, {ad.address.postcode} {ad.address.city}</h3>
+                                    </Row>
+                                    <Row class='mb-2'>
+                                        <div>
+                                            {decideColor(ad.type.type)}
+                                        </div>
+
+                                    </Row>
+                                    <Row class='mt-2'>
+                                        <h4 class='opacity-50'>Description</h4>
+                                    </Row>
+                                    <Row>
+
+                                        <p>{ad.description}</p>
+
+                                    </Row>
+                                </div>
+                                <Row style={{width:'90%'}}>
+                                    <Col>
+                                        <h4 class='opacity-50'>Additional Information</h4>
+                                        <ul>
+                                            <li>Preferred applicant gender: {processGender(ad.availableTo)}</li>
+                                            <li>{(ad.furnished) ? 'Furnished' : 'Unfurnished'}</li>
+                                            <li>Deposit: {ad.deposit} CHF</li>
+                                        </ul>
+                                        <div class='align-self-end'>
+                                            <Button type="button" size='lg' variant="primary">Apply</Button>
+                                            <span> </span>
+                                            <Button type="button" size='lg' variant="outline-danger">Report</Button>
+                                        </div>
+                                    </Col>
+                                    <Col>
+                                        <Figure>
+                                            <Figure.Image
+                                                alt="Listing Location"
+                                                src="https://cdn-agkod.nitrocdn.com/HHTsYSGsDyZLTePzRyQWYMiOFmYfcDWX/assets/static/optimized/rev-ef045a0/wp-content/uploads/2017/06/Zurich-AirBnb-1-Penthouse-River-View-map.jpg"
+                                            />
+                                        </Figure>
                                     </Col>
                                 </Row>
+
                             </Col>
                         </Row>
                     </div>
