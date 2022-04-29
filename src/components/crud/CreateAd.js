@@ -1,13 +1,16 @@
 import React from 'react';
-import {Button, Card, Col, Container, Form, FormControl, InputGroup, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
-import Address from "../schemas/Address";
+
 import {api} from "../../helpers/api";
 import Listing from "../schemas/Listing";
+import {addressCreator} from "../util/addressCreator";
 
 const CreateAd = () => {
+
+    //TODO: add authorization check, only display if user is signed in a seller
 
     const [validated, setValidated] = React.useState(false);
 
@@ -35,9 +38,8 @@ const CreateAd = () => {
             const requestBody = createListing();
             console.log(requestBody);
             try {
-
-                createListing();
-                const response = await api.post('/listings');
+                const response = await api.post('/listings', requestBody);
+                console.log(response);
             } catch (e) {
                 console.log(e);
             }
@@ -45,28 +47,26 @@ const CreateAd = () => {
     };
 
     const createListing = () => {
-
-        setAddress(new Address({
-            streetName,
-            houseNumber,
-            city,
-            postalCode
-        }));
+        setAddress(addressCreator(streetName, houseNumber, city, postalCode));
         console.log(address);
+
+        // TODO: add image upload handling
+
         return new Listing({
             name,
             address,
             availableTo,
-            pictures: [...pictures],
+            pictures: null,
             deposit,
             type,
             description,
             rent,
             area,
             rooms
-
         });
     };
+
+    // TODO: add more validation to the form like (character limit, number of rooms, etc)
 
     return (
         <Container className="d-flex justify-content-center">
