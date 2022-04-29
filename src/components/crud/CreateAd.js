@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
@@ -16,22 +16,26 @@ const CreateAd = () => {
     const [houseNumber, setHouseNumber] = React.useState('');
     const [city, setCity] = React.useState('');
     const [postalCode, setPostalCode] = React.useState('');
-    const [availableTo, setAvailableTo] = React.useState('');
+    const [availableTo, setAvailableTo] = React.useState("male");
     const [name, setName] = React.useState('');
+    const [pictures, setPictures] = React.useState(null);
     const [deposit, setDeposit] = React.useState('');
-    const [type, setType] = React.useState('');
+    const [type, setType] = React.useState("flat");
     const [description, setDescription] = React.useState('');
     const [rent, setRent] = React.useState('');
     const [area, setArea] = React.useState('');
     const [rooms, setRooms] = React.useState('');
     const handleSubmit = async e => {
         const form = e.currentTarget;
-        if(form.checkValidity() === false) {
+        if (form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
         } else {
             setValidated(true);
+            const requestBody = createListing();
+            console.log(requestBody);
             try {
+
                 createListing();
                 const response = await api.post('/listings');
             } catch (e) {
@@ -41,11 +45,19 @@ const CreateAd = () => {
     };
 
     const createListing = () => {
-        setAddress(new Address(streetName, houseNumber, city, postalCode));
-        const listing = new Listing({
+
+        setAddress(new Address({
+            streetName,
+            houseNumber,
+            city,
+            postalCode
+        }));
+        console.log(address);
+        return new Listing({
             name,
             address,
             availableTo,
+            pictures: [...pictures],
             deposit,
             type,
             description,
@@ -54,7 +66,6 @@ const CreateAd = () => {
             rooms
 
         });
-        console.log(listing);
     };
 
     return (
@@ -65,19 +76,22 @@ const CreateAd = () => {
                         <img src="https://via.placeholder.com/500x300.png?text=Flat" alt="profile"
                              className="listing-header-image"
                              height="350"/>
-                        <Button variant="outline-light" className="d-flex justify-content-center">
+                        <input type="file" name="edit-image" id="image-file" className="header-file-input"
+                               onChange={e => (setPictures(e.target.value))}/>
+                        <label htmlFor="image-file">
                             <span style={{marginRight: "10px"}}>Edit Image</span>
-                            <FontAwesomeIcon icon={faEdit}/>
-                        </Button>
+                            <FontAwesomeIcon icon={faEdit} className="header-edit-icon"/>
+                        </label>
                     </div>
                     <div className="header-group">
                         <img src="https://via.placeholder.com/500x300.png?text=Floorplan" alt="profile"
                              className="listing-header-image"
                              height="350"/>
-                        <Button variant="outline-light" className="d-flex justify-content-center">
+                        <input type="file" name="edit-floorplan" id="floorplan-file" className="header-file-input"/>
+                        <label htmlFor="floorplan-file">
                             <span style={{marginRight: "10px"}}>Edit Floorplan</span>
-                            <FontAwesomeIcon icon={faEdit}/>
-                        </Button>
+                            <FontAwesomeIcon icon={faEdit} className="header-edit-icon"/>
+                        </label>
                     </div>
                 </Card.Header>
                 <Card.Body>
@@ -86,7 +100,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Street Name</Form.Label>
-                                    <Form.Control required type="text"  placeholder="Rämistrasse" onChange={e => {
+                                    <Form.Control required type="text" placeholder="Rämistrasse" onChange={e => {
                                         setStreetName(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -185,7 +199,8 @@ const CreateAd = () => {
                         <Row>
                             <Form.Group>
                                 <Form.Label>Description</Form.Label>
-                                <Form.Control required as="textarea" rows="5" placeholder="Add a description of the flat here..."
+                                <Form.Control required as="textarea" rows="5"
+                                              placeholder="Add a description of the flat here..."
                                               onChange={e => (setDescription(
                                                   e.target.value
                                               ))}/>
