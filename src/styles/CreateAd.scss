@@ -1,0 +1,54 @@
+.menu-card {
+  margin: 100px auto;
+  @media (min-width: 768px) {
+
+    width: 100%;
+    min-width: 700px;
+    max-width: 800px;
+  }
+}
+
+.header-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.listing-header-image {
+  width: 70%;
+  height: auto;
+  border-radius: 10px;
+  max-height: 300px;
+  object-fit: cover;
+  object-position: center;
+  margin-bottom: 20px;
+  @media (min-width: 768px) {
+    max-height: 500px;
+  }
+}
+
+.header-file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+
+  & + label {
+    padding: 8px;
+    border: 0.5px solid #ffffff;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+  }
+  &:hover + label {
+    background-color: #ffffff;
+    color: #000000;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+

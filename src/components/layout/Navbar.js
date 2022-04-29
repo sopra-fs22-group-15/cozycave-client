@@ -36,8 +36,6 @@ const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
 const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false)
     const [registerIsOpen, setRegisterIsOpen] = useState(false)
-    const[loginIsOpen, setLoginIsOpen] = useState(false)
-    const[registerIsOpen, setRegisterIsOpen] = useState(false)
     //The following two functions are passed down to the modals as props, and handle the display/hide behavior
     
     const hideLogin = () => {
