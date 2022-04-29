@@ -5,28 +5,56 @@ import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
 import Address from "../schemas/Address";
 import {api} from "../../helpers/api";
+import Listing from "../schemas/Listing";
 
 const CreateAd = () => {
+
+    const [validated, setValidated] = React.useState(false);
+
     const [address, setAddress] = React.useState(null);
     const [streetName, setStreetName] = React.useState('');
     const [houseNumber, setHouseNumber] = React.useState('');
     const [city, setCity] = React.useState('');
     const [postalCode, setPostalCode] = React.useState('');
+    const [availableTo, setAvailableTo] = React.useState('');
+    const [name, setName] = React.useState('');
     const [deposit, setDeposit] = React.useState('');
+    const [type, setType] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [rent, setRent] = React.useState('');
     const [area, setArea] = React.useState('');
     const [rooms, setRooms] = React.useState('');
-    const submitListing = async () => {
-        try {
-            const response = await api.post('/listings');
-        } catch (e) {
-            console.log(e);
+    const handleSubmit = async e => {
+        const form = e.currentTarget;
+        if(form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            setValidated(true);
+            try {
+                createListing();
+                const response = await api.post('/listings');
+            } catch (e) {
+                console.log(e);
+            }
         }
     };
 
     const createListing = () => {
         setAddress(new Address(streetName, houseNumber, city, postalCode));
+        const listing = new Listing({
+            name,
+            address,
+            availableTo,
+            deposit,
+            type,
+            description,
+            rent,
+            area,
+            rooms
+
+        });
+        console.log(listing);
     };
 
     return (
@@ -53,21 +81,21 @@ const CreateAd = () => {
                     </div>
                 </Card.Header>
                 <Card.Body>
-                    <Form onSubmit={createListing}>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Row>
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Street Name</Form.Label>
-                                    <Form.Control type="text" placeholder="Rämistrasse" onChange={e => {
-                                        setAddress(e.target.value)
+                                    <Form.Control required type="text"  placeholder="Rämistrasse" onChange={e => {
+                                        setStreetName(e.target.value)
                                     }}/>
                                 </Form.Group>
                             </Col>
                             <Col xs={3}>
                                 <Form.Group>
                                     <Form.Label>House Nr.</Form.Label>
-                                    <Form.Control type="text" placeholder="87" onChange={e => {
-                                        setAddress(e.target.value)
+                                    <Form.Control required type="text" placeholder="87" onChange={e => {
+                                        setHouseNumber(e.target.value)
                                     }}/>
                                 </Form.Group>
                             </Col>
@@ -76,7 +104,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Postal Code</Form.Label>
-                                    <Form.Control type="text" placeholder="8008" onChange={e => {
+                                    <Form.Control required type="text" placeholder="8008" onChange={e => {
                                         setPostalCode(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -84,7 +112,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>City</Form.Label>
-                                    <Form.Control type="text" placeholder="Zurich" onChange={e => {
+                                    <Form.Control required type="text" placeholder="Zurich" onChange={e => {
                                         setCity(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -94,7 +122,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Area</Form.Label>
-                                    <Form.Control type="text" placeholder="150m²" onChange={e => {
+                                    <Form.Control required type="text" placeholder="150m²" onChange={e => {
                                         setArea(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -102,7 +130,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Rooms</Form.Label>
-                                    <Form.Control type="text" placeholder="3.5" onChange={e => {
+                                    <Form.Control required type="text" placeholder="3.5" onChange={e => {
                                         setRooms(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -110,7 +138,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Rent</Form.Label>
-                                    <Form.Control type="text" placeholder="CHF 1000" onChange={e => {
+                                    <Form.Control required type="text" placeholder="CHF 1000" onChange={e => {
                                         setRent(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -120,7 +148,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Deposit</Form.Label>
-                                    <Form.Control type="text" placeholder="5000" onChange={e => {
+                                    <Form.Control required type="text" placeholder="5000" onChange={e => {
                                         setDeposit(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -128,7 +156,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Available To</Form.Label>
-                                    <Form.Select>
+                                    <Form.Select required onChange={e => (setAvailableTo(e.target.value))}>
                                         <option>Male</option>
                                         <option>Female</option>
                                         <option>Other</option>
@@ -136,11 +164,28 @@ const CreateAd = () => {
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
+                            <Col>
+                                <Form.Group>
+                                    <Form.Label>Type</Form.Label>
+                                    <Form.Select required onChange={e => (setType(e.target.value))}>
+                                        <option>Room</option>
+                                        <option>Flat</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Form.Group>
+                                <Form.Label>Display name</Form.Label>
+                                <Form.Control required type="text" placeholder="Example display name" onChange={e => {
+                                    setName(e.target.value)
+                                }}/>
+                            </Form.Group>
                         </Row>
                         <Row>
                             <Form.Group>
                                 <Form.Label>Description</Form.Label>
-                                <Form.Control as="textarea" rows="5" placeholder="Add a description of the flat here..."
+                                <Form.Control required as="textarea" rows="5" placeholder="Add a description of the flat here..."
                                               onChange={e => (setDescription(
                                                   e.target.value
                                               ))}/>
@@ -151,7 +196,7 @@ const CreateAd = () => {
                 <Card.Footer>
                     <Row>
                         <Col className="d-flex justify-content-center align-content-center">
-                            <Button variant="primary" type="submit" onClick={submitListing}>
+                            <Button variant="primary" type="submit" onClick={handleSubmit}>
                                 <span>Create Listing</span>
                             </Button>
                         </Col>
@@ -159,7 +204,7 @@ const CreateAd = () => {
                 </Card.Footer>
             </Card>
         </Container>
-);
+    );
 };
 
 export default CreateAd;

@@ -10,6 +10,7 @@ import {
     Routes,
 } from "react-router-dom";
 import CreateAd from "./components/crud/CreateAd";
+import ProfilePage from "./ProfilePage";
 
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
             <Routes>
                 <Route path="/overview" element={<ResultsPage/>}/>
                 <Route path="/" element={<LandingPage/>}/>
+                <Route path="/profile-page/1" element={<ProfilePage/>}/>
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
             </Routes>
