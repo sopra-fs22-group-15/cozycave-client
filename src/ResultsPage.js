@@ -188,13 +188,16 @@ function ResultsPage(props) {
 
                                 </Row>
                                 <Row className='g-2'>
+                                    <Col lg='auto'>
                                     <p>{listing.description}</p>
+                                    </Col>
                                 </Row>
                                 <Row>
                                     <Col></Col>
                                     <Col>
-                                        <Row></Row>
-                                        <Row className='w-100'><Button type="button" outlined={true} variant="primary" opts="me-2">Contact Info</Button></Row>
+                                        
+                                        <Button type="button" outlined={true} variant="primary">Contact Info</Button>
+                                        
                                     </Col>
                                 </Row>
                                     
