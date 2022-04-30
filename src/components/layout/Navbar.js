@@ -7,7 +7,7 @@ import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
 import {Dropdown} from "react-bootstrap";
 import "../../styles/Navbar.scss";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 
 /**
@@ -39,19 +39,24 @@ const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
-    const [path, setPath] = useState("/");
-    //The following two functions are passed down to the modals as props, and handle the display/hide behavior
+
     const navigate = useNavigate();
-    let navStyle = isLandingPage ? "" : "navbar-custom";
 
 
-    const checkIfLandingPage = () => {
-        if (path === "/") {
+    const handleNavigate = (path, e) => {
+        e.preventDefault();
+        navigate(path);
+        setIsLandingPage(false)
+    };
+
+    useEffect(() => {
+        if (window.location.pathname === "/") {
             setIsLandingPage(true);
         } else {
             setIsLandingPage(false);
         }
-    };
+    }, [window.location.pathname]);
+    //The following two functions are passed down to the modals as props, and handle the display/hide behavior
 
     const hideLogin = () => {
         setLoginIsOpen(false)
@@ -60,24 +65,19 @@ const Navbar = props => {
         setRegisterIsOpen(false)
     }
 
-    useEffect(() => {
-        checkIfLandingPage();
-        console.log(navStyle);
-        console.log(isLandingPage);
-    }, [path]);
-
     // TODO: make dynamic with store according to actual login status
-    let loggedInStatus = false; // !localStorage.getItem('token')
+    let loggedInStatus = localStorage.getItem('token')
 
     const authInputGroup = (
         <div className="d-flex">
             <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
                     opts="me-2">Sign In</Button>
-            <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign Up</Button>
+            <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
+                Up</Button>
         </div>
     )
 
-    const navContent = !loggedInStatus || isLandingPage ? (
+    const navContent = !loggedInStatus ? (
         authInputGroup
     ) : (
         // TODO: implement custom navbar to change when logged in.
@@ -103,11 +103,15 @@ const Navbar = props => {
 
     return (
         <div>
-            <nav className={`navbar navbar-expand-lg navbar-light bg-${props.style} ${navStyle} justify-content-between fixed-top`}>
+            <nav
+                className={`navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
                 <div className="container-fluid flex-nowrap">
-                    <a href="/" onClick={() => {navigate("/")}} className="navbar-brand">
+                    <a href="/overview" onClick={(e) => {
+                        handleNavigate("/overview", e)
+                    }} className="navbar-brand">
                         {props.brandName}
-                        <img src="/assets/cozy_cave_logo_v1.svg" alt="logo" className="d-inline-block align-text-top"
+                        <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
+                             className="d-inline-block align-text-top"
                              width="50" height="32"/>
                     </a>
                     <div className={`${!loggedInStatus && isLandingPage ? "" : "d-flex"}`}>

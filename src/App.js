@@ -14,19 +14,13 @@ import ProfilePage from "./ProfilePage";
 
 
 
-const isLandingPage = (path) => {
-    return path === '/';
-};
-
-
-
 const App = () => {
     return (
         <Router>
-            <Navbar style={`${isLandingPage(window.location.pathname) ? "transparent" : ""}`} brandName="Cozy Cave"/>
+            <Navbar brandName="Cozy Cave" />
             <Routes>
-                <Route path="/overview" element={<ResultsPage/>}/>
-                <Route path="/" element={<LandingPage/>}/>
+                <Route exact path="/" element={<LandingPage/>} />
+                <Route exact path="/overview" element={<ResultsPage/>} />
                 <Route path="/profile-page/1" element={<ProfilePage/>}/>
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
