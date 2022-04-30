@@ -13,11 +13,17 @@ import CreateAd from "./components/crud/CreateAd";
 import ProfilePage from "./ProfilePage";
 
 
-const App = () => {
 
+const isLandingPage = (path) => {
+    return path === '/';
+};
+
+
+
+const App = () => {
     return (
         <Router>
-            <Navbar style="transparent" brandName="Cozy Cave"/>
+            <Navbar style={`${isLandingPage(window.location.pathname) ? "transparent" : ""}`} brandName="Cozy Cave"/>
             <Routes>
                 <Route path="/overview" element={<ResultsPage/>}/>
                 <Route path="/" element={<LandingPage/>}/>

@@ -10,7 +10,6 @@ const SearchBar = props => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        console.log("Click!")
         navigate('/overview');
     }
 
