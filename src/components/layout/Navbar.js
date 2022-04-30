@@ -2,10 +2,9 @@ import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
-import SearchBar from "../../SearchBar";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
-import {Dropdown} from "react-bootstrap";
+import {Dropdown, Form, FormControl} from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import {useNavigate} from "react-router-dom";
 
@@ -30,7 +29,7 @@ const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-             height="50"/>
+             height="40"/>
         {children}
     </a>
 ));
@@ -69,12 +68,26 @@ const Navbar = props => {
     let loggedInStatus = localStorage.getItem('token')
 
     const authInputGroup = (
-        <div className="d-flex">
-            <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                    opts="me-2">Sign In</Button>
-            <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
-                Up</Button>
-        </div>
+        <>
+            {!isLandingPage ? (
+                <div className="d-flex">
+                    <Form className="nav-search">
+                        <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
+                    </Form>
+                    <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
+                            opts="me-2">Sign In</Button>
+                    <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
+                        Up</Button>
+                </div>
+            ) : (
+                <>
+                    <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
+                            opts="me-2">Sign In</Button>
+                    <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
+                        Up</Button>
+                </>
+            )}
+        </>
     )
 
     const navContent = !loggedInStatus ? (
@@ -83,7 +96,9 @@ const Navbar = props => {
         // TODO: implement custom navbar to change when logged in.
         // TODO: implement custom dropdown with speech bubble shape
         <div className="d-flex">
-            <SearchBar style="nav-search"/>
+            <Form className="nav-search">
+                <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
+            </Form>
             <Dropdown>
                 <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}} id="dropdown-menu-align-responsive-2">
                 </Dropdown.Toggle>
