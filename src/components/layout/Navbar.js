@@ -38,9 +38,15 @@ const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
 
     const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.clear();
+        setLoggedIn(false);
+        navigate("/overview");
+    };
 
     const handleNavigate = (path, e) => {
         e.preventDefault();
@@ -54,7 +60,7 @@ const Navbar = props => {
         } else {
             setIsLandingPage(false);
         }
-    }, [window.location.pathname]);
+    }, [window.location.pathname, loggedIn]);
     //The following two functions are passed down to the modals as props, and handle the display/hide behavior
 
     const hideLogin = () => {
@@ -64,8 +70,8 @@ const Navbar = props => {
         setRegisterIsOpen(false)
     }
 
+
     // TODO: make dynamic with store according to actual login status
-    let loggedInStatus = localStorage.getItem('token')
 
     const authInputGroup = (
         <>
@@ -90,7 +96,7 @@ const Navbar = props => {
         </>
     )
 
-    const navContent = !loggedInStatus ? (
+    const navContent = !loggedIn ? (
         authInputGroup
     ) : (
         // TODO: implement custom navbar to change when logged in.
@@ -111,6 +117,10 @@ const Navbar = props => {
                     <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
                     <Dropdown.Divider/>
                     <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
+                    <Dropdown.Divider/>
+                    <Dropdown.Item>
+                        <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
+                    </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         </div>
@@ -129,7 +139,7 @@ const Navbar = props => {
                              className="d-inline-block align-text-top"
                              width="50" height="32"/>
                     </a>
-                    <div className={`${!loggedInStatus && isLandingPage ? "" : "d-flex"}`}>
+                    <div className={`${!loggedIn && isLandingPage ? "" : "d-flex"}`}>
                         {navContent}
                     </div>
                 </div>
