@@ -35,12 +35,11 @@ function RegisterForm(props) {
             address.city=city;
             address.postcode=postcode;
 
-            const password_hashed = new SHA3(512);
-            password_hashed.update(password);
-            const requestBody = JSON.stringify({ firstName, lastName, email, password_hashed, address, gender });
-            const response = await api.post('/auth/register/', requestBody);
+
+            const requestBody = JSON.stringify({ firstName, lastName, email, password, address, gender });
+            const response = await api.post('/auth/register', requestBody);
             
-            const loginRequest = JSON.stringify({email, password_hashed})
+            const loginRequest = JSON.stringify({email, password});
             const confirmation = await api.put('/auth/login', loginRequest)
 
             // Get the returned user and update a new object.
