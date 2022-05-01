@@ -14,8 +14,8 @@ function AdOverviewPage(props) {
     const [listing, setListing] = useState([]);
     const requestListing = async () => {
         try {
-            response = await api.get('/listings/',id);
-            setListing(response.data);
+            //response = await api.get('/listings/',id);
+            //setListing(response.data);
 
             setListing([{
                 "uuid": 1,
@@ -81,7 +81,7 @@ function AdOverviewPage(props) {
         //const listing = response.data;
         //const application = new Application(id, null, user, listing, "pending");
         try {
-            //applyResponse = await api.post('/v1/listings/',id,'/applications/');
+            //applyResponse = await api.post('/listings/',id,'/applications/');
             //TODO: add to profile here
             alert('Successfully applied!')
 

@@ -3,8 +3,8 @@ import User from './components/schemas/User'
 import { useNavigate } from 'react-router-dom'
 import React, { useState } from 'react';
 import { api, handleError } from './helpers/api'
-import { SHA3 } from 'sha3';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 
 function LoginForm(props) {
   const [email, setEmail] = useState(null);
@@ -12,9 +12,7 @@ function LoginForm(props) {
   const navigate = useNavigate();
   const requestLogin = async () => {
     try {
-      const password_hashed = new SHA3(512);
-      password_hashed.update(password);
-      const requestBody = JSON.stringify({ email, password_hashed });
+      const requestBody = JSON.stringify({ email, password });
       const response = await api.put('/auth/login', requestBody);
 
       // Get the returned user and update a new object.
@@ -41,20 +39,20 @@ function LoginForm(props) {
         <Form fluid='true' style={{ paddingLeft: 30, paddingRight: 30, paddingTop: 30, paddingBottom: 20 }}>
           <Form.Label>Email address</Form.Label>
           <InputGroup className='mb-3'>
-            <InputGroup.Text>Symbol</InputGroup.Text>
+            <InputGroup.Text><FontAwesomeIcon icon={faEnvelope} /></InputGroup.Text>
             <Form.Control type="email" placeholder="jane.doe@gmail.com" onChange={e => setEmail(e.target.value)} />
           </InputGroup>
 
           <Form.Group className="mb-3" controlId="formPassword">
             <Form.Label>Password</Form.Label>
             <InputGroup>
-              <InputGroup.Text>Symbol</InputGroup.Text>
+              <InputGroup.Text><FontAwesomeIcon icon={faLock} /></InputGroup.Text>
               <Form.Control type="password" onChange={e => setPassword(e.target.value)} />
             </InputGroup>
           </Form.Group>
 
         </Form>
-        <Button variant="primary" onClick={() => requestLogin()} disabled={!email|!password}>Log In</Button>
+        <Button variant="primary" onClick={() => requestLogin()} disabled={!email | !password}>Log In</Button>
 
       </Modal>
     </div>
