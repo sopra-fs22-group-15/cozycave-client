@@ -6,6 +6,8 @@ import Address from './components/schemas/Address';
 import Gender from './components/schemas/Gender';
 import User from './components/schemas/User';
 import { SHA3 } from 'sha3';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEnvelope, faLock} from "@fortawesome/free-solid-svg-icons";
 
 function RegisterForm(props) {
     const [firstName, setFirstName] = useState(null)
@@ -91,7 +93,9 @@ function RegisterForm(props) {
                         <Form.Group className="mb-3" controlId="formEmail">
                             <Form.Label>Email address</Form.Label>
                             <InputGroup className='mb-3'>
-                                <InputGroup.Text>Symbol</InputGroup.Text>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faEnvelope} />
+                                </InputGroup.Text>
                                 <Form.Control type="email" placeholder="jane.doe@gmail.com" onChange={(e) => setEmail(e.target.value)}/>
                             </InputGroup>
                         </Form.Group>
@@ -102,7 +106,9 @@ function RegisterForm(props) {
                             <Form.Group className="mb-3" controlId="formPassword">
                                 <Form.Label>Password</Form.Label>
                                 <InputGroup>
-                                <InputGroup.Text>Symbol</InputGroup.Text>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faLock} />
+                                </InputGroup.Text>
                                 <Form.Control type="password" onChange={(e) => setPassword(e.target.value)}/>
                                 </InputGroup>
                             </Form.Group>
@@ -112,7 +118,9 @@ function RegisterForm(props) {
                             <Form.Group className="mb-3" controlId="confirmPassword">
                                 <Form.Label>Confirm Password</Form.Label>
                                 <InputGroup>
-                                <InputGroup.Text>Symbol</InputGroup.Text>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faLock} />
+                                </InputGroup.Text>
                                 <Form.Control type="password" onChange={(e) => setConfirmPassword(e.target.value)}/>
                                 </InputGroup>
                             </Form.Group>
