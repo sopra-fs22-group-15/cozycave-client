@@ -22,7 +22,7 @@ const App = () => {
                 <Route exact path="/" element={<LandingPage/>} />
                 <Route exact path="/overview" element={<ResultsPage/>} />
                 <Route path="/profile-page/1" element={<ProfilePage/>}/>
-                <Route path="/listings/:id" element={<AdOverviewPage/>}/>
+                <Route path="/v1/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
                 
             </Routes>

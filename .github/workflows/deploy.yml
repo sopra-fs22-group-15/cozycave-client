@@ -23,7 +23,6 @@ jobs:
    
     # uncomment for assignment 2-4
     - name: SonarCloud Scan
-    # needs to be "master" for github action to run
       uses: sonarsource/sonarcloud-github-action@master
     
     # create .netrc file for heroku authentication
