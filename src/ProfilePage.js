@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Container, Form, FormControl, Nav, Row, Tab, Tabs} from "react-bootstrap";
-import {faSave, faSearch} from "@fortawesome/free-solid-svg-icons";
+import React, { useState} from 'react';
+import {Button, Card, Col, Container, Form, Row, Tab, Tabs} from "react-bootstrap";
+import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import "./styles/ProfilePage.scss";
 import {api} from "./helpers/api";
