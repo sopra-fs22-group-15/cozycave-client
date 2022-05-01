@@ -139,7 +139,7 @@ function ResultsPage(props) {
     };
 
     const openAdOverview = (any) => {
-        navigate('/listings/' + any);
+        navigate('/v1/listings/' + any);
     }
 
     return (
