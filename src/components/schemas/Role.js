@@ -7,9 +7,8 @@
     static Team = new Role("team")
     static Admin = new Role("admin")
 
-    constructor(data = {}) {
-      this.role = null;
-      Object.assign(this, data);
+    constructor(role) {
+      Object.assign(this, role);
     }
   }
   export default Role;

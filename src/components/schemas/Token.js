@@ -2,9 +2,8 @@
  * Token model
  */
  class Token {
-    constructor(data = {}) {
-      this.token = null;
-      Object.assign(this, data);
+    constructor(token) {
+      Object.assign(this, token);
     }
   }
   export default Token;

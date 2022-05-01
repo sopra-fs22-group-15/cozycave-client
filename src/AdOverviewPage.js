@@ -5,15 +5,17 @@ import { api, handleError } from './helpers/api'
 import Address from './components/schemas/Address';
 import Gender from './components/schemas/Gender';
 import axios from 'axios';
+import Application from './components/schemas/Application';
 
 function AdOverviewPage(props) {
+    let response = null;
     const navigate = useNavigate();
     const { id } = useParams();
     const [listing, setListing] = useState([]);
 
     const requestListing = async () => {
         try {
-            //const response = await api.get('/listings/',id);
+            //response = await api.get('/listings/',id);
             //setListing(response.data);
 
             setListing([{
@@ -30,9 +32,7 @@ function AdOverviewPage(props) {
                 "published": true,
                 "pictures": ["https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg", "https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg"],
                 "sqm": 82,
-                "type": {
-                    type: "FLAT"
-                },
+                "type": "FLAT",
                 "furnished": true,
                 "availableTo": ['Male', 'Female', 'Other'],
                 "available": true,
@@ -77,6 +77,20 @@ function AdOverviewPage(props) {
         }
     };
 
+    const handleApply = async () => {
+        //const user = localStorage.getItem('user');
+        //const listing = response.data;
+        //const application = new Application(id, null, user, listing, "pending");
+        try {
+            //applyResponse = await api.post('/listings/',id,'/applications/');
+            //TODO: add to profile here
+            alert('Successfully applied!')
+
+        } catch (error) {
+            alert(`Something went wrong during page loading: \n${handleError(error)}`);
+        }
+
+    }
 
     useEffect(() => {
         requestListing();
@@ -122,7 +136,7 @@ function AdOverviewPage(props) {
                                     </Row>
                                     <Row class='mb-2'>
                                         <div>
-                                            {decideColor(ad.type.type)}
+                                            {decideColor(ad.type)}
                                         </div>
 
                                     </Row>
@@ -135,7 +149,7 @@ function AdOverviewPage(props) {
 
                                     </Row>
                                 </div>
-                                <Row style={{width:'90%'}}>
+                                <Row style={{ width: '90%' }}>
                                     <Col>
                                         <h4 class='opacity-50'>Additional Information</h4>
                                         <ul>
@@ -144,7 +158,7 @@ function AdOverviewPage(props) {
                                             <li>Deposit: {ad.deposit} CHF</li>
                                         </ul>
                                         <div class='align-self-end'>
-                                            <Button type="button" size='lg' variant="primary">Apply</Button>
+                                            <Button type="button" size='lg' variant="primary" onClick={() => handleApply()}>Apply</Button>
                                             <span> </span>
                                             <Button type="button" size='lg' variant="outline-danger">Report</Button>
                                         </div>

@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {api, handleError} from './helpers/api'
 import Address from './components/schemas/Address';
 import Gender from './components/schemas/Gender';
+import User from './components/schemas/User';
 import { SHA3 } from 'sha3';
 
 function RegisterForm(props) {
@@ -22,11 +23,11 @@ function RegisterForm(props) {
         try {
             const gender = new Gender();
             if(genderState==='Male'){
-                gender.gender=Gender.Male;
+                gender=Gender.Male;
             }else if(genderState==='Female'){
-                gender.gender=Gender.Female;
+                gender=Gender.Female;
             }else{
-                gender.gender=Gender.Other;
+                gender=Gender.Other;
             }
             const address = new Address();
             address.streetName=streetName;
@@ -34,17 +35,26 @@ function RegisterForm(props) {
             address.city=city;
             address.postcode=postcode;
 
-
             const password_hashed = new SHA3(512);
             password_hashed.update(password);
             const requestBody = JSON.stringify({ firstName, lastName, email, password_hashed, address, gender });
             const response = await api.post('/register/', requestBody);
-      
+            
+            requestBody = JSON.stringify({email, password_hashed})
+            const confirmation = await api.put('/login', requestBody)
+
             // Get the returned user and update a new object.
-            const token = response.data;
-      
+            const token = response.data.token;
+            const user = confirmation.data.user;
             // Store the token into the local storage.
-            localStorage.setItem('token', token, response.headers["authentication"]);
+
+            localStorage.setItem('token', token, response.headers["Authorization"]);
+            localStorage.setItem('firstname', user.firstName);
+            localStorage.setItem('lastname', user.lastName);
+            // localStorage.setItem('birthdate', user.birthday);
+            localStorage.setItem('gender', user.gender);
+            localStorage.setItem('user', user)
+            
       
             // Login successfully worked --> navigate to the landing page in the AppRouter
             navigate(`/`);

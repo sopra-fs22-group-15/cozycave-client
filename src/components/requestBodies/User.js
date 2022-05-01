@@ -11,18 +11,18 @@ import Group from '../schemas/Group';
  */
 
  class User {
-    constructor(data = {}) {
+    constructor(data = {firstname, lastname, email, address, gender, details}) {
       this.UUID = new UUID();
       this.creation_date = new Date();
-      this.firstname = null;
-      this.lastname = null;
-      this.email = null;
+      this.firstname = firstname;
+      this.lastname = lastname;
+      this.email = email;
       this.password_hashed = null; 
       this.role = new Role();
       this.token = new Token();
       this.address = new Address();
-      this.gender = new Gender();
-      this.details = null;
+      this.gender = gender;
+      this.details = details;
       this.group = new Group();
       Object.assign(this, data);
     }

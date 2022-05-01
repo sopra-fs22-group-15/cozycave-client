@@ -39,9 +39,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "FLAT"
-                        },
+                        "type": "FLAT",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -63,9 +61,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "FLAT"
-                        },
+                        "type": "FLAT",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -87,9 +83,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "FLAT"
-                        },
+                        "type": "FLAT",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -111,9 +105,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "ROOM"
-                        },
+                        "type": "ROOM",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -183,7 +175,7 @@ function ResultsPage(props) {
                                 </Row>
                                 <Row className='g-2'>
                                     <div>
-                                        {decideColor(listing.type.type)}
+                                        {decideColor(listing.type)}
                                     </div>
 
                                 </Row>

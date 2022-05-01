@@ -24,6 +24,7 @@ const App = () => {
                 <Route path="/profile-page/1" element={<ProfilePage/>}/>
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
+                
             </Routes>
         </Router>
     )
