@@ -15,7 +15,7 @@ function LoginForm(props) {
       const password_hashed = new SHA3(512);
       password_hashed.update(password);
       const requestBody = JSON.stringify({ email, password_hashed });
-      const response = await api.put('/login/', requestBody);
+      const response = await api.put('/v1/auth/login/', requestBody);
 
       // Get the returned user and update a new object.
       const responseToken = response.data.token;

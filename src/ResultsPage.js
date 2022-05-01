@@ -13,7 +13,7 @@ function ResultsPage(props) {
     const requestResults = async () => {
         try {
             if (!props.query) {
-                //const response = await api.get('/listings/');
+                //const response = await api.get('/v1/listings/');
 
                 // Get the returned listings, create new objects for each.
 
@@ -139,7 +139,7 @@ function ResultsPage(props) {
     };
 
     const openAdOverview = (any) => {
-        navigate('/listings/' + any);
+        navigate('/v1/listings/' + any);
     }
 
     return (
