@@ -36,7 +36,19 @@ function RegisterForm(props) {
             address.postcode=postcode;
 
 
-            const requestBody = JSON.stringify({ firstName, lastName, email, password, address, gender });
+            const requestBody = JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                password,
+                address: {
+                    street: streetName,
+                    street_number: houseNr,
+                    zip_code: postcode,
+                    village: city,
+                    country: "Switzerland"
+                },
+                gender: "male" });
             const response = await api.post('/auth/register', requestBody);
 
             // Get the returned user and update a new object.
