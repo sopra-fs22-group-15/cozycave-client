@@ -21,7 +21,7 @@ function RegisterForm(props) {
     const navigate = useNavigate();
     const requestRegister = async () => {
         try {
-            const gender = new Gender();
+            let gender = new Gender();
             if(genderState==='Male'){
                 gender=Gender.Male;
             }else if(genderState==='Female'){
@@ -40,8 +40,8 @@ function RegisterForm(props) {
             const requestBody = JSON.stringify({ firstName, lastName, email, password_hashed, address, gender });
             const response = await api.post('/register/', requestBody);
             
-            requestBody = JSON.stringify({email, password_hashed})
-            const confirmation = await api.put('/login', requestBody)
+            const loginRequest = JSON.stringify({email, password_hashed})
+            const confirmation = await api.put('/login', loginRequest)
 
             // Get the returned user and update a new object.
             const token = response.data.token;
