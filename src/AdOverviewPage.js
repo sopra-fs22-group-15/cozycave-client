@@ -14,7 +14,7 @@ function AdOverviewPage(props) {
     const [listing, setListing] = useState([]);
     const requestListing = async () => {
         try {
-            response = await api.get('/v1/listings/',id);
+            response = await api.get('/listings/',id);
             setListing(response.data);
 
             setListing([{

@@ -9,20 +9,18 @@ import { SHA3 } from 'sha3';
 function ResultsPage(props) {
     const navigate = useNavigate();
     const [listings, setListings] = useState([])
+    let response = null;
     //TODO: Link to server
     const requestResults = async () => {
         try {
             if (!props.query) {
-                //const response = await api.get('/v1/listings/');
-
                 // Get the returned listings, create new objects for each.
-
-
-                // Login successfully worked --> navigate to the landing page in the AppRouter
+                response = await api.get('/listings/');
+                
             } else {
-
+                //for future search terms
             }
-            //setListings(response.data);
+            setListings(response.data);
             setListings(
                 [
                     {
