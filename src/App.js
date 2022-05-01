@@ -10,7 +10,7 @@ import {
     Routes,
 } from "react-router-dom";
 import CreateAd from "./components/crud/CreateAd";
-import ProfilePage from "./ProfilePage";
+import ProfilePage from "./components/profile/ProfilePage";
 
 
 
