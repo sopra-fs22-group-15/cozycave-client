@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { api, handleError } from './helpers/api'
 import { SHA3 } from 'sha3';
 
+
 function LoginForm(props) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -14,13 +15,18 @@ function LoginForm(props) {
       const password_hashed = new SHA3(512);
       password_hashed.update(password);
       const requestBody = JSON.stringify({ email, password_hashed });
-      const response = await api.put('/login/', requestBody);
+      const response = await api.put('/v1/auth/login/', requestBody);
 
       // Get the returned user and update a new object.
-      const user = new User(response.data);
+      const responseToken = response.data.token;
+      const responseUser = response.data.user;
 
       // Store the token into the local storage.
-      localStorage.setItem('token', user.token, response.headers["Authorization"]);
+      localStorage.setItem('token', responseToken, response.headers["Authorization"]);
+      localStorage.setItem('firstname', responseUser.firstName);
+      localStorage.setItem('lastname', responseUser.lastName);
+      localStorage.setItem('gender', responseUser.gender);
+      localStorage.setItem('user', responseUser);
 
       // Login successfully worked --> navigate to the landing page in the AppRouter
       navigate(`/`);

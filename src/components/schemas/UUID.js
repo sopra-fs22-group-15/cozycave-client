@@ -2,9 +2,8 @@
  * UUID model
  */
  class UUID {
-    constructor(data = {}) {
-      this.UUID = null;
-      Object.assign(this, data);
+    constructor(id) {
+      Object.assign(this, id);
     }
   }
   export default UUID;

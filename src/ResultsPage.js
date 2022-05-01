@@ -13,7 +13,7 @@ function ResultsPage(props) {
     const requestResults = async () => {
         try {
             if (!props.query) {
-                //const response = await api.get('/listings/');
+                //const response = await api.get('/v1/listings/');
 
                 // Get the returned listings, create new objects for each.
 
@@ -39,9 +39,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "FLAT"
-                        },
+                        "type": "FLAT",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -63,9 +61,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "FLAT"
-                        },
+                        "type": "FLAT",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -87,9 +83,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "FLAT"
-                        },
+                        "type": "FLAT",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -111,9 +105,7 @@ function ResultsPage(props) {
                         "published": true,
                         "pictures": [],
                         "sqm": 82,
-                        "type": {
-                            type: "ROOM"
-                        },
+                        "type": "ROOM",
                         "furnished": true,
                         "availableTo": ['Male', 'Female', 'Other'],
                         "available": true,
@@ -147,7 +139,7 @@ function ResultsPage(props) {
     };
 
     const openAdOverview = (any) => {
-        navigate('/listings/' + any);
+        navigate('/v1/listings/' + any);
     }
 
     return (
@@ -183,7 +175,7 @@ function ResultsPage(props) {
                                 </Row>
                                 <Row className='g-2'>
                                     <div>
-                                        {decideColor(listing.type.type)}
+                                        {decideColor(listing.type)}
                                     </div>
 
                                 </Row>

@@ -5,9 +5,8 @@
     static Flat = new ListingType("FLAT")
     static Room = new ListingType("ROOM")
 
-    constructor(data = {}) {
-      this.type = null;
-      Object.assign(this, data);
+    constructor(type) {
+      Object.assign(this, type);
     }
   }
   export default ListingType;

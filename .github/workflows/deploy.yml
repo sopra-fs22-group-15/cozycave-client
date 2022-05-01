@@ -18,11 +18,12 @@ jobs:
 
     steps:
     # checkout repository code
-    - uses: actions/checkout@v1
+    - name: checkout repository code
+      uses: actions/checkout@v1
    
     # uncomment for assignment 2-4
     - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
+      uses: sonarsource/sonarcloud-github-action@main
     
     # create .netrc file for heroku authentication
     # https://devcenter.heroku.com/articles/authentication

@@ -2,9 +2,8 @@
  * Date model
  */
  class Date {
-    constructor(data = {}) {
-      this.date = null;
-      Object.assign(this, data);
+    constructor(date) {
+      Object.assign(this, date);
     }
   }
   export default Date;

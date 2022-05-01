@@ -10,20 +10,20 @@ import Token from "./Token";
  */
 
  class User {
-    constructor(data = {}) {
-      this.UUID = new UUID();
-      this.creation_date = new Date();
-      this.firstname = null;
-      this.lastname = null;
-      this.email = null;
-      this.password_hashed = null; 
-      this.role = new Role();
-      this.token = new Token();
-      this.address = new Address();
-      this.gender = new Gender();
-      this.details = null;
-      this.group = new Group();
-      Object.assign(this, data);
-    }
+  constructor(data = {}) {
+    this.UUID = new UUID();
+    this.creation_date = new Date();
+    this.firstname = null;
+    this.lastname = null;
+    this.email = null;
+    this.password_hashed = null; 
+    this.role = new Role();
+    this.token = new Token();
+    this.address = new Address();
+    this.gender = null;
+    this.details = null;
+    this.group = new Group();
+    Object.assign(this, data);
   }
-  export default User;
+}
+export default User;
