@@ -38,10 +38,10 @@ function RegisterForm(props) {
             const password_hashed = new SHA3(512);
             password_hashed.update(password);
             const requestBody = JSON.stringify({ firstName, lastName, email, password_hashed, address, gender });
-            const response = await api.post('/v1/auth/register/', requestBody);
+            const response = await api.post('/auth/register/', requestBody);
             
             const loginRequest = JSON.stringify({email, password_hashed})
-            const confirmation = await api.put('/v1/auth/login', loginRequest)
+            const confirmation = await api.put('/auth/login', loginRequest)
 
             // Get the returned user and update a new object.
             const token = response.data.token;
