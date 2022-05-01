@@ -38,13 +38,10 @@ function RegisterForm(props) {
 
             const requestBody = JSON.stringify({ firstName, lastName, email, password, address, gender });
             const response = await api.post('/auth/register', requestBody);
-            
-            const loginRequest = JSON.stringify({email, password});
-            const confirmation = await api.put('/auth/login', loginRequest)
 
             // Get the returned user and update a new object.
             const token = response.data.token;
-            const user = confirmation.data.user;
+            const user = response.data.user;
             // Store the token into the local storage.
 
             localStorage.setItem('token', token, response.headers["Authorization"]);

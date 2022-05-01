@@ -15,7 +15,7 @@ function ResultsPage(props) {
         try {
             if (!props.query) {
                 // Get the returned listings, create new objects for each.
-                response = await api.get('/listings/');
+                response = await api.get('/listings');
                 
             } else {
                 //for future search terms
