@@ -22,7 +22,7 @@ function ResultsPage(props) {
             setListings(response.data);
 
         } catch (error) {
-            alert(`Something went wrong during the registration: \n${handleError(error)}`);
+            alert(`Something went wrong during page loading: \n${handleError(error)}`);
             setListings(
                 [
                     {
