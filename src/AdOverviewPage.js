@@ -14,9 +14,11 @@ function AdOverviewPage(props) {
     const [listing, setListing] = useState([]);
     const requestListing = async () => {
         try {
-            //response = await api.get('/listings/',id);
-            //setListing(response.data);
+            response = await api.get('/listings/',id);
+            setListing(response.data);
 
+        } catch (error) {
+            alert(`Something went wrong during page loading: \n${handleError(error)}`);
             setListing([{
                 "uuid": 1,
                 "creation_date": "30.10.2000",
@@ -39,9 +41,6 @@ function AdOverviewPage(props) {
                 "deposit": 5000,
                 "rooms": 3.5
             },]);
-
-        } catch (error) {
-            alert(`Something went wrong during page loading: \n${handleError(error)}`);
         }
 
 

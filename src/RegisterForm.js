@@ -19,25 +19,10 @@ function RegisterForm(props) {
     const [houseNr, setHouseNr] = useState(null)
     const [city, setCity] = useState(null)
     const [postcode, setPostcode] = useState(null)
-    const [genderState, setGenderState] = useState(null)
+    const [gender, setGender] = useState(null)
     const navigate = useNavigate();
     const requestRegister = async () => {
         try {
-            let gender = new Gender();
-            if(genderState==='Male'){
-                gender=Gender.Male;
-            }else if(genderState==='Female'){
-                gender=Gender.Female;
-            }else{
-                gender=Gender.Other;
-            }
-            const address = new Address();
-            address.streetName=streetName;
-            address.houseNr=houseNr;
-            address.city=city;
-            address.postcode=postcode;
-
-
             const requestBody = JSON.stringify({
                 firstName,
                 lastName,
@@ -150,12 +135,11 @@ function RegisterForm(props) {
 
                     <Row className='g-2' style={{ paddingTop: 30 }}>
                         <Col>
-                            <Form.Select onChange={(e) => setGenderState(e.target.value)}>
+                            <Form.Select onChange={(e) => setGender(e.target.value)}>
                                 <option selected disabled hidden>Select your gender</option>
                                 <option>Male</option>
                                 <option>Female</option>
                                 <option>Other</option>
-                                <option>Prefer not to answer</option>
                             </Form.Select>
                         </Col>
                     </Row>
@@ -163,7 +147,7 @@ function RegisterForm(props) {
                 <Button variant="primary" onClick={() => requestRegister()} 
                 disabled={!firstName||!lastName||!email||!password||!(password===confirmPassword)||
                 !streetName||!houseNr||!city||
-                !postcode||!genderState}>Register
+                !postcode||!gender}>Register
                 </Button>
             </Modal>
         </div>
