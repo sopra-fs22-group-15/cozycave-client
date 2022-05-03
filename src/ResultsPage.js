@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { api, handleError } from './helpers/api'
 import Address from './components/schemas/Address';
 import Gender from './components/schemas/Gender';
+import ListingElement from "./components/listings/ListingElement";
+import ListingList from "./components/listings/ListingList";
 
 function ResultsPage(props) {
     const navigate = useNavigate();
@@ -114,7 +116,6 @@ function ResultsPage(props) {
                         "rooms": 1
                     }
                 ]
-
             );
         }
     }
@@ -141,64 +142,8 @@ function ResultsPage(props) {
 
     return (
         <div>
-            <Container fluid style={{ paddingLeft: 40, paddingRight: 0, paddingTop: 60 }}>
-                {listings.map((listing) => (
-                    <div className='d-inline-block border border-dark rounded' style={{ marginRight: 20, marginBottom: 3, width: "45%" }} onClick={() => openAdOverview(listing.uuid)}>
-                        <Row>
-                            <Col md={6}>
-                                <div>
-                                    <Figure>
-                                        <Figure.Image
-                                            alt="Cannot load image"
-                                            src={listing.pictures[0]}
-                                        />
-                                    </Figure>
-                                </div>
-                            </Col>
-                            <Col md={6}>
-                                <Row className='g-2'>
-                                    <Col md={5}>
-                                        <h4>{listing.rent} CHF</h4>
-                                    </Col>
-                                    <Col md={3}>
-                                        <p>{listing.sqm} m<sup>2</sup></p>
-                                    </Col>
-                                    <Col md={4}>
-                                        <p>{listing.rooms} Room{listing.rooms>1?'s':null}</p>
-                                    </Col>
-                                </Row>
-                                <Row className='g-2'>
-                                    <h5>{listing.address.streetName} {listing.address.houseNr}, {listing.address.postcode} {listing.address.city}</h5>
-                                </Row>
-                                <Row className='g-2'>
-                                    <div>
-                                        {decideColor(listing.type)}
-                                    </div>
-
-                                </Row>
-                                <Row className='g-2'>
-                                    <Col lg='auto'>
-                                    <p>{listing.description}</p>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col></Col>
-                                    <Col>
-                                        
-                                        <Button type="button" outlined={true} variant="primary">Contact Info</Button>
-                                        
-                                    </Col>
-                                </Row>
-                                    
-                                
-                               
-
-                            </Col>
-                        </Row>
-
-
-                    </div>
-                ))}
+            <Container className="center-middle">
+                {listings ? <ListingList listings={listings}/> : "Loading..."}
             </Container>
         </div >
     )
