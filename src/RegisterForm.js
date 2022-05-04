@@ -41,7 +41,6 @@ function RegisterForm(props) {
                 biography: ""
             });
 
-            console.log(requestBody);
             const response = await api.post('/auth/register', requestBody);
 
             // Get the returned user and update a new object.
