@@ -25,15 +25,15 @@ function AdOverviewPage(props) {
                 "name": "flat name",
                 "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich This is a nice flat for students looking to be close to both the university and the party scene in ZurichThis is a nice flat for students looking to be close to both the university and the party scene in ZurichThis is a nice flat for students looking to be close to both the university and the party scene in ZurichThis is a nice flat for students looking to be close to both the university and the party scene in Zurich",
                 "address": {
-                    "houseNr": 11,
-                    "streetName": "Langstrasse",
+                    "house_number": 11,
+                    "street": "Langstrasse",
                     "city": "Zurich",
-                    "postcode": "8005"
+                    "zip_code": "8005"
                 },
                 "published": true,
                 "pictures": ["https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg", "https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg"],
                 "sqm": 82,
-                "type": "FLAT",
+                "listingtype": "Flat",
                 "furnished": true,
                 "availableTo": ['Male', 'Female', 'Other'],
                 "available": true,
@@ -51,15 +51,19 @@ function AdOverviewPage(props) {
             return (
                 <Badge bg="primary">Flat</Badge>
             )
-        } else {
+        } else if (any === "ROOM") {
             return (
                 <Badge bg="success">Room</Badge>
+            )
+        } else {
+            return (
+                <Badge bg="warning">House</Badge>
             )
         }
     };
 
     const processGender = (any) => {
-        if (any.length == 3) {
+        if (any.length >= 3) {
             return (
                 "Any"
             )
@@ -94,6 +98,29 @@ function AdOverviewPage(props) {
         requestListing();
     }, []);
 
+    const displayPictures = (pictures) => {
+        if (pictures == null) {
+            return (
+                <div>
+                    <Figure>
+                        <Figure.Image
+                            alt="Cannot load image"
+                            src="https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder.png"
+                        />
+                    </Figure>
+                </div>);
+        } else {
+            return (<div>
+                <Figure>
+                    <Figure.Image
+                        alt="Cannot load image"
+                        src={pictures[0]}
+                    />
+                </Figure>
+            </div>);
+        }
+    }
+
     return (
         <div>
             <Container fluid={true}>
@@ -101,12 +128,7 @@ function AdOverviewPage(props) {
                     <div className='d-inline-block border border-dark rounded' style={{ marginTop: 60, height: "60%" }}>
                         <Row>
                             <Col>
-                                <Figure>
-                                    <Figure.Image
-                                        alt="Listing image"
-                                        src={ad.pictures[0]}
-                                    />
-                                </Figure>
+                                {displayPictures(ad.pictures)}
                             </Col>
                             <Col style={{ marginRight: 20 }}>
                                 <div className='border-bottom border-dark'>
@@ -130,11 +152,11 @@ function AdOverviewPage(props) {
                                         <h4 class='opacity-50'>Address</h4>
                                     </Row>
                                     <Row>
-                                        <h3>{ad.address.streetName} {ad.address.houseNr}, {ad.address.postcode} {ad.address.city}</h3>
+                                        <h3>{ad.address.street} {ad.address.house_number}, {ad.address.zip_code} {ad.address.city}</h3>
                                     </Row>
                                     <Row class='mb-2'>
                                         <div>
-                                            {decideColor(ad.type)}
+                                            {decideColor(ad.listingtype)}
                                         </div>
 
                                     </Row>
