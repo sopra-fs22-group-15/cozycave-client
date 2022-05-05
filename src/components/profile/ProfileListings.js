@@ -6,13 +6,18 @@ import { api, handleError } from '../../helpers/api'
 const ProfileListings = () => {
   const navigate = useNavigate();
   const [listings, setListings] = useState([])
-  let response = null;
+  let listingsResponse = null;
+  let applicationsResponse = null;
   const user = localStorage.getItem('user')
 
   const requestResults = async () => {
     try {
-      //response = await api.get('/listings/'+user.uuid);
-      //setListings(response.data);
+      listingsResponse = await api.get('/listings/'+user.uuid);
+      setListings(listingsResponse.data);
+
+      
+    } catch (error) {
+      alert(`Something went wrong during display of listings: \n${handleError(error)}`);
 
       setListings([
         {
@@ -104,8 +109,6 @@ const ProfileListings = () => {
           "rooms": 1
         }
       ]);
-    } catch (error) {
-      alert(`Something went wrong during display of listings: \n${handleError(error)}`);
     }
   }
 
@@ -124,8 +127,19 @@ const ProfileListings = () => {
         <Button variant="danger" className="mx-auto">Delete Listing</Button>
       </Stack>
       <h4 className="mt-3">Applications to your listing:</h4>
+      {renderApplications(uuid)}
       </Container>
     );
+  }
+
+  const renderApplications = async (uuid) => {
+    try{
+      applicationsResponse = await api.get('/listings/'+uuid+"/applications");
+      setListings(applicationsResponse.data);
+    }catch (error){
+      alert(`Something went wrong during display of applicants: \n${handleError(error)}`);
+    }
+    
   }
 
   useEffect(() => {
@@ -137,9 +151,6 @@ const ProfileListings = () => {
   return (
     <div>
       <Container fluid>
-
-
-
         <h1>My Listings:</h1>
         <Accordion>
           {listings.map((listing) => (
