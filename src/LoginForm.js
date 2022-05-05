@@ -1,5 +1,4 @@
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
-import User from './components/schemas/User'
 import { useNavigate } from 'react-router-dom'
 import React, { useState } from 'react';
 import { api, handleError } from './helpers/api'
@@ -12,7 +11,14 @@ function LoginForm(props) {
   const navigate = useNavigate();
   const requestLogin = async () => {
     try {
-      const requestBody = JSON.stringify({ email, password });
+      const requestBody = JSON.stringify(
+          {
+            "authentication": {
+              "email": email,
+              "password": password
+            }
+          }
+      );
       const response = await api.put('/auth/login', requestBody);
 
       // Get the returned user and update a new object.

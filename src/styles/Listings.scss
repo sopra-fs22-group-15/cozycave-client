@@ -1,0 +1,77 @@
+$navbar-height: 400px;
+
+.listing-cards {
+  & .row {
+    min-height: 310px;
+  }
+  cursor: pointer;
+  &:hover {
+    border : 1px solid #4285F4;
+    transition: all 0.2s ease-in-out;
+  }
+
+  & .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+  }
+
+  & .listing-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+
+    & .listing-price {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 0.5rem;
+    }
+
+    & .listing-area {
+      font-size: 1rem;
+      font-weight: 600;
+      color: lightslategrey;
+    }
+
+    & .listing-rooms {
+      font-size: 1rem;
+      font-weight: 600;
+      color: lightslategrey;
+    }
+  }
+  @media (min-width: 700px) {
+    & .card-body {
+      padding-right: 1.5rem;
+      padding-left: 0;
+    }
+  }
+
+  & .button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1rem;
+
+  }
+
+  & .listing-type {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    & .listing-address {
+      font-size: 1rem;
+      font-weight: 600;
+      color: lightslategrey;
+    }
+  }
+
+}
+
+.listing-results {
+  margin-top: $navbar-height;
+}
