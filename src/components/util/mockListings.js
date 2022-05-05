@@ -1,4 +1,4 @@
-export const mockListings =   [
+export const mockListings = [
     {
         "uuid": 1,
         "creation_date": "30.10.2000",
@@ -11,7 +11,9 @@ export const mockListings =   [
             "zip_code": "8005"
         },
         "published": true,
-        "pictures": ['https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg'],
+        "picture": {
+            url: ['https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg']
+        },
         "sqm": 82,
         "listingtype": "FLAT",
         "furnished": true,
@@ -33,7 +35,10 @@ export const mockListings =   [
             "zip_code": "8001"
         },
         "published": true,
-        "pictures": ["https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1"],
+        "picture": {
+            url:
+                ["https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1"]
+        },
         "sqm": 82,
         "listingtype": "FLAT",
         "furnished": true,
@@ -55,7 +60,10 @@ export const mockListings =   [
             "zip_code": "8001"
         },
         "published": true,
-        "pictures": ['https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1'],
+        "picture": {
+            url:
+                ['https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1'],
+        },
         "sqm": 82,
         "listingtype": "HOUSE",
         "furnished": true,
@@ -77,7 +85,9 @@ export const mockListings =   [
             "zip_code": "8005"
         },
         "published": true,
-        "pictures": ['https://flatfox.ch/media/ff/2022/04/697b6p0hwq2959ebnviuyuedkvnt4yp3qavkhcq2r1w1md12q1.jpg'],
+        "picture": {
+            url: ['https://flatfox.ch/media/ff/2022/04/697b6p0hwq2959ebnviuyuedkvnt4yp3qavkhcq2r1w1md12q1.jpg']
+        },
         "sqm": 82,
         "listingtype": "ROOM",
         "furnished": true,
@@ -99,7 +109,10 @@ export const mockListings =   [
             "zip_code": "8005"
         },
         "published": true,
-        "pictures": ['https://flatfox.ch/media/ff/2022/04/697b6p0hwq2959ebnviuyuedkvnt4yp3qavkhcq2r1w1md12q1.jpg'],
+        "picture": {
+            url:
+                ['https://flatfox.ch/media/ff/2022/04/697b6p0hwq2959ebnviuyuedkvnt4yp3qavkhcq2r1w1md12q1.jpg']
+        },
         "sqm": 82,
         "listingtype": "ROOM",
         "furnished": true,
@@ -121,7 +134,7 @@ export const mockListings =   [
             "zip_code": "8005"
         },
         "published": true,
-        "pictures": [],
+        "picture": { url: [] },
         "sqm": 82,
         "listingtype": "ROOM",
         "furnished": true,

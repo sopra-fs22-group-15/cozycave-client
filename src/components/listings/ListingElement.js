@@ -18,11 +18,11 @@ const ListingElement = props => {
 
     return (
         <Col>
-            <div className="card mb-5 listing-cards" style={{maxWidth: "700px"}} onClick={() => {openAdOverview(listing.uuid)}}>
+            <div className="card mb-5 listing-cards" style={{maxWidth: "700px"}} onClick={() => {openAdOverview(listing.id)}}>
                 <div className="row no-gutters">
                     {props.image ? (
                         <div className="col-md-6">
-                            <img src={props.image} className="card-img img-fluid" alt="..."/>
+                            <img src={listing.picture.url} className="card-img img-fluid" alt="..."/>
                         </div>
                     ) : (
                         <div className="col-md-6 d-flex justify-content-center align-items-center">
@@ -45,12 +45,12 @@ const ListingElement = props => {
                             <hr/>
                             <div className="listing-type">
                                 <span className="listing-address">{addressStringBuilder(listing.address)}</span>
-                                {decideBadgeColorListingType(listing.listingtype)}
+                                {decideBadgeColorListingType(listing.listing_type)}
                             </div>
                             <hr/>
                             <p className="card-text">{listing.description}.</p>
                             <div className="button-container">
-                                <Button variant="outline-primary" onClick={() => {openAdOverview(listing.uuid)}}>View Details</Button>
+                                <Button variant="outline-primary" onClick={() => {openAdOverview(listing.id)}}>View Details</Button>
                             </div>
                         </div>
                     </div>

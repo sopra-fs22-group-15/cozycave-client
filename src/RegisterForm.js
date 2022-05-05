@@ -31,14 +31,18 @@ function RegisterForm(props) {
                     gender,
                     birthday: null,
                     address: {
+                        //name: null,
+                        //description: null,
+                        //apartment_number: null,
                         street,
                         house_number: houseNr,
                         city,
                         zip_code: postcode,
                         country: "Switzerland"
                     },
+                    //biography: ""
                 },
-                biography: ""
+                
             });
 
             const response = await api.post('/auth/register', requestBody);
@@ -49,8 +53,8 @@ function RegisterForm(props) {
             // Store the token into the local storage.
 
             localStorage.setItem('token', token, response.headers["Authorization"]);
-            localStorage.setItem('firstname', user.firstName);
-            localStorage.setItem('lastname', user.lastName);
+            localStorage.setItem('firstname', user.firstname);
+            localStorage.setItem('lastname', user.lastname);
             // localStorage.setItem('birthdate', user.birthday);
             localStorage.setItem('gender', user.gender);
             localStorage.setItem('user', user)
@@ -146,9 +150,9 @@ function RegisterForm(props) {
                         <Col>
                             <Form.Select onChange={(e) => setGender(e.target.value)}>
                                 <option selected disabled hidden>Select your gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Other</option>
+                                <option>MALE</option>
+                                <option>FEMALE</option>
+                                <option>OTHER</option>
                             </Form.Select>
                         </Col>
                     </Row>

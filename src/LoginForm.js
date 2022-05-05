@@ -27,8 +27,8 @@ function LoginForm(props) {
 
       // Store the token into the local storage.
       localStorage.setItem('token', responseToken, response.headers["Authorization"]);
-      localStorage.setItem('firstname', responseUser.firstName);
-      localStorage.setItem('lastname', responseUser.lastName);
+      localStorage.setItem('firstname', responseUser.firstname);
+      localStorage.setItem('lastname', responseUser.lastname);
       localStorage.setItem('gender', responseUser.gender);
       localStorage.setItem('user', responseUser);
 
