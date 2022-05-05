@@ -2,7 +2,7 @@ export const mockListings =   [
     {
         "uuid": 1,
         "creation_date": "30.10.2000",
-        "name": "flat name",
+        "name": "Newly Cozy little flat",
         "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich",
         "address": {
             "house_number": 11,
@@ -24,7 +24,7 @@ export const mockListings =   [
     {
         "uuid": 2,
         "creation_date": "30.10.2000",
-        "name": "flat name",
+        "name": "Nice Flat",
         "description": "Small, cheap room close to the university and shops with friendly roommates",
         "address": {
             "house_number": 20,
@@ -46,7 +46,7 @@ export const mockListings =   [
     {
         "uuid": 3,
         "creation_date": "30.10.2000",
-        "name": "flat name",
+        "name": "Good cheap house",
         "description": "Located in the heart of the city, perfect for those who like to live a busy life",
         "address": {
             "house_number": 15,
@@ -68,7 +68,7 @@ export const mockListings =   [
     {
         "uuid": 4,
         "creation_date": "30.10.2000",
-        "name": "flat name",
+        "name": "The Best Flat out there",
         "description": "Small, cheap room close to the university and shops with friendly roommates",
         "address": {
             "house_number": 11,
@@ -90,7 +90,7 @@ export const mockListings =   [
     {
         "uuid": 5,
         "creation_date": "30.10.2000",
-        "name": "flat name",
+        "name": "Insane Location on this flat!",
         "description": "Small, cheap room close to the university and shops with friendly roommates",
         "address": {
             "house_number": 11,
@@ -112,7 +112,7 @@ export const mockListings =   [
     {
         "uuid": 6,
         "creation_date": "30.10.2000",
-        "name": "flat name",
+        "name": "The last flat you will need",
         "description": "Small, cheap room close to the university and shops with friendly roommates",
         "address": {
             "house_number": 11,
