@@ -32,7 +32,7 @@ function ResultsPage(props) {
     useEffect(() => {
         requestResults();
     }, []);
-
+  
     console.log(listings)
     return (
         <div>
