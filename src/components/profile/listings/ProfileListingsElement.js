@@ -1,31 +1,101 @@
-import React from "react";
-import {Accordion, Button, Col, Row} from "react-bootstrap";
-import {decideBadgeColorListingType} from "../../../helpers/decideColorByListingType";
+import React, { useState, useEffect } from "react";
+import { Accordion, Button, ButtonGroup, ButtonToolbar, Col, Row, Stack, Table } from "react-bootstrap";
+import { decideBadgeColorListingType } from "../../../helpers/decideColorByListingType";
 import ListingElement from "../../listings/ListingElement";
-import {displayPictures} from "../../../helpers/displayPictures";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import { displayPictures } from "../../../helpers/displayPictures";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { api, handleError } from '../../../helpers/api'
+import { mockApplications } from "../../util/mockApplications";
 
 const ProfileListingsElement = props => {
-    const {listing, index} = props;
+    let applicationsResponse = null;
+    const { listing, index } = props;
+    const [applications, setApplications] = useState([]);
+
+    const requestApplications = async () => {
+        try {
+            //applicationsResponse = await api.get('/listings/' + listing.uuid + "/applications");
+            applicationsResponse = mockApplications;
+            setApplications(applicationsResponse);
+
+        } catch (error) {
+            alert(`Something went wrong during display of applicants: \n${handleError(error)}`);
+        }
+
+
+    }
+
+    const renderApplications = () => {
+        return (
+            <Table bordered hover>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {applications.map(application => {
+                        return (
+                            <tr>
+                                <td>{application.id}</td>
+                                <td>{application.owner.firstname}</td>
+                                <td>{application.owner.lastname}</td>
+                                <td style={{textAlign:"center"}}>
+                                    <ButtonGroup>
+                                        <Button variant="success" className='mx-auto'>Accept</Button>
+                                        <Button variant="dark" className='mx-auto'>Reject</Button>
+                                    </ButtonGroup>
+                                </td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </Table >
+        )
+    }
+
+    useEffect(() => {
+        requestApplications();
+    }, []);
+
+
     return (
         <Accordion.Item eventKey={index}>
             <Accordion.Header>
                 {listing.name}
-                <span style={{marginLeft: "10px"}}>{decideBadgeColorListingType(listing.listingtype)}</span>
+                <span style={{ marginLeft: "10px" }}>{decideBadgeColorListingType(listing.listingtype)}</span>
             </Accordion.Header>
             <Accordion.Body>
-                <ListingElement listing={listing} image={displayPictures(listing.pictures)}/>
+                <ListingElement listing={listing} image={displayPictures(listing.pictures)} />
                 <Row>
-                    <Col className="d-flex justify-content-end align-content-center">
-                        <Button variant="danger" type="submit">
-                            <span style={{marginRight: "5px"}}>Delete Listing</span>
-                            <FontAwesomeIcon icon={faTrash}/>
-                        </Button>
+                    <Col style={{ marginBottom: 20 }}>
+                        <Stack direction="horizontal">
+                            <Button variant="warning" className="mx-auto">
+                                <span style={{ marginRight: "5px" }}>Edit Listing</span>
+                                <FontAwesomeIcon icon={faEdit} />
+                            </Button>
+                            <div className="vr mx-auto" />
+                            <Button variant="danger" className='mx-auto'>
+                                <span style={{ marginRight: "5px" }}>Delete Listing</span>
+                                <FontAwesomeIcon icon={faTrash} />
+                            </Button>
+                        </Stack>
                     </Col>
                 </Row>
+                <Row>
+                    <h4>Applicants:</h4>
+
+
+                    {renderApplications()}
+
+
+                </Row>
             </Accordion.Body>
-        </Accordion.Item>
+        </Accordion.Item >
     )
 }
 export default ProfileListingsElement;
