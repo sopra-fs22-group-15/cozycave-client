@@ -47,7 +47,7 @@ const CreateAd = () => {
     };
 
     const createListing = () => {
-        setAddress(addressCreator(streetName, houseNumber, city, postalCode, "Switzerland"));
+        setAddress(addressCreator(streetName, houseNumber, city, postalCode));
         console.log(address);
 
         // TODO: add image upload handling

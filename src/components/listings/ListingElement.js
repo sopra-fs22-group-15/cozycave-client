@@ -22,7 +22,7 @@ const ListingElement = props => {
                 <div className="row no-gutters">
                     {props.image ? (
                         <div className="col-md-6">
-                            <img src={listing.picture.url} className="card-img img-fluid" alt="..."/>
+                            <img src={props.image} className="card-img img-fluid" alt="..."/>
                         </div>
                     ) : (
                         <div className="col-md-6 d-flex justify-content-center align-items-center">

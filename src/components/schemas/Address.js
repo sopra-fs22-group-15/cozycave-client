@@ -6,7 +6,8 @@
       this.houseNr = null;
       this.streetName = null;
       this.city = null;
-      this.postcode = null;
+      this.zip_code = null;
+      this.country = null;
       Object.assign(this, data);
     }
   }

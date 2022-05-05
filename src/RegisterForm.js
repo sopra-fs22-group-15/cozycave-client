@@ -14,7 +14,7 @@ function RegisterForm(props) {
     const [street, setStreet] = useState(null)
     const [houseNr, setHouseNr] = useState(null)
     const [city, setCity] = useState(null)
-    const [postcode, setPostcode] = useState(null)
+    const [zip_code, setzip_code] = useState(null)
     const [gender, setGender] = useState(null)
     const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ function RegisterForm(props) {
                         street,
                         house_number: houseNr,
                         city,
-                        zip_code: postcode,
+                        zip_code: zip_code,
                         country: "Switzerland"
                     },
                     //biography: ""
@@ -140,9 +140,9 @@ function RegisterForm(props) {
                             <Form.Control type="city" placeholder="Zurich" onChange={(e) => setCity(e.target.value)}/>
                         </Col>
                         <Col md>
-                            <Form.Label>Postcode</Form.Label>
-                            <Form.Control type="postcode" placeholder="8000"
-                                          onChange={(e) => setPostcode(e.target.value)}/>
+                            <Form.Label>zip_code</Form.Label>
+                            <Form.Control type="zip_code" placeholder="8000"
+                                          onChange={(e) => setzip_code(e.target.value)}/>
                         </Col>
                     </Row>
 
@@ -160,7 +160,7 @@ function RegisterForm(props) {
                 <Button variant="primary" onClick={() => requestRegister()}
                         disabled={!firstName || !lastName || !email || !password || !(password === confirmPassword) ||
                             !street || !houseNr || !city ||
-                            !postcode || !gender}>Register
+                            !zip_code || !gender}>Register
                 </Button>
             </Modal>
         </div>
