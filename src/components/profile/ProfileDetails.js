@@ -8,8 +8,8 @@ const ProfileDetails = props => {
 
     const user = props.user;
 
-    const [firstName, setFirstName] = useState(user.firstName);
-    const [lastName, setLastName] = useState(user.lastName);
+    const [firstname, setFirstname] = useState(user.firstname);
+    const [lastname, setLastName] = useState(user.lastname);
     const [gender, setGender] = useState(user.gender);
     const [bio, setBio] = useState(user.bio);
     const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ const ProfileDetails = props => {
 
     const saveChanges = async () => {
         try {
-            const requestBody = JSON.stringify({gender, firstName, lastName, bio})
+            const requestBody = JSON.stringify({gender, firstname: firstname, lastname: lastname, bio})
             console.log(requestBody)
             const response = await api.put(`users/${user.id}`, requestBody)
             setLoading(false);
@@ -40,7 +40,7 @@ const ProfileDetails = props => {
                         <img src="https://www.placecage.com/c/300/300" alt="profile"
                              className="rounded-circle profile-avatar"
                              height="150"/>
-                        <h1 style={{color: "white"}}>{lastName || firstName ? `${firstName + " " + lastName}` : "John Doe"}</h1>
+                        <h1 style={{color: "white"}}>{lastname || firstname ? `${firstname + " " + lastname}` : "John Doe"}</h1>
                         <h5 style={{color: "white"}}>{`${user.email ? user.email : "john.doe@uzh.ch"}`}</h5>
                     </Col>
                 </Row>
@@ -52,7 +52,7 @@ const ProfileDetails = props => {
                             <Form.Group>
                                 <Form.Label>First Name</Form.Label>
                                 <Form.Control type="text" placeholder="John" onChange={e => {
-                                    setFirstName(e.target.value)
+                                    setFirstname(e.target.value)
                                 }}/>
                             </Form.Group>
                         </Col>

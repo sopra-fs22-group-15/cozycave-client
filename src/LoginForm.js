@@ -27,13 +27,9 @@ function LoginForm(props) {
 
       // Store the token into the local storage.
       localStorage.setItem('token', responseToken, response.headers["Authorization"]);
-      localStorage.setItem('firstname', responseUser.firstName);
-      localStorage.setItem('lastname', responseUser.lastName);
-      localStorage.setItem('gender', responseUser.gender);
-      localStorage.setItem('user', responseUser);
 
       // Login successfully worked --> navigate to the landing page in the AppRouter
-      navigate(`/`);
+      navigate(`/overview`);
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
