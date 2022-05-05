@@ -1,29 +1,14 @@
 import React from "react";
 import "../../styles/Listings.scss";
-import {Badge, Col, Spinner} from "react-bootstrap";
+import {Col, Spinner} from "react-bootstrap";
 import {addressStringBuilder} from "../../helpers/addressStringBuilder";
 import Button from "../util/Button";
 import {useNavigate} from "react-router-dom";
+import {decideBadgeColorListingType} from "../../helpers/decideColorByListingType";
 
 const ListingElement = props => {
 
     const navigate = useNavigate();
-
-    const decideColor = (listingType) => {
-        if (listingType === "FLAT") {
-            return (
-                <Badge bg="primary">Flat</Badge>
-            )
-        } else if (listingType === "ROOM") {
-            return (
-                <Badge bg="success">Room</Badge>
-            )
-        } else {
-            return (
-                <Badge bg='warning'>House</Badge>
-            )
-        }
-    };
 
     const openAdOverview = (any) => {
         navigate('/v1/listings/' + any);
@@ -60,7 +45,7 @@ const ListingElement = props => {
                             <hr/>
                             <div className="listing-type">
                                 <span className="listing-address">{addressStringBuilder(listing.address)}</span>
-                                {decideColor(listing.listingtype)}
+                                {decideBadgeColorListingType(listing.listingtype)}
                             </div>
                             <hr/>
                             <p className="card-text">{listing.description}.</p>

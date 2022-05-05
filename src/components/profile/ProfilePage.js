@@ -4,8 +4,8 @@ import "../../styles/ProfilePage.scss";
 import {api} from "../../helpers/api";
 import ProfileDetails from "./ProfileDetails";
 import {useParams} from "react-router-dom";
-import ProfileApplications from "./ProfileApplications";
-import ProfileListings from "./ProfileListings";
+import ProfileApplications from "./applications/ProfileApplications";
+import ProfileListings from "./listings/ProfileListings";
 
 const ProfilePage = () => {
     const [loading, setLoading] = useState(false);

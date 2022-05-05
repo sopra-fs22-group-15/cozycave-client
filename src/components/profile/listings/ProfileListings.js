@@ -1,7 +1,7 @@
-import { Modal, Button, Form, Row, Col, Dropdown, FormLabel, InputGroup, Image, Figure, Container, Badge } from 'react-bootstrap'
+import { Button, Row, Col, Container, Badge } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import { api, handleError } from '../../helpers/api'
+import { handleError } from '../../../helpers/api'
 
 const ProfileListings = () => {
   const navigate = useNavigate();

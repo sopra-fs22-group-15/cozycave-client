@@ -4,18 +4,11 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import {Spinner} from "react-bootstrap";
 import "../../styles/Listings.scss";
+import {displayPictures} from "../../helpers/displayPictures";
 
 const ListingList = props => {
 
     const colPerRow = 2;
-
-    const displayPictures = (pictures) => {
-        if (pictures == null) {
-            return "https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder.png";
-        } else {
-            return pictures[0];
-        }
-    }
 
     return (
         <Container className="listing-results">
