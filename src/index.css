@@ -6,6 +6,13 @@
   box-sizing: border-box;
 }
 
+.center-middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .navbar.transparent.navbar-inverse .navbar-inner {
   border-width: 0;
   -webkit-box-shadow: 0 0;
