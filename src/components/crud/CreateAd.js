@@ -57,12 +57,15 @@ const CreateAd = () => {
             address,
             availableTo,
             pictures: null,
+            published: true,
+            publisher: localStorage.getItem("user").uuid,
             deposit,
-            type,
+            listing_type: type,
             description,
             rent,
-            area,
-            rooms
+            sqm: area,
+            rooms,
+            furnished: false
         });
     };
 
@@ -171,10 +174,9 @@ const CreateAd = () => {
                                 <Form.Group>
                                     <Form.Label>Available To</Form.Label>
                                     <Form.Select required onChange={e => (setAvailableTo(e.target.value))}>
-                                        <option>Male</option>
-                                        <option>Female</option>
-                                        <option>Other</option>
-                                        <option>Anybody</option>
+                                        <option>MALE</option>
+                                        <option>FEMALE</option>
+                                        <option>OTHER</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
@@ -182,8 +184,9 @@ const CreateAd = () => {
                                 <Form.Group>
                                     <Form.Label>Type</Form.Label>
                                     <Form.Select required onChange={e => (setType(e.target.value))}>
-                                        <option>Room</option>
-                                        <option>Flat</option>
+                                        <option>ROOM</option>
+                                        <option>FLAT</option>
+                                        <option>HOUSE</option>
                                     </Form.Select>
                                 </Form.Group>
                             </Col>

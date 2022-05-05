@@ -13,10 +13,10 @@ const ProfileApplicationsElement = props => {
         <Accordion.Item eventKey={index}>
             <Accordion.Header>
                 {application.name}
-                <span style={{marginLeft: "10px"}}>{decideBadgeColorListingType(application.listingtype)}</span>
+                <span style={{marginLeft: "10px"}}>{decideBadgeColorListingType(application.listing_type)}</span>
             </Accordion.Header>
             <Accordion.Body>
-                <ListingElement listing={application} image={displayPictures(application.pictures)}/>
+                <ListingElement listing={application} image={displayPictures(application.picture.url)}/>
             </Accordion.Body>
         </Accordion.Item>
     )

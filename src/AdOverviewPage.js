@@ -6,6 +6,7 @@ import Address from './components/schemas/Address';
 import Gender from './components/schemas/Gender';
 import axios from 'axios';
 import Application from './components/schemas/Application';
+import { mockListings } from './components/util/mockListings';
 
 function AdOverviewPage(props) {
     let response = null;
@@ -19,28 +20,7 @@ function AdOverviewPage(props) {
 
         } catch (error) {
             alert(`Something went wrong during page loading: \n${handleError(error)}`);
-            setListing([{
-                "uuid": 1,
-                "creation_date": "30.10.2000",
-                "name": "flat name",
-                "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich This is a nice flat for students looking to be close to both the university and the party scene in ZurichThis is a nice flat for students looking to be close to both the university and the party scene in ZurichThis is a nice flat for students looking to be close to both the university and the party scene in ZurichThis is a nice flat for students looking to be close to both the university and the party scene in Zurich",
-                "address": {
-                    "house_number": 11,
-                    "street": "Langstrasse",
-                    "city": "Zurich",
-                    "zip_code": "8005"
-                },
-                "published": true,
-                "pictures": ["https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg", "https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg"],
-                "sqm": 82,
-                "listingtype": "Flat",
-                "furnished": true,
-                "availableTo": ['Male', 'Female', 'Other'],
-                "available": true,
-                "rent": 3150,
-                "deposit": 5000,
-                "rooms": 3.5
-            },]);
+            setListing([mockListings[0]])
         }
 
 
@@ -128,7 +108,7 @@ function AdOverviewPage(props) {
                     <div className='d-inline-block border border-dark rounded' style={{ marginTop: 60, height: "60%" }}>
                         <Row>
                             <Col>
-                                {displayPictures(ad.pictures)}
+                                {displayPictures(ad.picture.url)}
                             </Col>
                             <Col style={{ marginRight: 20 }}>
                                 <div className='border-bottom border-dark'>
@@ -156,7 +136,7 @@ function AdOverviewPage(props) {
                                     </Row>
                                     <Row class='mb-2'>
                                         <div>
-                                            {decideColor(ad.listingtype)}
+                                            {decideColor(ad.listing_type)}
                                         </div>
 
                                     </Row>

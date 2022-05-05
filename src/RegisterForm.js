@@ -14,7 +14,7 @@ function RegisterForm(props) {
     const [street, setStreet] = useState(null)
     const [houseNr, setHouseNr] = useState(null)
     const [city, setCity] = useState(null)
-    const [postcode, setPostcode] = useState(null)
+    const [zip_code, setzip_code] = useState(null)
     const [gender, setGender] = useState(null)
     const navigate = useNavigate();
 
@@ -31,14 +31,18 @@ function RegisterForm(props) {
                     gender,
                     birthday: null,
                     address: {
+                        //name: null,
+                        //description: null,
+                        //apartment_number: null,
                         street,
                         house_number: houseNr,
                         city,
-                        zip_code: postcode,
+                        zip_code: zip_code,
                         country: "Switzerland"
                     },
+                    //biography: ""
                 },
-                biography: ""
+                
             });
 
             const response = await api.post('/auth/register', requestBody);
@@ -49,8 +53,8 @@ function RegisterForm(props) {
             // Store the token into the local storage.
 
             localStorage.setItem('token', token, response.headers["Authorization"]);
-            localStorage.setItem('firstname', user.firstName);
-            localStorage.setItem('lastname', user.lastName);
+            localStorage.setItem('firstname', user.firstname);
+            localStorage.setItem('lastname', user.lastname);
             // localStorage.setItem('birthdate', user.birthday);
             localStorage.setItem('gender', user.gender);
             localStorage.setItem('user', user)
@@ -136,9 +140,9 @@ function RegisterForm(props) {
                             <Form.Control type="city" placeholder="Zurich" onChange={(e) => setCity(e.target.value)}/>
                         </Col>
                         <Col md>
-                            <Form.Label>Postcode</Form.Label>
-                            <Form.Control type="postcode" placeholder="8000"
-                                          onChange={(e) => setPostcode(e.target.value)}/>
+                            <Form.Label>zip_code</Form.Label>
+                            <Form.Control type="zip_code" placeholder="8000"
+                                          onChange={(e) => setzip_code(e.target.value)}/>
                         </Col>
                     </Row>
 
@@ -146,9 +150,9 @@ function RegisterForm(props) {
                         <Col>
                             <Form.Select onChange={(e) => setGender(e.target.value)}>
                                 <option selected disabled hidden>Select your gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Other</option>
+                                <option>MALE</option>
+                                <option>FEMALE</option>
+                                <option>OTHER</option>
                             </Form.Select>
                         </Col>
                     </Row>
@@ -156,7 +160,7 @@ function RegisterForm(props) {
                 <Button variant="primary" onClick={() => requestRegister()}
                         disabled={!firstName || !lastName || !email || !password || !(password === confirmPassword) ||
                             !street || !houseNr || !city ||
-                            !postcode || !gender}>Register
+                            !zip_code || !gender}>Register
                 </Button>
             </Modal>
         </div>

@@ -15,8 +15,8 @@ const ListingList = props => {
             <Row xs={1} md={colPerRow}>
                 {props.listings ? props.listings.map(listing => (
                     <ListingElement
-                        key={listing.uuid}
-                        image={displayPictures(listing.pictures)}
+                        key={listing.id}
+                        image={displayPictures(listing.picture.url)}
                         listing={listing}
                     />
                 )) : (

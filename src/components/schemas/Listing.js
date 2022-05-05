@@ -15,7 +15,7 @@ import Gender from "./Gender";
         this.description = null;
         this.address = new Address();
         this.published = null; //boolean
-        this.pictures = new Array();
+        this.picture.url = new Array();
         this.sqm = null;
         this.type = new ListingType();
         this.furnished = null;

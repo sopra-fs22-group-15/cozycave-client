@@ -67,10 +67,10 @@ const ProfileListingsElement = props => {
         <Accordion.Item eventKey={index}>
             <Accordion.Header>
                 {listing.name}
-                <span style={{ marginLeft: "10px" }}>{decideBadgeColorListingType(listing.listingtype)}</span>
+                <span style={{ marginLeft: "10px" }}>{decideBadgeColorListingType(listing.listing_type)}</span>
             </Accordion.Header>
             <Accordion.Body>
-                <ListingElement listing={listing} image={displayPictures(listing.pictures)} />
+                <ListingElement listing={listing} image={displayPictures(listing.picture.url)} />
                 <Row>
                     <Col style={{ marginBottom: 20 }}>
                         <Stack direction="horizontal">
