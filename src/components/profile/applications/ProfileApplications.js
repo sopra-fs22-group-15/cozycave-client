@@ -25,7 +25,7 @@ const ProfileApplications = () => {
             // TODO: change when API is ready
             //response = await api.get('/users/'+user.uuid+/applications');
             //setListings(response.data);
-            setApplications(mockListings)
+            setApplications(mockListings.slice(3,6))
 
         } catch (error) {
             alert(`Something went wrong during the registration: \n${handleError(error)}`);
