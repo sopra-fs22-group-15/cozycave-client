@@ -1,6 +1,6 @@
 .landing-page-bg {
-  // TODO: fix landing page background image not working.
-  //background: url("../assets/landing_page_background.svg") no-repeat center fixed;
+  // TODO: Compress size for better loading times.
+  background: url("../../public/assets/landing_page_background.jpg") no-repeat center center fixed;
   background-size: cover;
   height: 100vh;
   object-fit: cover;
