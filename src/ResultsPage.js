@@ -33,7 +33,7 @@ function ResultsPage(props) {
         requestResults();
     }, []);
 
-    console.log(listings)
+
     return (
         <div>
             <Container className="center-middle">
