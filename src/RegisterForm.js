@@ -140,7 +140,7 @@ function RegisterForm(props) {
                             <Form.Control type="city" placeholder="Zurich" onChange={(e) => setCity(e.target.value)}/>
                         </Col>
                         <Col md>
-                            <Form.Label>zip_code</Form.Label>
+                            <Form.Label>Postcode</Form.Label>
                             <Form.Control type="zip_code" placeholder="8000"
                                           onChange={(e) => setzip_code(e.target.value)}/>
                         </Col>

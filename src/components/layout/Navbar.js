@@ -135,7 +135,6 @@ const Navbar = props => {
                         handleNavigate("/overview", e)
                     }} className="navbar-brand">
                         {props.brandName}
-                        <h1 style={{color: "red"}}>PLS DO NOT TEST UNTIL THE WEEKEND :)</h1>
                         <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
                              className="d-inline-block align-text-top"
                              width="50" height="32"/>
