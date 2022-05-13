@@ -8,10 +8,11 @@ import {
 import {useNavigate} from 'react-router-dom'
 import React, {useState, useEffect} from 'react';
 import {handleError} from '../../../helpers/api'
-import {mockListings} from "../../util/mockListings";
 import ProfileApplicationsList from "./ProfileApplicationsList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import { mockApplicationsFromOneUser } from '../../util/mockApplicationsFromOneUser';
+import { mockListings } from '../../util/mockListings';
 
 
 const ProfileApplications = () => {
@@ -24,11 +25,9 @@ const ProfileApplications = () => {
         try {
             // TODO: change when API is ready
             //response = await api.get('/users/'+user.uuid+/applications');
-            //setListings(response.data);
-            setApplications(mockListings.slice(3,6))
-
+            setApplications(mockApplicationsFromOneUser)
         } catch (error) {
-            alert(`Something went wrong during the registration: \n${handleError(error)}`);
+            alert(`Something went wrong during retrieval of your applications: \n${handleError(error)}`);
         }
     }
 

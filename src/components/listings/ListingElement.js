@@ -11,10 +11,18 @@ const ListingElement = props => {
     const navigate = useNavigate();
 
     const openAdOverview = (any) => {
-        navigate('/v1/listings/' + any);
+        navigate('/listings/' + any);
     }
 
     const listing = props.listing;
+
+    const truncateDescription = (input) => {
+        if(input.length>100){
+            return input.substring(0,99)+ '...';
+        }else{
+            return input;
+        }
+    }
 
     return (
         <Col>
@@ -48,7 +56,7 @@ const ListingElement = props => {
                                 {decideBadgeColorListingType(listing.listing_type)}
                             </div>
                             <hr/>
-                            <p className="card-text">{listing.description}.</p>
+                            <p className="card-text">{truncateDescription(listing.description)}.</p>
                             <div className="button-container">
                                 <Button variant="outline-primary" onClick={() => {openAdOverview(listing.id)}}>View Details</Button>
                             </div>

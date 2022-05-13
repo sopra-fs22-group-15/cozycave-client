@@ -27,7 +27,7 @@ export const mockListings = [
         "uuid": 2,
         "creation_date": "30.10.2000",
         "name": "Nice Flat",
-        "description": "Small, cheap room close to the university and shops with friendly roommates",
+        "description": "Small, cheap room close to the university and shops with friendly roommates Small, cheap room close to the university and shops with friendly roommatesSmall, cheap room close to the university and shops with friendly roommatesSmall, cheap room close to the university and shops with friendly roommatesSmall, cheap room close to the university and shops with friendly roommatesSmall, cheap room close to the university and shops with friendly roommates",
         "address": {
             "house_number": 20,
             "street": "Irchelstrasse",
