@@ -24,13 +24,15 @@ const CreateAd = () => {
     const [floorplan, setFloorplan] = useState(null);
     const [pictures, setPictures] = React.useState([]);
     const [previewSrc, setPreviewSrc] = useState('');
-    const [floorlanPreviewSrc, setFloorplanPreviewSrc] = React.useState('');
+    const [floorplanPreviewSrc, setFloorplanPreviewSrc] = React.useState('');
     const [deposit, setDeposit] = React.useState('');
     const [type, setType] = React.useState("flat");
     const [description, setDescription] = React.useState('');
     const [rent, setRent] = React.useState('');
     const [area, setArea] = React.useState('');
     const [rooms, setRooms] = React.useState('');
+
+
     const handleSubmit = async e => {
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
@@ -61,8 +63,6 @@ const CreateAd = () => {
         };
     };
 
-    console.log(pictures);
-
     const handleFloorplan = e => {
         const reader = new FileReader();
         const files = e.target.files;
@@ -78,7 +78,6 @@ const CreateAd = () => {
 
     const createListing = () => {
         setAddress(addressCreator(streetName, houseNumber, city, postalCode));
-        console.log(address);
 
         // TODO: add image upload handling
 
@@ -118,7 +117,7 @@ const CreateAd = () => {
                         </label>
                     </div>
                     <div className="header-group">
-                        <img src={floorlanPreviewSrc === '' ? "https://via.placeholder.com/500x300.png?text=Flat" : floorlanPreviewSrc}
+                        <img src={floorplanPreviewSrc === '' ? "https://via.placeholder.com/500x300.png?text=Flat" : floorplanPreviewSrc}
                              className="listing-header-image"
                              height="350" alt="Floorplan"/>
                         <input type="file" name="edit-floorplan" id="floorplan-file" className="header-file-input" onChange={handleFloorplan}/>
