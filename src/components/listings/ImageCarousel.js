@@ -3,7 +3,7 @@ import {Carousel} from "react-bootstrap";
 
 const ImageCarousel = props => {
     return (
-        <Carousel>
+        <Carousel fade>
                 {props.images.map((image, index) => {
                 return (
                     <Carousel.Item key={index}>
