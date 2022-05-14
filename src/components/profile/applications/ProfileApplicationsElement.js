@@ -1,8 +1,6 @@
 import React, { useState, useLayoutEffect } from "react";
 import { Accordion, Alert, Button, Toast } from "react-bootstrap";
 import { decideBadgeColorListingType } from "../../../helpers/decideColorByListingType";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { api, handleError } from '../../../helpers/api'
 import { mockListings } from "../../util/mockListings";
 import ListingElement from "../../listings/ListingElement";
@@ -14,7 +12,7 @@ const ProfileApplicationsElement = props => {
     const [listing, setListing] = useState(mockListings[0]);
     let queryResponse = null;
     const [showDeleted, setShowDeleted] = useState(false);
-    const toggleShowDeleted = () => {setShowDeleted(!showDeleted)};
+    const toggleShowDeleted = () => { setShowDeleted(!showDeleted) };
 
     const deleteApplication = async () => {
         try {
@@ -27,37 +25,61 @@ const ProfileApplicationsElement = props => {
         }
     }
 
+    const getToast = () => {
+        return (
+            <Toast show={showDeleted} position='bottom-center' onClose={toggleShowDeleted}>
+                <Toast.Header>
+                    <strong className="me-auto">Admin</strong>
+                    <small>a few seconds ago</small>
+                </Toast.Header>
+                <Toast.Body>Successfully removed application</Toast.Body>
+            </Toast>
+        )
+    }
+
     const renderApplication = () => {
-        if (application.application_status === 'approved') {
+        if (application.applications_status === 'approved') {
             return (
-                <Alert variant='success'>
-                    Your application has been approved! The listing owner will contact you by email
-                </Alert>
+                <div>
+                    <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
+                        <Alert variant='success' style={{textAlign:'center'}}>
+                            Your application has been approved! The listing owner will contact you by email
+                        </Alert>
+
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
+                        {getToast()}
+                    </div>
+                </div>
             )
-        } else if (application.application_status === 'denied') {
+        } else if (application.applications_status === 'denied') {
             return (
-                <Alert variant='danger'>
-                    Unfortunately, your application was unsuccessful. Tough luck!
-                </Alert>
+                <div>
+                    <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
+                        <Alert variant='danger' style={{textAlign:'center'}}>
+                            Unfortunately, your application was unsuccessful. Tough luck!
+                        </Alert>
+
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
+                        {getToast()}
+                    </div>
+                </div>
             )
         } else {
             return (
                 <div>
                     <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
-                        <Alert variant='primary'>
+                        <Alert variant='primary' style={{textAlign:'center'}}>
                             Your application has been submitted, and will be reviewed by the listing owner
                         </Alert>
 
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
-                        <Toast show={showDeleted} position='bottom-center' onClose={toggleShowDeleted}>
-                            <Toast.Header>
-                                <strong className="me-auto">Admin</strong>
-                                <small>a few seconds ago</small>
-                            </Toast.Header>
-                            <Toast.Body>Successfully removed application</Toast.Body>
-                        </Toast>
+                        {getToast()}
                     </div>
                 </div>
 

@@ -5,14 +5,13 @@ import {
     Container,
 
 } from 'react-bootstrap'
-import {useNavigate} from 'react-router-dom'
-import React, {useState, useEffect} from 'react';
-import {handleError} from '../../../helpers/api'
+import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { handleError } from '../../../helpers/api'
 import ProfileApplicationsList from "./ProfileApplicationsList";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { mockApplicationsFromOneUser } from '../../util/mockApplicationsFromOneUser';
-import { mockListings } from '../../util/mockListings';
 
 
 const ProfileApplications = () => {
@@ -42,20 +41,20 @@ const ProfileApplications = () => {
                     <h5>
                         Manage listings you have applied to:
                     </h5>
-                    <hr/>
+                    <hr />
                 </Col>
             </Row>
-            <ProfileApplicationsList applications={applications}/>
-            <hr/>
+            <ProfileApplicationsList applications={applications} />
+            <hr />
             <Row>
                 <Col className="d-flex justify-content-center align-content-center">
-                    <Button variant="primary" type="submit" onClick={() => {navigate("/overview")}}>
-                        <span style={{marginRight: "5px"}}>See more listings</span>
-                        <FontAwesomeIcon icon={faArrowRight}/>
+                    <Button variant="primary" type="submit" onClick={() => { navigate("/overview") }}>
+                        <span style={{ marginRight: "5px" }}>See more listings</span>
+                        <FontAwesomeIcon icon={faArrowRight} />
                     </Button>
                 </Col>
             </Row>
-            <hr/>
+            <hr />
         </Container>
     );
 }

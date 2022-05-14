@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import {Accordion, Spinner} from "react-bootstrap";
+import { Accordion, Spinner } from "react-bootstrap";
 
 import ProfileApplicationsElement from "./ProfileApplicationsElement";
 
@@ -10,11 +10,11 @@ const ProfileApplicationsList = props => {
         <Accordion defaultActiveKey="0">
             {props.applications ? props.applications.map((application, index) => {
                 return (
-                    <ProfileApplicationsElement 
-                    key={index} application={application} index={index}
+                    <ProfileApplicationsElement
+                        key={index} application={application} index={index}
                     />
                 )
-            }): (
+            }) : (
                 <Spinner animation="border" role="status">
                     <span className="sr-only">Loading...</span>
                 </Spinner>

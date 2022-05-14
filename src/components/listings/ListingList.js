@@ -2,9 +2,9 @@ import React from "react";
 import ListingElement from "./ListingElement";
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
-import {Spinner} from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import "../../styles/Listings.scss";
-import {displayPictures} from "../../helpers/displayPictures";
+import { displayPictures } from "../../helpers/displayPictures";
 
 const ListingList = props => {
 

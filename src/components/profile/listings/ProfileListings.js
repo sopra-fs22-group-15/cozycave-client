@@ -1,10 +1,10 @@
-import {Button, Row, Col, Container, Badge} from 'react-bootstrap'
-import {useNavigate} from 'react-router-dom'
-import React, {useState, useEffect} from 'react';
-import {handleError} from '../../../helpers/api'
-import {mockListings} from "../../util/mockListings";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCirclePlus} from "@fortawesome/free-solid-svg-icons";
+import { Button, Row, Col, Container } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { handleError } from '../../../helpers/api'
+import { mockListings } from "../../util/mockListings";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import ProfileListingsList from "./ProfileListingsList";
 
 const ProfileListings = () => {
@@ -36,22 +36,22 @@ const ProfileListings = () => {
                     <h5>
                         Manage your listings:
                     </h5>
-                    <hr/>
+                    <hr />
                 </Col>
             </Row>
-            <ProfileListingsList listings={listings}/>
-            <hr/>
+            <ProfileListingsList listings={listings} />
+            <hr />
             <Row>
                 <Col className="d-flex justify-content-center align-content-center">
                     <Button variant="primary" type="submit" onClick={() => {
                         navigate("/create-listing")
                     }}>
-                        <span style={{marginRight: "5px"}}>Create a new listing</span>
-                        <FontAwesomeIcon icon={faCirclePlus}/>
+                        <span style={{ marginRight: "5px" }}>Create a new listing</span>
+                        <FontAwesomeIcon icon={faCirclePlus} />
                     </Button>
                 </Col>
             </Row>
-            <hr/>
+            <hr />
         </Container>
     );
 };
