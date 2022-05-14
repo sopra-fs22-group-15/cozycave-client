@@ -17,9 +17,10 @@
 }
 
 .listing-header-image {
-  width: 70%;
+  max-width: 300px;
   height: auto;
   border-radius: 10px;
+  min-height: 80%;
   max-height: 300px;
   object-fit: cover;
   object-position: center;
