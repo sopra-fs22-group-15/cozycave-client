@@ -5,13 +5,13 @@ import {
     Container,
 
 } from 'react-bootstrap'
-import {useNavigate} from 'react-router-dom'
-import React, {useState, useEffect} from 'react';
-import {handleError} from '../../../helpers/api'
-import {mockListings} from "../../util/mockListings";
+import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { handleError } from '../../../helpers/api'
 import ProfileApplicationsList from "./ProfileApplicationsList";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { mockApplicationsFromOneUser } from '../../util/mockApplicationsFromOneUser';
 
 
 const ProfileApplications = () => {
@@ -24,11 +24,9 @@ const ProfileApplications = () => {
         try {
             // TODO: change when API is ready
             //response = await api.get('/users/'+user.uuid+/applications');
-            //setListings(response.data);
-            setApplications(mockListings.slice(3,6))
-
+            setApplications(mockApplicationsFromOneUser)
         } catch (error) {
-            alert(`Something went wrong during the registration: \n${handleError(error)}`);
+            alert(`Something went wrong during retrieval of your applications: \n${handleError(error)}`);
         }
     }
 
@@ -43,20 +41,20 @@ const ProfileApplications = () => {
                     <h5>
                         Manage listings you have applied to:
                     </h5>
-                    <hr/>
+                    <hr />
                 </Col>
             </Row>
-            <ProfileApplicationsList applications={applications}/>
-            <hr/>
+            <ProfileApplicationsList applications={applications} />
+            <hr />
             <Row>
                 <Col className="d-flex justify-content-center align-content-center">
-                    <Button variant="primary" type="submit" onClick={() => {navigate("/overview")}}>
-                        <span style={{marginRight: "5px"}}>See more listings</span>
-                        <FontAwesomeIcon icon={faArrowRight}/>
+                    <Button variant="primary" type="submit" onClick={() => { navigate("/overview") }}>
+                        <span style={{ marginRight: "5px" }}>See more listings</span>
+                        <FontAwesomeIcon icon={faArrowRight} />
                     </Button>
                 </Col>
             </Row>
-            <hr/>
+            <hr />
         </Container>
     );
 }

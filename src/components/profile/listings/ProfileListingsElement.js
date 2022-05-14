@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Accordion, Button, ButtonGroup, ButtonToolbar, Col, Row, Stack, Table } from "react-bootstrap";
+import { Accordion, Button, ButtonGroup, Alert, Col, Row, Stack, Table } from "react-bootstrap";
 import { decideBadgeColorListingType } from "../../../helpers/decideColorByListingType";
 import ListingElement from "../../listings/ListingElement";
 import { displayPictures } from "../../../helpers/displayPictures";
@@ -26,6 +26,27 @@ const ProfileListingsElement = props => {
 
     }
 
+    const deleteListing = async () => {
+        try {
+            //let response = await api.delete('/listings/' + listing.uuid);
+        } catch (error) {
+            alert(`Could not delete listing: \n${handleError(error)}`);
+        }
+
+    }
+
+    const updateListingApplication = async (id, status) => {
+        try {
+            const requestBody = JSON.stringify({
+                applications_status: status
+            })
+            console.log(requestBody);
+            //let response = await api.put('/listings/' + id, requestBody);
+        } catch (error) {
+            alert(`Could not delete listing: \n${handleError(error)}`);
+        }
+    }
+
     const renderApplications = () => {
         return (
             <Table bordered hover>
@@ -38,21 +59,39 @@ const ProfileListingsElement = props => {
                     </tr>
                 </thead>
                 <tbody>
-                    {applications.map(application => {
-                        return (
+                    {applications.map(application => {  return (application.applications_status === 'pending' ?
+                        (
                             <tr>
                                 <td>{application.id}</td>
                                 <td>{application.owner.firstname}</td>
                                 <td>{application.owner.lastname}</td>
-                                <td style={{textAlign:"center"}}>
+                                <td style={{ textAlign: "center" }}>
                                     <ButtonGroup>
-                                        <Button variant="success" className='mx-auto'>Accept</Button>
-                                        <Button variant="dark" className='mx-auto'>Reject</Button>
+                                        <Button variant="success" className='mx-auto'
+                                            onClick={() => updateListingApplication(application.id, 'approved')}>
+                                            Accept
+                                        </Button>
+                                        <Button variant="dark" className='mx-auto'
+                                            onClick={() => updateListingApplication(application.id, 'denied')}>
+                                            Reject
+                                        </Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
+                        ) : (
+                            <tr>
+                                <td>{application.id}</td>
+                                <td>{application.owner.firstname}</td>
+                                <td>{application.owner.lastname}</td>
+                                <td style={{ textAlign: "center" }}>
+                                    {application.applications_status === 'approved' ? 
+                                    (<Alert variant='success'>Approved, contact candidate by email</Alert>) : 
+                                    (<Alert variant='danger'>Denied</Alert>)
+                                }
+                                </td>
+                            </tr>
                         )
-                    })}
+                    )})}
                 </tbody>
             </Table >
         )
@@ -79,7 +118,7 @@ const ProfileListingsElement = props => {
                                 <FontAwesomeIcon icon={faEdit} />
                             </Button>
                             <div className="vr mx-auto" />
-                            <Button variant="danger" className='mx-auto'>
+                            <Button variant="danger" className='mx-auto' onClick={deleteListing}>
                                 <span style={{ marginRight: "5px" }}>Delete Listing</span>
                                 <FontAwesomeIcon icon={faTrash} />
                             </Button>
