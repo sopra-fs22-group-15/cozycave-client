@@ -7,11 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { api, handleError } from '../../../helpers/api'
 import { mockApplications } from "../../util/mockApplications";
+import {useNavigate} from "react-router-dom";
+
 
 const ProfileListingsElement = props => {
     let applicationsResponse = null;
     const { listing, index } = props;
     const [applications, setApplications] = useState([]);
+
+    const navigate = useNavigate();
 
     const requestApplications = async () => {
         try {
@@ -113,7 +117,7 @@ const ProfileListingsElement = props => {
                 <Row>
                     <Col style={{ marginBottom: 20 }}>
                         <Stack direction="horizontal">
-                            <Button variant="warning" className="mx-auto">
+                            <Button variant="warning" className="mx-auto" onClick={() => {navigate(`/edit-listing/${listing.uuid}`)}}>
                                 <span style={{ marginRight: "5px" }}>Edit Listing</span>
                                 <FontAwesomeIcon icon={faEdit} />
                             </Button>
