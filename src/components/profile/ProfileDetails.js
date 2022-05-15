@@ -3,13 +3,14 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { api } from "../../helpers/api";
-
+import 'react-phone-number-input/style.css'
 const ProfileDetails = props => {
 
     const user = props.user;
 
     const [firstName, setFirstName] = useState(user.firstname);
     const [lastName, setLastName] = useState(user.lastname);
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [gender, setGender] = useState(user.gender);
     const [bio, setBio] = useState(user.biography);
     const [loading, setLoading] = useState(false);
@@ -83,6 +84,14 @@ const ProfileDetails = props => {
                                     <option value="1">FEMALE</option>
                                     <option value="2">OTHER</option>
                                 </Form.Select>
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Phone Number</Form.Label>
+                                <Form.Control type="text" placeholder={phoneNumber ? phoneNumber : "No phone number yet"} onChange={e => {
+                                    setPhoneNumber(e.target.value)
+                                }}/>
                             </Form.Group>
                         </Col>
                     </Row>
