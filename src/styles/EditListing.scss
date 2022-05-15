@@ -1,0 +1,36 @@
+.edit-listing-container {
+  position: relative;
+
+  & .edit-listing-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    min-height: 10rem;
+    max-height: 10rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+    // bootstrap hover effect
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+      transition: ease-out 0.2s;
+    }
+    @media (max-width: 500px) {
+      max-height: 100%;
+    }
+  }
+
+  & .edit-listing-button {
+    position: absolute;
+    top: 15%;
+    left: 85%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+}
+
+

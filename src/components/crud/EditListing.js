@@ -1,34 +1,37 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Card, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import {api} from "../../helpers/api";
 import {addressCreator} from "../util/addressCreator";
 import Listing from "../schemas/Listing";
 import {mockListings} from "../util/mockListings";
 import {useParams} from "react-router-dom";
+import "../../styles/EditListing.scss";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSave, faTrash} from "@fortawesome/free-solid-svg-icons";
 
 const EditListing = () => {
 
-    const [validated, setValidated] = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
+    const [validated, setValidated] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     // TODO: change when backend is ready
 
-    const [currentListing, setCurrentListing] = React.useState(mockListings[0]);
+    const [currentListing, setCurrentListing] = useState(mockListings[0]);
 
-    const [address, setAddress] = React.useState(null);
-    const [streetName, setStreetName] = React.useState('');
-    const [houseNumber, setHouseNumber] = React.useState('');
-    const [city, setCity] = React.useState('');
-    const [postalCode, setPostalCode] = React.useState('');
-    const [availableTo, setAvailableTo] = React.useState("male");
-    const [name, setName] = React.useState('');
-    const [pictures, setPictures] = React.useState(null);
-    const [deposit, setDeposit] = React.useState('');
-    const [type, setType] = React.useState("flat");
-    const [description, setDescription] = React.useState('');
-    const [rent, setRent] = React.useState('');
-    const [area, setArea] = React.useState('');
-    const [rooms, setRooms] = React.useState('');
+    const [address, setAddress] = useState(null);
+    const [streetName, setStreetName] = useState('');
+    const [houseNumber, setHouseNumber] = useState('');
+    const [city, setCity] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [availableTo, setAvailableTo] = useState("male");
+    const [name, setName] = useState('');
+    const [pictures, setPictures] = useState(null);
+    const [deposit, setDeposit] = useState('');
+    const [type, setType] = useState("flat");
+    const [description, setDescription] = useState('');
+    const [rent, setRent] = useState('');
+    const [area, setArea] = useState('');
+    const [rooms, setRooms] = useState('');
 
     const {id} = useParams();
 
@@ -56,6 +59,11 @@ const EditListing = () => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const handleDeleteImage = (url) => {
+        const newPictures = currentListing.picture.url.filter(picture => picture !== url);
+        setPictures(newPictures);
     }
 
     const handleEdit = async e => {
@@ -112,13 +120,29 @@ const EditListing = () => {
                 <Container className="d-flex justify-content-center">
                     <Card className="menu-card">
                         <Card.Header style={{backgroundColor: "#ffffff"}}>
+                            <Row>
+                                <Col>
+                                    <h4>{"Editing listing: "}
+                                        <span style={{color: "#8b8b8b"}}>
+                                            {currentListing.name}
+                                        </span>
+                                    </h4>
+                                </Col>
+                            </Row>
                             <div className="row">
                                 <div className="col-md">
                                     <div className="row no-gutters">
                                         {currentListing.picture.url.map((url, index) => {
                                             return (
-                                                <div className="col-sm-4" key={index}>
-                                                    <img src={url} className={'img-fluid'}/>
+                                                <div className="col-sm-4 edit-listing-container" key={index}>
+                                                    <img src={url} className="edit-listing-image" alt="listing_image"/>
+                                                    <Button key={index} variant="danger" size="sm"
+                                                            className="edit-listing-button"
+                                                            onClick={() => {
+                                                                handleDeleteImage(url)
+                                                            }}>
+                                                        <FontAwesomeIcon icon={faTrash}/>
+                                                    </Button>
                                                 </div>)
                                         })
                                         }
@@ -142,7 +166,7 @@ const EditListing = () => {
                                         <Form.Group>
                                             <Form.Label>House Nr.</Form.Label>
                                             <Form.Control required type="text"
-                                                          placeholder={currentListing.address.house_number}
+                                                          placeholder={`${currentListing.address.house_number}`}
                                                           onChange={e => {
                                                               setHouseNumber(e.target.value)
                                                           }}/>
@@ -202,7 +226,7 @@ const EditListing = () => {
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>Deposit</Form.Label>
-                                            <Form.Control required type="text" placeholder={currentListing.deposit}
+                                            <Form.Control required type="text" placeholder={`${currentListing.deposit}`}
                                                           onChange={e => {
                                                               setDeposit(e.target.value)
                                                           }}/>
@@ -232,7 +256,7 @@ const EditListing = () => {
                                 <Row>
                                     <Form.Group>
                                         <Form.Label>Display name</Form.Label>
-                                        <Form.Control required type="text" placeholder="Example display name"
+                                        <Form.Control required type="text" placeholder={currentListing.name}
                                                       onChange={e => {
                                                           setName(e.target.value)
                                                       }}/>
@@ -242,7 +266,7 @@ const EditListing = () => {
                                     <Form.Group>
                                         <Form.Label>Description</Form.Label>
                                         <Form.Control required as="textarea" rows="5"
-                                                      placeholder="Add a description of the flat here..."
+                                                      placeholder={currentListing.description}
                                                       onChange={e => (setDescription(
                                                           e.target.value
                                                       ))}/>
@@ -254,7 +278,8 @@ const EditListing = () => {
                             <Row>
                                 <Col className="d-flex justify-content-center align-content-center">
                                     <Button variant="primary" type="submit" onClick={handleEdit}>
-                                        <span>Save Changes</span>
+                                        <span style={{marginRight: "10px"}}>Save Changes</span>
+                                        <FontAwesomeIcon icon={faSave}/>
                                     </Button>
                                 </Col>
                             </Row>

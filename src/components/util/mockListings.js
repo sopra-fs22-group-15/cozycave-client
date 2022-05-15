@@ -2,7 +2,7 @@ export const mockListings = [
     {
         "uuid": 1,
         "creation_date": "30.10.2000",
-        "name": "Newly Cozy little flat",
+        "name": "New Cozy little flat with central location",
         "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich",
         "address": {
             "house_number": 11,
@@ -13,11 +13,11 @@ export const mockListings = [
         "published": true,
         "picture": {
             url: ['https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg',
-                'https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg',
-                "https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1",
+                'https://flatfox.ch/thumb/ff/2022/05/0nvk7puwpjolgiv1sytplbapo6l2zc8x71tylzytdpxjvzwvlg.jpg?alias=listing_search&signature=LmXSC71geSpNdd4LlMLiqAlIwHFleumrCzHWvm3uDjE',
                 'https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1',
-                'https://is1-2.housingcdn.com/4f2250e8/73b4c8375352d2558cc55aeb0bb7f937/v0/fs/devi_shanmuga_flats-surappattu-chennai-devi_flat_promoters.jpeg',
-                "https://cf.bstatic.com/xdata/images/hotel/max500/270853248.jpg?k=2a541c2ab4282babde3b0f5d90e00d7cbe4aa382b28876ee59936fd1ed84e5ac&o=&hp=1",]
+                'https://flatfox.ch/media/ff/2022/04/697b6p0hwq2959ebnviuyuedkvnt4yp3qavkhcq2r1w1md12q1.jpg',
+                'https://flatfox.ch/thumb/ff/2022/05/pzktlxl9s7s8980lmj2f70ugq7rhl9w6gfs2mq7egzoaacj0vg.jpg?alias=listing_search&signature=ji2syJr1h12ymm68KsQDM8QvtDXFMsM8ErkAG2pcXFg',
+                'https://flatfox.ch/thumb/ff/2022/05/nqpz0cbasozjyr0sw1contwqc05k5qyu1w3gcnfgr6327dhgxb.jpg?alias=listing_search&signature=_-o6p9debAs0eHHatTYtuVeudKdBF9axzKyCTVLevcc',]
         },
         "sqm": 82,
         "listingtype": "FLAT",
