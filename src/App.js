@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import CreateAd from "./components/crud/CreateAd";
 import ProfilePage from "./components/profile/ProfilePage";
+import EditListing from "./components/crud/EditListing";
 
 // TEST DEPLOYMENT TO HEROKU
 
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/profile-page/1" element={<ProfilePage/>}/>
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
+                <Route path="/edit-listing/:id" element={<EditListing/>}/>
                 
             </Routes>
         </Router>
