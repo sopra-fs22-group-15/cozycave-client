@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import {api} from "../../helpers/api";
 import Listing from "../schemas/Listing";
 import {addressCreator} from "../util/addressCreator";
+import ImageCarousel from "../listings/ImageCarousel";
 
 const CreateAd = () => {
 
@@ -21,13 +25,19 @@ const CreateAd = () => {
     const [postalCode, setPostalCode] = React.useState('');
     const [availableTo, setAvailableTo] = React.useState("male");
     const [name, setName] = React.useState('');
-    const [pictures, setPictures] = React.useState(null);
+    // const [floorplan, setFloorplan] = useState(null);
+    const [pictures, setPictures] = React.useState([]);
+    const [previewSrc, setPreviewSrc] = useState('');
+    const [floorplanPreviewSrc, setFloorplanPreviewSrc] = React.useState('');
     const [deposit, setDeposit] = React.useState('');
     const [type, setType] = React.useState("flat");
     const [description, setDescription] = React.useState('');
     const [rent, setRent] = React.useState('');
     const [area, setArea] = React.useState('');
     const [rooms, setRooms] = React.useState('');
+    const [imageUrl, setImageUrl] = React.useState([]);
+
+
     const handleSubmit = async e => {
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
@@ -46,9 +56,31 @@ const CreateAd = () => {
         }
     };
 
+    const handleImages = e => {
+        const files = e.target.files;
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            let file = files[i];
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                if (i === 0) {
+                    setPreviewSrc(reader.result);
+                }
+                setImageUrl([...imageUrl, reader.result]);
+                setPictures([...pictures, file]);
+            };
+        }
+    };
+
+
+    // TODO: add support for floorplan maybe?
+
+    const handleFloorplan = e => {
+        toast.warn("Floorplan not supported yet 😔");
+    };
+
     const createListing = () => {
         setAddress(addressCreator(streetName, houseNumber, city, postalCode));
-        console.log(address);
 
         // TODO: add image upload handling
 
@@ -56,7 +88,7 @@ const CreateAd = () => {
             name,
             address,
             availableTo,
-            pictures: null,
+            pictures: pictures,
             published: true,
             publisher: localStorage.getItem("user").uuid,
             deposit,
@@ -76,21 +108,29 @@ const CreateAd = () => {
             <Card className="menu-card">
                 <Card.Header className="d-flex justify-content-around" style={{backgroundColor: "#708AFF"}}>
                     <div className="header-group">
-                        <img src="https://via.placeholder.com/500x300.png?text=Flat" alt="profile"
-                             className="listing-header-image"
-                             height="350"/>
-                        <input type="file" name="edit-image" id="image-file" className="header-file-input"
-                               onChange={e => (setPictures(e.target.value))}/>
+                        {pictures.length > 0 ? (
+                            <div className="listing-header-image">
+                                <ImageCarousel images={imageUrl} preview={previewSrc}/>
+                            </div>
+                        ) : (
+                            <img src="https://via.placeholder.com/500x300.png?text=Flat"
+                                 className="listing-header-image" alt="preview"/>
+                        )}
+                        <input type="file" multiple={true} name="edit-image" id="image-file"
+                               className="header-file-input"
+                               onChange={handleImages}/>
                         <label htmlFor="image-file">
                             <span style={{marginRight: "10px"}}>Edit Image</span>
                             <FontAwesomeIcon icon={faEdit} className="header-edit-icon"/>
                         </label>
                     </div>
                     <div className="header-group">
-                        <img src="https://via.placeholder.com/500x300.png?text=Floorplan" alt="profile"
-                             className="listing-header-image"
-                             height="350"/>
-                        <input type="file" name="edit-floorplan" id="floorplan-file" className="header-file-input"/>
+                        <img
+                            src={floorplanPreviewSrc === '' ? "https://via.placeholder.com/500x300.png?text=Floorplan" : floorplanPreviewSrc}
+                            className="listing-header-image"
+                            height="350" alt="Floorplan"/>
+                        <input name="edit-floorplan" id="floorplan-file" className="header-file-input"
+                               onClick={handleFloorplan}/>
                         <label htmlFor="floorplan-file">
                             <span style={{marginRight: "10px"}}>Edit Floorplan</span>
                             <FontAwesomeIcon icon={faEdit} className="header-edit-icon"/>
@@ -221,6 +261,7 @@ const CreateAd = () => {
                     </Row>
                 </Card.Footer>
             </Card>
+            <ToastContainer/>
         </Container>
     );
 };
