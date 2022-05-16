@@ -17,6 +17,7 @@ function RegisterForm(props) {
     const [zip_code, setzip_code] = useState(null)
     const [gender, setGender] = useState(null)
     const [state, setState] = useState(null)
+    const [phone, setPhone] = useState(null)
     const [country, setCountry] = useState(null)
     const navigate = useNavigate();
 
@@ -44,7 +45,7 @@ function RegisterForm(props) {
                         country
                     },
                     biography: null,
-                    phone_number: null,
+                    phone_number: phone,
                 },
                 
             });
@@ -80,13 +81,13 @@ function RegisterForm(props) {
                 <Form fluid='true' style={{paddingLeft: 30, paddingRight: 30, paddingTop: 30, paddingBottom: 30}}>
                     <Row className='g-2' style={{paddingBottom: 10}}>
                         <Col md>
-                            <FormLabel controlId="firstNameInput">First Name</FormLabel>
+                            <FormLabel controlId="firstNameInput">First Name*</FormLabel>
                             <Form.Control type="firstName" placeholder="Jane"
                                           onChange={(e) => setFirstName(e.target.value)}/>
 
                         </Col>
                         <Col md>
-                            <FormLabel controlId="lastNameInput" label="Last Name">Last Name</FormLabel>
+                            <FormLabel controlId="lastNameInput" label="Last Name">Last Name*</FormLabel>
                             <Form.Control type="lastName" placeholder="Doe"
                                           onChange={(e) => setLastName(e.target.value)}/>
                         </Col>
@@ -94,7 +95,7 @@ function RegisterForm(props) {
 
                     <Row className='g-2'>
                         <Form.Group className="mb-3" controlId="formEmail">
-                            <Form.Label>Email address</Form.Label>
+                            <Form.Label>Email address*</Form.Label>
                             <InputGroup className='mb-3'>
                                 <InputGroup.Text>
                                     <FontAwesomeIcon icon={faEnvelope}/>
@@ -107,7 +108,7 @@ function RegisterForm(props) {
 
                     <Row className='g-2'>
                         <Form.Group className="mb-3" controlId="formPassword">
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label>Password*</Form.Label>
                             <InputGroup>
                                 <InputGroup.Text>
                                     <FontAwesomeIcon icon={faLock}/>
@@ -119,7 +120,7 @@ function RegisterForm(props) {
 
                     <Row className='g-2'>
                         <Form.Group className="mb-3" controlId="confirmPassword">
-                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Label>Confirm Password*</Form.Label>
                             <InputGroup>
                                 <InputGroup.Text>
                                     <FontAwesomeIcon icon={faLock}/>
@@ -131,23 +132,23 @@ function RegisterForm(props) {
 
                     <Row className='g-2'>
                         <Col md>
-                            <Form.Label>Street Name</Form.Label>
+                            <Form.Label>Street Name*</Form.Label>
                             <Form.Control type="streetName" placeholder="Irchelstrasse"
                                           onChange={(e) => setStreet(e.target.value)}/>
                         </Col>
                         <Col md>
-                            <Form.Label>House Number</Form.Label>
+                            <Form.Label>House Number*</Form.Label>
                             <Form.Control type="houseNr" placeholder="10" onChange={(e) => setHouseNr(e.target.value)}/>
                         </Col>
                     </Row>
 
                     <Row className='g-2'>
                         <Col md>
-                            <Form.Label>City</Form.Label>
+                            <Form.Label>City*</Form.Label>
                             <Form.Control type="city" placeholder="Zurich" onChange={(e) => setCity(e.target.value)}/>
                         </Col>
                         <Col md>
-                            <Form.Label>Postcode</Form.Label>
+                            <Form.Label>Postcode*</Form.Label>
                             <Form.Control type="zip_code" placeholder="8000"
                                           onChange={(e) => setzip_code(e.target.value)}/>
                         </Col>
@@ -163,9 +164,16 @@ function RegisterForm(props) {
                             <Form.Control type="state" placeholder="Zurich" onChange={(e) => setState(e.target.value)}/>
                         </Col>
                         <Col md>
-                            <Form.Label>Country</Form.Label>
+                            <Form.Label>Country*</Form.Label>
                             <Form.Control type="country" placeholder="Switzerland"
                                           onChange={(e) => setCountry(e.target.value)}/>
+                        </Col>
+                    </Row>
+
+                    <Row className='g-2'>
+                        <Col md>
+                            <Form.Label>Phone Number</Form.Label>
+                            <Form.Control type="tel" placeholder="+41 012 345 678" onChange={(e) => setPhone(e.target.value)}/>
                         </Col>
                     </Row>
 
