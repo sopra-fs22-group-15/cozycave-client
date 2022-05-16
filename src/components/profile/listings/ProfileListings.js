@@ -41,7 +41,15 @@ const ProfileListings = () => {
                     <hr />
                 </Col>
             </Row>
-            <ProfileListingsList listings={listings} />
+            {listings.length > 0 ? <ProfileListingsList listings={listings} getListings={requestResults}/> : (
+                <Row>
+                    <Col>
+                        <h6 style={{color: "#a9a9a9"}}>
+                            Wow, such empty! Create listings to see them here.
+                        </h6>
+                    </Col>
+                </Row>
+            )}
             <hr />
             <Row>
                 <Col className="d-flex justify-content-center align-content-center">

@@ -16,7 +16,7 @@ import EditListing from "./components/crud/EditListing";
 // TEST DEPLOYMENT TO HEROKU
 
 const App = () => {
-    
+
     return (
         <Router>
             <Navbar brandName="Cozy Cave" />
