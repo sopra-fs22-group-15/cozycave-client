@@ -20,7 +20,7 @@ function RegisterForm(props) {
     const [country, setCountry] = useState(null)
     const navigate = useNavigate();
 
-    const requestRegister = async (key, value) => {
+    const requestRegister = async () => {
         try {
             const requestBody = JSON.stringify({
                 authentication: {
@@ -53,18 +53,18 @@ function RegisterForm(props) {
 
             // Get the returned user and update a new object.
             const token = response.data.authentication.token;
-            const user = response.data.id;
+            const user = response.data;
             // Store the token into the local storage.
 
             console.log(response.data);
 
-            localStorage.setItem('token', token);
-            // localStorage.setItem('token', token, response.headers["Authorization"]);
-            localStorage.setItem('firstname', user.first_name);
-            localStorage.setItem('lastname', user.last_name);
+            // localStorage.setItem('token', token);
+            localStorage.setItem('token', token, response.headers["Authorization"]);
+            localStorage.setItem('firstname', user.details.first_name);
+            localStorage.setItem('lastname', user.details.last_name);
             // localStorage.setItem('birthdate', user.birthday);
-            localStorage.setItem('gender', user.gender);
-            localStorage.setItem('user', user)
+            localStorage.setItem('gender', user.details.gender);
+            localStorage.setItem('user', JSON.stringify(user))
 
 
             // Login successfully worked --> navigate to the landing page in the AppRouter

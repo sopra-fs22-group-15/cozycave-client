@@ -1,11 +1,14 @@
 import Address from "../schemas/Address";
 
-export const addressCreator = (streetName, houseNr, postalCode, city) => {
+export const addressCreator = (street, house_number, zip_code, city, state, apartment_number=null, name=null) => {
     const address = new Address()
-    address.streetName = streetName;
-    address.houseNr = houseNr;
-    address.zip_code = postalCode;
+    address.street = street;
+    address.name = name;
+    address.house_number = house_number;
+    address.zip_code = zip_code;
     address.city = city;
+    address.state = state
+    // TODO add rest of address fields
     address.country = "Switzerland";
 
     return address;
