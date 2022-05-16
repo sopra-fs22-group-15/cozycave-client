@@ -50,27 +50,33 @@ const CreateAd = () => {
             e.stopPropagation();
         } else {
             const requestBody = createListing();
-            setValidated(true);
+            if(address && streetName && houseNumber && city && state && postalCode && deposit && rent && area && rooms && name && description){
+                setValidated(true);
+            }
             console.log(requestBody);
-            try {
-                await api.post('/listings', requestBody);
-                toast.success("Listing created successfully! See your listings under the profile page. 🥳", {
-                    position: toast.POSITION.TOP_CENTER,
-                    autoClose: 7000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                navigate('/overview');
-            } catch (error) {
-                console.log(error);
-                if (error.response.status === 400) {
-                    toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
-                } else {
-                    toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
+            if(validated){
+                try {
+                    await api.post('/listings', requestBody);
+                    toast.success("Listing created successfully! See your listings under the profile page. 🥳", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 7000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    navigate('/overview');
+                } catch (error) {
+                    console.log(error);
+                    if (error.response.status === 400) {
+                        toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
+                    } else {
+                        toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
+                    }
                 }
+            } else {
+                toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
             }
         }
 
@@ -111,10 +117,9 @@ const CreateAd = () => {
         }
 
         const currentUser = JSON.parse(localStorage.getItem('user'));
-
         return {
             title: name,
-            address,
+            address: addressCreator(streetName, houseNumber, city, postalCode, state, country, name),
             available_to: [availableTo],
             available: true,
             // TODO: send pictures when backend is ready
