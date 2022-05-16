@@ -26,7 +26,7 @@ const App = () => {
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
                 <Route path="/edit-listing/:id" element={<EditListing/>}/>
-                
+
             </Routes>
         </Router>
     )

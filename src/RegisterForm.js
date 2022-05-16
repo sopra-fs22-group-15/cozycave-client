@@ -16,9 +16,11 @@ function RegisterForm(props) {
     const [city, setCity] = useState(null)
     const [zip_code, setzip_code] = useState(null)
     const [gender, setGender] = useState(null)
+    const [state, setState] = useState(null)
+    const [country, setCountry] = useState(null)
     const navigate = useNavigate();
 
-    const requestRegister = async () => {
+    const requestRegister = async (key, value) => {
         try {
             const requestBody = JSON.stringify({
                 authentication: {
@@ -26,21 +28,23 @@ function RegisterForm(props) {
                     password: password
                 },
                 details: {
-                    firstname: firstName,
-                    lastname: lastName,
+                    first_name: firstName,
+                    last_name: lastName,
                     gender,
                     birthday: null,
                     address: {
-                        //name: null,
-                        //description: null,
-                        //apartment_number: null,
+                        name: null,
+                        description: null,
+                        apartment_number: null,
                         street,
                         house_number: houseNr,
                         city,
+                        state,
                         zip_code: zip_code,
-                        country: "Switzerland"
+                        country
                     },
-                    //biography: ""
+                    biography: null,
+                    phone_number: null,
                 },
                 
             });
@@ -48,13 +52,16 @@ function RegisterForm(props) {
             const response = await api.post('/auth/register', requestBody);
 
             // Get the returned user and update a new object.
-            const token = response.data.token;
-            const user = response.data.user;
+            const token = response.data.authentication.token;
+            const user = response.data.id;
             // Store the token into the local storage.
 
-            localStorage.setItem('token', token, response.headers["Authorization"]);
-            localStorage.setItem('firstname', user.firstname);
-            localStorage.setItem('lastname', user.lastname);
+            console.log(response.data);
+
+            localStorage.setItem('token', token);
+            // localStorage.setItem('token', token, response.headers["Authorization"]);
+            localStorage.setItem('firstname', user.first_name);
+            localStorage.setItem('lastname', user.last_name);
             // localStorage.setItem('birthdate', user.birthday);
             localStorage.setItem('gender', user.gender);
             localStorage.setItem('user', user)
@@ -143,6 +150,22 @@ function RegisterForm(props) {
                             <Form.Label>Postcode</Form.Label>
                             <Form.Control type="zip_code" placeholder="8000"
                                           onChange={(e) => setzip_code(e.target.value)}/>
+                        </Col>
+                    </Row>
+
+                    {
+                        // TODO: Change to dropdown with countries
+                    }
+
+                    <Row className='g-2'>
+                        <Col md>
+                            <Form.Label>State</Form.Label>
+                            <Form.Control type="state" placeholder="Zurich" onChange={(e) => setState(e.target.value)}/>
+                        </Col>
+                        <Col md>
+                            <Form.Label>Country</Form.Label>
+                            <Form.Control type="country" placeholder="Switzerland"
+                                          onChange={(e) => setCountry(e.target.value)}/>
                         </Col>
                     </Row>
 

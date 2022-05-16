@@ -22,13 +22,13 @@ function LoginForm(props) {
       const response = await api.put('/auth/login', requestBody);
 
       // Get the returned user and update a new object.
-      const responseToken = response.data.token;
-      const responseUser = response.data.user;
+      const responseToken = response.data.authentication.token;
+      const responseUser = response.data.details;
 
       // Store the token into the local storage.
       localStorage.setItem('token', responseToken, response.headers["Authorization"]);
-      localStorage.setItem('firstname', responseUser.firstname);
-      localStorage.setItem('lastname', responseUser.lastname);
+      localStorage.setItem('firstname', responseUser.first_name);
+      localStorage.setItem('lastname', responseUser.last_name);
       localStorage.setItem('gender', responseUser.gender);
       localStorage.setItem('user', responseUser);
 
