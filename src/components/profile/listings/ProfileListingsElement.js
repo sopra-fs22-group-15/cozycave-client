@@ -65,7 +65,7 @@ const ProfileListingsElement = props => {
                 <tbody>
                     {applications.map(application => {  return (application.applications_status === 'pending' ?
                         (
-                            <tr>
+                            <tr key={application.id}>
                                 <td>{application.id}</td>
                                 <td>{application.owner.firstname}</td>
                                 <td>{application.owner.lastname}</td>
@@ -83,7 +83,7 @@ const ProfileListingsElement = props => {
                                 </td>
                             </tr>
                         ) : (
-                            <tr>
+                            <tr key={application.id}>
                                 <td>{application.id}</td>
                                 <td>{application.owner.firstname}</td>
                                 <td>{application.owner.lastname}</td>
@@ -109,11 +109,11 @@ const ProfileListingsElement = props => {
     return (
         <Accordion.Item eventKey={index}>
             <Accordion.Header>
-                {listing.name}
+                {listing.title}
                 <span style={{ marginLeft: "10px" }}>{decideBadgeColorListingType(listing.listing_type)}</span>
             </Accordion.Header>
             <Accordion.Body>
-                <ListingElement listing={listing} image={displayPictures(listing.picture.url)} />
+                <ListingElement listing={listing} image={displayPictures(listing.picture ? listing.picture.url : null)} />
                 <Row>
                     <Col style={{ marginBottom: 20 }}>
                         <Stack direction="horizontal">

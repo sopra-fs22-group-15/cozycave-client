@@ -16,13 +16,14 @@ import EditListing from "./components/crud/EditListing";
 // TEST DEPLOYMENT TO HEROKU
 
 const App = () => {
+    
     return (
         <Router>
             <Navbar brandName="Cozy Cave" />
             <Routes>
                 <Route exact path="/" element={<LandingPage/>} />
                 <Route exact path="/overview" element={<ResultsPage/>} />
-                <Route path="/profile-page/1" element={<ProfilePage/>}/>
+                <Route path="/profile-page/:id" element={<ProfilePage/>}/>
                 <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                 <Route path="/create-listing" element={<CreateAd/>}/>
                 <Route path="/edit-listing/:id" element={<EditListing/>}/>

@@ -6,7 +6,7 @@ import { api } from "../../helpers/api";
 import 'react-phone-number-input/style.css'
 const ProfileDetails = props => {
 
-    const user = props.user;
+    const user = JSON.parse(localStorage.getItem("user"));
 
     const [firstName, setFirstName] = useState(user.firstname);
     const [lastName, setLastName] = useState(user.lastname);

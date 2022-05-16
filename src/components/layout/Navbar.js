@@ -111,7 +111,7 @@ const Navbar = props => {
 
                 <Dropdown.Menu>
                     <Dropdown.Item
-                        href={`/profile-page/${localStorage.getItem('id') ? localStorage.getItem('id') : 1}`}>My
+                        href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
                         Profile</Dropdown.Item>
                     <Dropdown.Divider/>
                     <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
