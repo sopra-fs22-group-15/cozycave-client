@@ -149,7 +149,11 @@ function AdOverviewPage() {
                                         <h4 className='opacity-50'>Address</h4>
                                     </Row>
                                     <Row>
-                                        <h3>{ad.address.street} {ad.address.house_number}, {ad.address.zip_code} {ad.address.city}</h3>
+                                        {address ? (
+                                            <h3>{ad.address.street} {ad.address.house_number}, {ad.address.zip_code} {ad.address.city}</h3>
+                                        ) : (
+                                            <h3>No address available</h3>
+                                        )}
                                     </Row>
                                     <Row className='mb-2'>
                                         <div>

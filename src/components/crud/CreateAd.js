@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {api} from "../../helpers/api";
 import {addressCreator} from "../util/addressCreator";
 import ImageCarousel from "../listings/ImageCarousel";
+import {useNavigate} from "react-router-dom";
 
 const CreateAd = () => {
 
@@ -38,23 +39,41 @@ const CreateAd = () => {
     const [rooms, setRooms] = React.useState(null);
     const [imageUrl, setImageUrl] = React.useState([]);
 
+    const navigate = useNavigate();
+
 
     const handleSubmit = async e => {
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
+            setValidated(false)
             e.preventDefault();
             e.stopPropagation();
         } else {
-            setValidated(true);
             const requestBody = createListing();
+            setValidated(true);
             console.log(requestBody);
             try {
-                const response = await api.post('/listings', requestBody );
-                console.log(response);
+                await api.post('/listings', requestBody);
+                toast.success("Listing created successfully! See your listings under the profile page. 🥳", {
+                    position: toast.POSITION.TOP_CENTER,
+                    autoClose: 7000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                navigate('/overview');
             } catch (error) {
                 console.log(error);
+                if (error.response.status === 400) {
+                    toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
+                } else {
+                    toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
+                }
             }
         }
+
     };
 
     const handleImages = e => {
@@ -76,14 +95,20 @@ const CreateAd = () => {
 
     // TODO: add support for floorplan maybe?
 
-    const handleFloorplan = e => {
+    const handleFloorplan = () => {
         toast.warn("Floorplan not supported yet 😔");
     };
 
     const createListing = () => {
         setAddress(addressCreator(streetName, houseNumber, city, postalCode, state, country, name));
+        console.log(address);
 
         // TODO: add image upload handling
+
+        if (!address) {
+            setValidated(false);
+            toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
+        }
 
         const currentUser = JSON.parse(localStorage.getItem('user'));
 
