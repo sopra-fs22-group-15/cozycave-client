@@ -5,10 +5,10 @@ export const mockListings = [
         "name": "New Cozy little flat with central location",
         "description": "This is a nice flat for students looking to be close to both the university and the party scene in Zurich",
         "address": {
-            "house_number": 11,
-            "street": "Langstrasse",
-            "city": "Zurich",
-            "zip_code": "8005"
+            "house_number": 9,
+            "street": "Schulhausstrasse",
+            "city": "Forch",
+            "zip_code": "8127"
         },
         "published": true,
         "picture": {

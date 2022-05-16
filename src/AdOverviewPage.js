@@ -7,22 +7,26 @@ import Gender from './components/schemas/Gender';
 import axios from 'axios';
 import Application from './components/schemas/Application';
 import { mockListings } from './components/util/mockListings';
+import { addressStringBuilder } from './helpers/addressStringBuilder';
 
 function AdOverviewPage(props) {
     let response = null;
+    const [listingURL, setListingURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
     const navigate = useNavigate();
     const { id } = useParams();
+    let address = '';
     const [listing, setListing] = useState([]);
     const requestListing = async () => {
         try {
-            response = await api.get('/listings/',id);
+            response = await api.get('/listings/', id);
             setListing(response.data);
-
+            address = response.data[0].address;
         } catch (error) {
             alert(`Something went wrong during page loading: \n${handleError(error)}`);
             setListing([mockListings[0]])
+            address = mockListings[0].address;
         }
-
+        requestLocation(address);
 
     }
 
@@ -69,9 +73,26 @@ function AdOverviewPage(props) {
             alert('Successfully applied!')
 
         } catch (error) {
-            alert(`Something went wrong during page loading: \n${handleError(error)}`);
+            alert(`Something went wrong during application process: \n${handleError(error)}`);
         }
 
+    }
+
+    const requestLocation = async (address) => {
+        try {
+            let query = `http://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${address.street}%20${address.house_number}%20${address.zip_code}&type=locations&limit=1`
+            console.log(query);
+            let location = await api.get(query);
+            console.log(location);
+            let path = location.data.results[0].attrs
+            if (location.data !== null) {
+                let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
+                setListingURL(frameLink);
+            };
+
+        } catch (error) {
+            alert(`Something went wrong during location display: \n${handleError(error)}`);
+        }
     }
 
     useEffect(() => {
@@ -164,12 +185,8 @@ function AdOverviewPage(props) {
                                         </div>
                                     </Col>
                                     <Col>
-                                        <Figure>
-                                            <Figure.Image
-                                                alt="Listing Location"
-                                                src="https://cdn-agkod.nitrocdn.com/HHTsYSGsDyZLTePzRyQWYMiOFmYfcDWX/assets/static/optimized/rev-ef045a0/wp-content/uploads/2017/06/Zurich-AirBnb-1-Penthouse-River-View-map.jpg"
-                                            />
-                                        </Figure>
+                                        <iframe src={listingURL}
+                                            width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                                     </Col>
                                 </Row>
 
