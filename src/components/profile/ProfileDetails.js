@@ -10,8 +10,6 @@ const ProfileDetails = props => {
 
     const user = props.user;
 
-    console.log(user);
-
     const [firstName, setFirstName] = useState(user.details.first_name);
     const [lastName, setLastName] = useState(user.details.last_name);
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -33,7 +31,6 @@ const ProfileDetails = props => {
                     phone_number: phoneNumber
                 }
             })
-            console.log(requestBody)
             const response = await api.put(`users/${user.id}`, requestBody)
             setLoading(false);
             props.getUser();

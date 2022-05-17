@@ -17,7 +17,6 @@ const ProfilePage = () => {
         try {
             const response = await api.get(`/users/${id}`);
             setUser(response.data);
-            console.log(user);
         } catch (e) {
             console.log(e);
         }
@@ -27,9 +26,6 @@ const ProfilePage = () => {
     useEffect(() => {
         getUser().catch(console.error);
     }, []);
-
-    console.log(user)
-
 
     return (
         <Container className="d-flex justify-content-center">
