@@ -1,7 +1,7 @@
 import { Button, Row, Col, Container } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import { handleError } from '../../../helpers/api'
+import {api, handleError} from '../../../helpers/api'
 import { mockListings } from "../../util/mockListings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
@@ -11,14 +11,15 @@ const ProfileListings = () => {
     const navigate = useNavigate();
     const [listings, setListings] = useState([])
     let response = null;
-    const user = localStorage.getItem('user')
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const requestResults = async () => {
         try {
-            //response = await api.get('/listings/'+user.uuid);
-            //setListings(response.data);
-            // TODO: Change when API is ready
-            setListings(mockListings.slice(1, 3));
+            // TODO: add endpoint for getting listings of a user
+            response = await api.get('/listings');
+
+            setListings(response.data.filter(listing => listing.publisher.id === user.id));
+            // setListings(mockListings.slice(1, 3));
         } catch (error) {
             alert(`Something went wrong during display of listings: \n${handleError(error)}`);
         }
@@ -26,6 +27,7 @@ const ProfileListings = () => {
 
     useEffect(() => {
         requestResults();
+        console.log(listings);
     }, []);
 
 
@@ -39,7 +41,15 @@ const ProfileListings = () => {
                     <hr />
                 </Col>
             </Row>
-            <ProfileListingsList listings={listings} />
+            {listings.length > 0 ? <ProfileListingsList listings={listings} getListings={requestResults}/> : (
+                <Row>
+                    <Col>
+                        <h6 style={{color: "#a9a9a9"}}>
+                            Wow, such empty! Create listings to see them here.
+                        </h6>
+                    </Col>
+                </Row>
+            )}
             <hr />
             <Row>
                 <Col className="d-flex justify-content-center align-content-center">

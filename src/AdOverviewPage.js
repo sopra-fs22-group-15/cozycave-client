@@ -1,15 +1,11 @@
-import { Modal, Button, Form, Row, Col, Dropdown, FormLabel, InputGroup, Figure, Container, Badge } from 'react-bootstrap'
+import {Button, Row, Col, Figure, Container, Badge } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import { api, handleError } from './helpers/api'
-import Address from './components/schemas/Address';
-import Gender from './components/schemas/Gender';
-import axios from 'axios';
-import Application from './components/schemas/Application';
 import { mockListings } from './components/util/mockListings';
-import { addressStringBuilder } from './helpers/addressStringBuilder';
 
-function AdOverviewPage(props) {
+
+function AdOverviewPage() {
     let response = null;
     const [listingURL, setListingURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
     const navigate = useNavigate();
@@ -88,7 +84,7 @@ function AdOverviewPage(props) {
             if (location.data !== null) {
                 let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
                 setListingURL(frameLink);
-            };
+            }
 
         } catch (error) {
             alert(`Something went wrong during location display: \n${handleError(error)}`);
@@ -129,40 +125,44 @@ function AdOverviewPage(props) {
                     <div className='d-inline-block border border-dark rounded' style={{ marginTop: 60, height: "60%" }}>
                         <Row>
                             <Col>
-                                {displayPictures(ad.picture.url)}
+                                {displayPictures(ad.picture ? ad.picture.url : null)}
                             </Col>
                             <Col style={{ marginRight: 20 }}>
                                 <div className='border-bottom border-dark'>
                                     <Row>
                                         <Col>
-                                            <h4 class='opacity-50'>Rent</h4>
+                                            <h4 className='opacity-50'>Rent</h4>
                                             <h2>CHF {ad.rent}</h2>
                                         </Col>
                                         <Col>
-                                            <h4 class='opacity-50'>Area</h4>
+                                            <h4 className='opacity-50'>Area</h4>
                                             <h2>{ad.sqm} m<sup>2</sup></h2>
                                         </Col>
                                         <Col>
-                                            <h4 class='opacity-50'>Rooms</h4>
+                                            <h4 className='opacity-50'>Rooms</h4>
                                             <h2>{ad.rooms}</h2>
                                         </Col>
                                     </Row>
                                 </div>
                                 <div className='border-bottom border-dark'>
-                                    <Row class='mt-2'>
-                                        <h4 class='opacity-50'>Address</h4>
+                                    <Row className='mt-2'>
+                                        <h4 className='opacity-50'>Address</h4>
                                     </Row>
                                     <Row>
-                                        <h3>{ad.address.street} {ad.address.house_number}, {ad.address.zip_code} {ad.address.city}</h3>
+                                        {address ? (
+                                            <h3>{ad.address.street} {ad.address.house_number}, {ad.address.zip_code} {ad.address.city}</h3>
+                                        ) : (
+                                            <h3>No address available</h3>
+                                        )}
                                     </Row>
-                                    <Row class='mb-2'>
+                                    <Row className='mb-2'>
                                         <div>
                                             {decideColor(ad.listing_type)}
                                         </div>
 
                                     </Row>
-                                    <Row class='mt-2'>
-                                        <h4 class='opacity-50'>Description</h4>
+                                    <Row className='mt-2'>
+                                        <h4 className='opacity-50'>Description</h4>
                                     </Row>
                                     <Row>
 
@@ -172,13 +172,13 @@ function AdOverviewPage(props) {
                                 </div>
                                 <Row style={{ width: '90%' }}>
                                     <Col>
-                                        <h4 class='opacity-50'>Additional Information</h4>
+                                        <h4 className='opacity-50'>Additional Information</h4>
                                         <ul>
-                                            <li>Preferred applicant gender: {processGender(ad.availableTo)}</li>
+                                            <li>Preferred applicant gender: {processGender(ad.available_to)}</li>
                                             <li>{(ad.furnished) ? 'Furnished' : 'Unfurnished'}</li>
                                             <li>Deposit: {ad.deposit} CHF</li>
                                         </ul>
-                                        <div class='align-self-end'>
+                                        <div className='align-self-end'>
                                             <Button type="button" size='lg' variant="primary" onClick={() => handleApply()}>Apply</Button>
                                             <span> </span>
                                             <Button type="button" size='lg' variant="outline-danger">Report</Button>
