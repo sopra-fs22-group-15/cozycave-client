@@ -1,22 +1,33 @@
-import {Button, Row, Col, Figure, Container, Badge } from 'react-bootstrap'
+import { Button, Row, Col, Container, Alert } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import { api, handleError } from './helpers/api'
 import { mockListings } from './components/util/mockListings';
+import { decideBadgeColorListingType } from './helpers/decideColorByListingType';
+import { decideGender } from './helpers/decideGender';
+import { displayPictures } from './helpers/displayPictures';
+import axios from 'axios';
+
 
 
 function AdOverviewPage() {
     let response = null;
-    const [listingURL, setListingURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
-    const navigate = useNavigate();
+    const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
     const { id } = useParams();
-    let address = '';
+    let address = ''; //do not use this in the returned form
     const [listing, setListing] = useState([]);
+    const [travelTimes, setTravelTimes] = useState([])
+
+    const locationAPI = axios.create({
+        baseURL: 'https://transport.opendata.ch/v1',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
     const requestListing = async () => {
         try {
-            response = await api.get('/listings/', id);
+            response = await api.get(`/listings/${id}`);
             setListing(response.data);
-            address = response.data[0].address;
+            address = response.data.address;
         } catch (error) {
             alert(`Something went wrong during page loading: \n${handleError(error)}`);
             setListing([mockListings[0]])
@@ -26,46 +37,54 @@ function AdOverviewPage() {
 
     }
 
-    const decideColor = (any) => {
-        if (any === "FLAT") {
-            return (
-                <Badge bg="primary">Flat</Badge>
-            )
-        } else if (any === "ROOM") {
-            return (
-                <Badge bg="success">Room</Badge>
-            )
-        } else {
-            return (
-                <Badge bg="warning">House</Badge>
-            )
-        }
-    };
+    const replaceGermanCharsInString = (string) => { //This is needed for the map query
+        let replacedString = string.replace('ä', 'ae');
+        replacedString = replacedString.replace('ö', 'oe');
+        replacedString = replacedString.replace('ü', 'ue');
+        replacedString = replacedString.replace('Ä', 'ae');
+        replacedString = replacedString.replace('Ö', 'Oe');
+        replacedString = replacedString.replace('Ü', 'Ue'); //can be converted to single regex expression
+        return (replacedString)
 
-    const processGender = (any) => {
-        if (any.length >= 3) {
-            return (
-                "Any"
-            )
-        } else if (any[0] === "FEMALE") {
-            return (
-                "Female"
-            )
+    }
 
-        } else {
-            return (
-                "Male"
-            )
+    const formatTravelDuration = (string) => {
+        let alertType = 'danger'
+        if (string.length > 0) {
+            let formattedString = (string.slice(0, 2) === "00" ? '' :
+                (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
+                +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
+                (string.slice(3, 5) === "00" ? '' :
+                    (string.slice(3, 4) === "0" ? '' : string.slice(3, 4)) +
+                    +(string.slice(4, 5) === "0" ? '' : string.slice(4, 5)) + ' hours ') +
+                (string.slice(6, 8) === "00" ? '' :
+                    (string.slice(6, 7) === "0" ? '' : string.slice(6, 7)) +
+                    +(string.slice(7, 8) === "0" ? '' : string.slice(7, 8)) + ' minutes ')
+
+            if (formattedString.includes('days')) {
+                alertType = 'danger'
+            } else if (formattedString.includes('hours')) {
+                alertType = 'warning'
+            } else if (formattedString.includes('minutes')) {
+                alertType = 'success'
+            }
+            return <Alert variant={alertType}>{formattedString}</Alert>
         }
-    };
+    }
 
     const handleApply = async () => {
-        //const user = localStorage.getItem('user');
-        //const listing = response.data;
-        //const application = new Application(id, null, user, listing, "pending");
+        const user = localStorage.getItem('user');
+        const application = JSON.stringify({
+            authentication: {
+                email: user.authentication.email,
+                password: user.authentication.token
+            },
+            id: id,
+            application_status: "PENDING"
+        })
         try {
-            //applyResponse = await api.post('/listings/',id,'/applications/');
-            //TODO: add to profile here
+            let applyResponse = await api.post('/listings/', id, '/applications');
+
             alert('Successfully applied!')
 
         } catch (error) {
@@ -76,124 +95,125 @@ function AdOverviewPage() {
 
     const requestLocation = async (address) => {
         try {
-            let query = `http://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${address.street}%20${address.house_number}%20${address.zip_code}&type=locations&limit=1`
-            console.log(query);
+            let query = `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${replaceGermanCharsInString(address.street)}%20${address.house_number}%20${address.zip_code}&type=locations&limit=1`
             let location = await api.get(query);
-            console.log(location);
             let path = location.data.results[0].attrs
             if (location.data !== null) {
-                let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
-                setListingURL(frameLink);
-            }
+                let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.swissimage&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
+                setListingMapURL(frameLink);
+                calculateTravelTime(replaceGermanCharsInString(address.street), address.house_number, address.zip_code)
+            };
 
         } catch (error) {
             alert(`Something went wrong during location display: \n${handleError(error)}`);
         }
     }
 
+    const calculateTravelTime = async (street, house_number, zip_code) => {
+        try {
+            //const user = localStorage.get('user')
+            //if(user==null){
+            //  return <p>Please log in to see estimated travel times<p>    
+            //}else{}
+            //user.addresses.forEach(address => )
+            address = {
+                street: "Schulhausstrasse",
+                house_number: "9",
+                zip_code: "8127",
+                city: "Forch",
+            }
+            response = await locationAPI.get(`/connections?from=${address.street}%20${address.house_number}%20${address.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
+            console.log(response.data.connections[0])
+            setTravelTimes(response.data.connections[0].duration)
+            //TODO: fix when address structure is available
+        } catch (error) {
+            alert(`Something went wrong during calculation of travel time: \n${handleError(error)}`);
+        }
+
+    }
+
     useEffect(() => {
         requestListing();
     }, []);
 
-    const displayPictures = (pictures) => {
-        if (pictures == null) {
-            return (
-                <div>
-                    <Figure>
-                        <Figure.Image
-                            alt="Cannot load image"
-                            src="https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder.png"
-                        />
-                    </Figure>
-                </div>);
-        } else {
-            return (<div>
-                <Figure>
-                    <Figure.Image
-                        alt="Cannot load image"
-                        src={pictures[0]}
-                    />
-                </Figure>
-            </div>);
-        }
-    }
-
     return (
         <div>
             <Container fluid={true}>
-                {listing.map((ad) => (
-                    <div className='d-inline-block border border-dark rounded' style={{ marginTop: 60, height: "60%" }}>
-                        <Row>
-                            <Col>
-                                {displayPictures(ad.picture ? ad.picture.url : null)}
-                            </Col>
-                            <Col style={{ marginRight: 20 }}>
-                                <div className='border-bottom border-dark'>
-                                    <Row>
-                                        <Col>
-                                            <h4 className='opacity-50'>Rent</h4>
-                                            <h2>CHF {ad.rent}</h2>
-                                        </Col>
-                                        <Col>
-                                            <h4 className='opacity-50'>Area</h4>
-                                            <h2>{ad.sqm} m<sup>2</sup></h2>
-                                        </Col>
-                                        <Col>
-                                            <h4 className='opacity-50'>Rooms</h4>
-                                            <h2>{ad.rooms}</h2>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className='border-bottom border-dark'>
-                                    <Row className='mt-2'>
-                                        <h4 className='opacity-50'>Address</h4>
-                                    </Row>
-                                    <Row>
-                                        {address ? (
-                                            <h3>{ad.address.street} {ad.address.house_number}, {ad.address.zip_code} {ad.address.city}</h3>
-                                        ) : (
-                                            <h3>No address available</h3>
-                                        )}
-                                    </Row>
-                                    <Row className='mb-2'>
-                                        <div>
-                                            {decideColor(ad.listing_type)}
-                                        </div>
-
-                                    </Row>
-                                    <Row className='mt-2'>
-                                        <h4 className='opacity-50'>Description</h4>
-                                    </Row>
-                                    <Row>
-
-                                        <p>{ad.description}</p>
-
-                                    </Row>
-                                </div>
-                                <Row style={{ width: '90%' }}>
+                <div className='d-inline-block border border-dark rounded' style={{ marginTop: 60, height: "60%" }}>
+                    <Row>
+                        <Col>
+                            {displayPictures(listing.picture ? listing.picture.url : null)}
+                        </Col>
+                        <Col style={{ marginRight: 20 }}>
+                            <div className='border-bottom border-dark'>
+                                <Row>
                                     <Col>
-                                        <h4 className='opacity-50'>Additional Information</h4>
-                                        <ul>
-                                            <li>Preferred applicant gender: {processGender(ad.available_to)}</li>
-                                            <li>{(ad.furnished) ? 'Furnished' : 'Unfurnished'}</li>
-                                            <li>Deposit: {ad.deposit} CHF</li>
-                                        </ul>
-                                        <div className='align-self-end'>
-                                            <Button type="button" size='lg' variant="primary" onClick={() => handleApply()}>Apply</Button>
-                                            <span> </span>
-                                            <Button type="button" size='lg' variant="outline-danger">Report</Button>
-                                        </div>
+                                        <h4 className='opacity-50'>Rent</h4>
+                                        <h2>CHF {listing.rent}</h2>
                                     </Col>
                                     <Col>
-                                        <iframe src={listingURL}
-                                            width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
+                                        <h4 className='opacity-50'>Area</h4>
+                                        <h2>{listing.sqm} m<sup>2</sup></h2>
+                                    </Col>
+                                    <Col>
+                                        <h4 className='opacity-50'>Rooms</h4>
+                                        <h2>{listing.rooms}</h2>
                                     </Col>
                                 </Row>
+                            </div>
+                            <div className='border-bottom border-dark'>
+                                <Row className='mt-2'>
+                                    <h4 className='opacity-50'>Address</h4>
+                                </Row>
+                                <Row>
+                                    {listing.address ? (
+                                        <h3>{listing.address.street} {listing.address.house_number}, {listing.address.zip_code} {listing.address.city}</h3>
+                                    ) : (
+                                        <h3>No address available</h3>
+                                    )}
+                                </Row>
+                                <Row className='mb-2'>
+                                    <div>
+                                        {decideBadgeColorListingType(listing.listing_type)}
+                                    </div>
 
-                            </Col>
-                        </Row>
-                    </div>
-                ))}
+                                </Row>
+                                <Row className='mt-2'>
+                                    <h4 className='opacity-50'>Description</h4>
+                                </Row>
+                                <Row>
+
+                                    <p>{listing.description}</p>
+
+                                </Row>
+                            </div>
+                            <Row style={{ width: '90%' }}>
+                                <Col md={6}>
+                                    <h4 className='opacity-50'>Additional Information</h4>
+                                    <ul>
+                                        <li>Preferred applicant gender: {decideGender(listing.available_to ? listing.available_to : null)}
+                                        </li>
+                                        <li>{(listing.furnished) ? 'Furnished' : 'Unfurnished'}</li>
+                                        <li>Deposit: {listing.deposit} CHF</li>
+                                    </ul>
+                                    <h5>Travel Times to your addresses:</h5>
+                                    <p>Address 1 {formatTravelDuration(travelTimes)}</p>
+                                    <p>Address 2</p>
+                                    <div className='align-self-end'>
+                                        <Button type="button" size='lg' variant="primary" onClick={() => handleApply()}>Apply</Button>
+                                        <span> </span>
+                                        <Button type="button" size='lg' variant="outline-danger">Report</Button>
+                                    </div>
+                                </Col>
+                                <Col md={6}>
+                                    <iframe src={listingMapURL}
+                                        width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
+                                </Col>
+                            </Row>
+
+                        </Col>
+                    </Row>
+                </div>
             </Container>
 
         </div>
