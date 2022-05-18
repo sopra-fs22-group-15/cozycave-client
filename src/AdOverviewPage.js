@@ -19,7 +19,7 @@ function AdOverviewPage() {
     const [travelTimes, setTravelTimes] = useState([])
 
     const locationAPI = axios.create({
-        baseURL: 'http://transport.opendata.ch/v1',
+        baseURL: 'https://transport.opendata.ch/v1',
         headers: { 'Content-Type': 'application/json' }
     });
 
@@ -65,7 +65,7 @@ function AdOverviewPage() {
                 alertType = 'danger'
             } else if (formattedString.includes('hours')) {
                 alertType = 'warning'
-            } else if (formattedString.includes('hours')) {
+            } else if (formattedString.includes('minutes')) {
                 alertType = 'success'
             }
             return <Alert variant={alertType}>{formattedString}</Alert>
