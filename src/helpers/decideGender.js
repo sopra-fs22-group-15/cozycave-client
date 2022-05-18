@@ -1,5 +1,11 @@
 export const decideGender = (gender) => {
-    if (gender.length >= 3) {
+
+    if (gender===null){
+        return (
+            "Any"
+        )
+    }
+    else if (gender.length >= 3) {
         return (
             "Any"
         )
