@@ -8,14 +8,23 @@ import axios from 'axios';
 import Application from './components/schemas/Application';
 import { mockListings } from './components/util/mockListings';
 import { addressStringBuilder } from './helpers/addressStringBuilder';
+import { decideBadgeColorListingType } from './helpers/decideColorByListingType';
+import { decideGender } from './helpers/decideGender';
+import { displayPictures } from './helpers/displayPictures';
 
 function AdOverviewPage(props) {
     let response = null;
-    const [listingURL, setListingURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
+    const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
     const navigate = useNavigate();
     const { id } = useParams();
     let address = '';
     const [listing, setListing] = useState([]);
+
+    const locationAPI = axios.create({
+        baseURL: 'http://transport.opendata.ch/v1',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
     const requestListing = async () => {
         try {
             response = await api.get('/listings/', id);
@@ -30,46 +39,19 @@ function AdOverviewPage(props) {
 
     }
 
-    const decideColor = (any) => {
-        if (any === "FLAT") {
-            return (
-                <Badge bg="primary">Flat</Badge>
-            )
-        } else if (any === "ROOM") {
-            return (
-                <Badge bg="success">Room</Badge>
-            )
-        } else {
-            return (
-                <Badge bg="warning">House</Badge>
-            )
-        }
-    };
-
-    const processGender = (any) => {
-        if (any.length >= 3) {
-            return (
-                "Any"
-            )
-        } else if (any[0] === "FEMALE") {
-            return (
-                "Female"
-            )
-
-        } else {
-            return (
-                "Male"
-            )
-        }
-    };
-
     const handleApply = async () => {
-        //const user = localStorage.getItem('user');
-        //const listing = response.data;
-        //const application = new Application(id, null, user, listing, "pending");
+        const user = localStorage.getItem('user');
+        const application = JSON.stringify({
+            authentication: {
+                email: user.authentication.email,
+                password: user.authentication.token
+            },
+            id: id,
+            application_status: "PENDING"
+        })
         try {
-            //applyResponse = await api.post('/listings/',id,'/applications/');
-            //TODO: add to profile here
+            let applyResponse = await api.post('/listings/',id,'/applications');
+
             alert('Successfully applied!')
 
         } catch (error) {
@@ -80,14 +62,13 @@ function AdOverviewPage(props) {
 
     const requestLocation = async (address) => {
         try {
-            let query = `http://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${address.street}%20${address.house_number}%20${address.zip_code}&type=locations&limit=1`
-            console.log(query);
+            let query = `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${address.street}%20${address.house_number}%20${address.zip_code}&type=locations&limit=1`
             let location = await api.get(query);
-            console.log(location);
             let path = location.data.results[0].attrs
             if (location.data !== null) {
-                let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
-                setListingURL(frameLink);
+                let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.swissimage&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
+                setListingMapURL(frameLink);
+                calculateTravelTime(address.street, address.house_number, address.zip_code)
             };
 
         } catch (error) {
@@ -95,32 +76,31 @@ function AdOverviewPage(props) {
         }
     }
 
+    const calculateTravelTime = async (street, house_number, zip_code) => {
+        try {
+            //const user = localStorage.get('user')
+            //if(user==null){
+            //  return <p>Please log in to see estimated travel times<p>    
+            //}else{}
+            //user.addresses.forEach(address => )
+            address={
+                street: "Schulhausstrasse",
+                house_number: "9",
+                zip_code: "8127",
+                city: "Forch",
+            }
+            response = await locationAPI.get(`/connections?from=${address.street}%20${address.house_number}%20${address.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
+            console.log(response.connections.duration)
+
+        } catch (error) {
+            alert(`Something went wrong during calculation of travel time: \n${handleError(error)}`);
+        }
+
+    }
+
     useEffect(() => {
         requestListing();
     }, []);
-
-    const displayPictures = (pictures) => {
-        if (pictures == null) {
-            return (
-                <div>
-                    <Figure>
-                        <Figure.Image
-                            alt="Cannot load image"
-                            src="https://www.unfe.org/wp-content/uploads/2019/04/SM-placeholder.png"
-                        />
-                    </Figure>
-                </div>);
-        } else {
-            return (<div>
-                <Figure>
-                    <Figure.Image
-                        alt="Cannot load image"
-                        src={pictures[0]}
-                    />
-                </Figure>
-            </div>);
-        }
-    }
 
     return (
         <div>
@@ -157,7 +137,7 @@ function AdOverviewPage(props) {
                                     </Row>
                                     <Row class='mb-2'>
                                         <div>
-                                            {decideColor(ad.listing_type)}
+                                            {decideBadgeColorListingType(ad.listing_type)}
                                         </div>
 
                                     </Row>
@@ -174,7 +154,7 @@ function AdOverviewPage(props) {
                                     <Col>
                                         <h4 class='opacity-50'>Additional Information</h4>
                                         <ul>
-                                            <li>Preferred applicant gender: {processGender(ad.availableTo)}</li>
+                                            <li>Preferred applicant gender: {decideGender(ad.availableTo)}</li>
                                             <li>{(ad.furnished) ? 'Furnished' : 'Unfurnished'}</li>
                                             <li>Deposit: {ad.deposit} CHF</li>
                                         </ul>
@@ -185,7 +165,7 @@ function AdOverviewPage(props) {
                                         </div>
                                     </Col>
                                     <Col>
-                                        <iframe src={listingURL}
+                                        <iframe src={listingMapURL}
                                             width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                                     </Col>
                                 </Row>
