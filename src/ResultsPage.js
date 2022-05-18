@@ -36,7 +36,7 @@ function ResultsPage(props) {
 
     return (
         <div>
-            <Container className="center-middle" style={{marginTop:50}}>
+            <Container className="center-middle">
                 {listings ? <ListingList listings={listings}/> : "Loading..."}
             </Container>
         </div>

@@ -1,4 +1,4 @@
-import { Button, Row, Col, Figure, Container, Badge } from 'react-bootstrap'
+import { Button, Row, Col, Container, Alert } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import { api, handleError } from './helpers/api'
@@ -13,10 +13,10 @@ import axios from 'axios';
 function AdOverviewPage() {
     let response = null;
     const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
-    const navigate = useNavigate();
     const { id } = useParams();
     let address = ''; //do not use this in the returned form
     const [listing, setListing] = useState([]);
+    const [travelTimes, setTravelTimes] = useState([])
 
     const locationAPI = axios.create({
         baseURL: 'http://transport.opendata.ch/v1',
@@ -38,14 +38,38 @@ function AdOverviewPage() {
     }
 
     const replaceGermanCharsInString = (string) => { //This is needed for the map query
-        let replacedString = string.replace('ä','ae');
+        let replacedString = string.replace('ä', 'ae');
         replacedString = replacedString.replace('ö', 'oe');
         replacedString = replacedString.replace('ü', 'ue');
-        replacedString = replacedString.replace('Ä','ae');
+        replacedString = replacedString.replace('Ä', 'ae');
         replacedString = replacedString.replace('Ö', 'Oe');
         replacedString = replacedString.replace('Ü', 'Ue'); //can be converted to single regex expression
-        return (replacedString) 
-        
+        return (replacedString)
+
+    }
+
+    const formatTravelDuration = (string) => {
+        let alertType = 'danger'
+        if (string.length > 0) {
+            let formattedString = (string.slice(0, 2) === "00" ? '' :
+                (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
+                +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
+                (string.slice(3, 5) === "00" ? '' :
+                    (string.slice(3, 4) === "0" ? '' : string.slice(3, 4)) +
+                    +(string.slice(4, 5) === "0" ? '' : string.slice(4, 5)) + ' hours ') +
+                (string.slice(6, 8) === "00" ? '' :
+                    (string.slice(6, 7) === "0" ? '' : string.slice(6, 7)) +
+                    +(string.slice(7, 8) === "0" ? '' : string.slice(7, 8)) + ' minutes ')
+
+            if (formattedString.includes('days')) {
+                alertType = 'danger'
+            } else if (formattedString.includes('hours')) {
+                alertType = 'warning'
+            } else if (formattedString.includes('hours')) {
+                alertType = 'success'
+            }
+            return <Alert variant={alertType}>{formattedString}</Alert>
+        }
     }
 
     const handleApply = async () => {
@@ -77,7 +101,7 @@ function AdOverviewPage() {
             if (location.data !== null) {
                 let frameLink = `https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.swissimage&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=${path.y}&N=${path.x}&zoom=10`
                 setListingMapURL(frameLink);
-                //calculateTravelTime(address.street, address.house_number, address.zip_code)
+                calculateTravelTime(replaceGermanCharsInString(address.street), address.house_number, address.zip_code)
             };
 
         } catch (error) {
@@ -99,8 +123,9 @@ function AdOverviewPage() {
                 city: "Forch",
             }
             response = await locationAPI.get(`/connections?from=${address.street}%20${address.house_number}%20${address.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
-            console.log(response.connections.duration)
-
+            console.log(response.data.connections[0])
+            setTravelTimes(response.data.connections[0].duration)
+            //TODO: fix when address structure is available
         } catch (error) {
             alert(`Something went wrong during calculation of travel time: \n${handleError(error)}`);
         }
@@ -172,7 +197,7 @@ function AdOverviewPage() {
                                         <li>Deposit: {listing.deposit} CHF</li>
                                     </ul>
                                     <h5>Travel Times to your addresses:</h5>
-                                    <p>Address 1</p>
+                                    <p>Address 1 {formatTravelDuration(travelTimes)}</p>
                                     <p>Address 2</p>
                                     <div className='align-self-end'>
                                         <Button type="button" size='lg' variant="primary" onClick={() => handleApply()}>Apply</Button>
