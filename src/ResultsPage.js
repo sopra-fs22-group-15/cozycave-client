@@ -17,9 +17,9 @@ function ResultsPage(props) {
                 //for future search terms
             }
             // TODO: Uncomment when backend is ready
-            // setListings(response.data);
+            setListings(response.data);
             // TODO: remove when backend is ready
-            setListings(mockListings);
+            // setListings(mockListings);
 
         } catch (error) {
             alert(`Something went wrong during the registration: \n${handleError(error)}`);

@@ -8,9 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 import {api} from "../../helpers/api";
-import Listing from "../schemas/Listing";
 import {addressCreator} from "../util/addressCreator";
 import ImageCarousel from "../listings/ImageCarousel";
+import {useNavigate} from "react-router-dom";
 
 const CreateAd = () => {
 
@@ -20,8 +20,10 @@ const CreateAd = () => {
 
     const [address, setAddress] = React.useState(null);
     const [streetName, setStreetName] = React.useState('');
-    const [houseNumber, setHouseNumber] = React.useState('');
+    const [houseNumber, setHouseNumber] = React.useState(null);
     const [city, setCity] = React.useState('');
+    const [state, setState] = React.useState('');
+    const [country, setCountry] = React.useState('Switzerland');
     const [postalCode, setPostalCode] = React.useState('');
     const [availableTo, setAvailableTo] = React.useState("male");
     const [name, setName] = React.useState('');
@@ -29,31 +31,55 @@ const CreateAd = () => {
     const [pictures, setPictures] = React.useState([]);
     const [previewSrc, setPreviewSrc] = useState('');
     const [floorplanPreviewSrc, setFloorplanPreviewSrc] = React.useState('');
-    const [deposit, setDeposit] = React.useState('');
+    const [deposit, setDeposit] = React.useState(null);
     const [type, setType] = React.useState("flat");
     const [description, setDescription] = React.useState('');
-    const [rent, setRent] = React.useState('');
-    const [area, setArea] = React.useState('');
-    const [rooms, setRooms] = React.useState('');
+    const [rent, setRent] = React.useState(null);
+    const [area, setArea] = React.useState(null);
+    const [rooms, setRooms] = React.useState(null);
     const [imageUrl, setImageUrl] = React.useState([]);
+
+    const navigate = useNavigate();
 
 
     const handleSubmit = async e => {
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
+            setValidated(false)
             e.preventDefault();
             e.stopPropagation();
         } else {
-            setValidated(true);
             const requestBody = createListing();
+            if(address && streetName && houseNumber && city && state && postalCode && deposit && rent && area && rooms && name && description){
+                setValidated(true);
+            }
             console.log(requestBody);
-            try {
-                const response = await api.post('/listings', requestBody);
-                console.log(response);
-            } catch (e) {
-                console.log(e);
+            if(validated){
+                try {
+                    await api.post('/listings', requestBody);
+                    toast.success("Listing created successfully! See your listings under the profile page. 🥳", {
+                        position: toast.POSITION.TOP_CENTER,
+                        autoClose: 7000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    navigate('/overview');
+                } catch (error) {
+                    console.log(error);
+                    if (error.response.status === 400) {
+                        toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
+                    } else {
+                        toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
+                    }
+                }
+            } else {
+                toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
             }
         }
+
     };
 
     const handleImages = e => {
@@ -75,30 +101,39 @@ const CreateAd = () => {
 
     // TODO: add support for floorplan maybe?
 
-    const handleFloorplan = e => {
+    const handleFloorplan = () => {
         toast.warn("Floorplan not supported yet 😔");
     };
 
     const createListing = () => {
-        setAddress(addressCreator(streetName, houseNumber, city, postalCode));
+        setAddress(addressCreator(streetName, houseNumber, city, postalCode, state, country, name));
+        console.log(address);
 
         // TODO: add image upload handling
 
-        return new Listing({
-            name,
-            address,
-            availableTo,
-            pictures: pictures,
-            published: true,
-            publisher: localStorage.getItem("user").uuid,
-            deposit,
+        if (!address) {
+            setValidated(false);
+            toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
+        }
+
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        return {
+            title: name,
+            address: addressCreator(streetName, houseNumber, city, postalCode, state, country, name),
+            available_to: [availableTo],
+            available: true,
+            // TODO: send pictures when backend is ready
+            // pictures: pictures,
+            publisher_id: currentUser.id,
+            published: false,
+            deposit: parseFloat(deposit),
             listing_type: type,
             description,
-            rent,
-            sqm: area,
-            rooms,
+            rent: parseFloat(rent),
+            sqm: parseFloat(area),
+            rooms: parseFloat(rooms),
             furnished: false
-        });
+        }
     };
 
     // TODO: add more validation to the form like (character limit, number of rooms, etc)
@@ -161,7 +196,7 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Postal Code</Form.Label>
-                                    <Form.Control required type="text" placeholder="8008" onChange={e => {
+                                    <Form.Control required type="text" placeholder="8050" onChange={e => {
                                         setPostalCode(e.target.value)
                                     }}/>
                                 </Form.Group>
@@ -169,8 +204,16 @@ const CreateAd = () => {
                             <Col>
                                 <Form.Group>
                                     <Form.Label>City</Form.Label>
-                                    <Form.Control required type="text" placeholder="Zurich" onChange={e => {
+                                    <Form.Control required type="text" placeholder="Oerlikon" onChange={e => {
                                         setCity(e.target.value)
+                                    }}/>
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group>
+                                    <Form.Label>State</Form.Label>
+                                    <Form.Control required type="text" placeholder="Zurich" onChange={e => {
+                                        setState(e.target.value)
                                     }}/>
                                 </Form.Group>
                             </Col>

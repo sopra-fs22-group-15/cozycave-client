@@ -22,15 +22,15 @@ function LoginForm(props) {
       const response = await api.put('/auth/login', requestBody);
 
       // Get the returned user and update a new object.
-      const responseToken = response.data.token;
-      const responseUser = response.data.user;
+      const responseToken = response.data.authentication.token;
+      const responseUser = response.data;
 
       // Store the token into the local storage.
       localStorage.setItem('token', responseToken, response.headers["Authorization"]);
-      localStorage.setItem('firstname', responseUser.firstname);
-      localStorage.setItem('lastname', responseUser.lastname);
-      localStorage.setItem('gender', responseUser.gender);
-      localStorage.setItem('user', responseUser);
+      localStorage.setItem('firstname', responseUser.details.first_name);
+      localStorage.setItem('lastname', responseUser.details.last_name);
+      localStorage.setItem('gender', responseUser.details.gender);
+      localStorage.setItem('user', JSON.stringify(responseUser));
 
       // Login successfully worked --> navigate to the landing page in the AppRouter
       navigate(`/`);
