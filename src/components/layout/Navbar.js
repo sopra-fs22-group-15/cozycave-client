@@ -76,7 +76,6 @@ const Navbar = props => {
     const showResetSuccess = () => {
         setLoginIsOpen(true)
         setResetToast(true)
-        toast.success("You'll receive an email with a link to reset your password")
     }
 
     // TODO: make dynamic with store according to actual login status
