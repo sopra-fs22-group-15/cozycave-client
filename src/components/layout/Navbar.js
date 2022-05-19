@@ -1,14 +1,16 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
-import {Dropdown, Form, FormControl} from "react-bootstrap";
+import { Dropdown, Form, FormControl } from "react-bootstrap";
 import "../../styles/Navbar.scss";
-import {useNavigate} from "react-router-dom";
-import {AuthContext} from "../../context/auth-context";
-
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/auth-context";
+import ResetPasswordForm from "../../ResetPasswordForm.js";
+import { LoginContext } from "../../context/login-context.js";
+import { toast } from "react-toastify";
 
 /**
  * Customizable Navbar component.
@@ -21,7 +23,7 @@ import {AuthContext} from "../../context/auth-context";
 
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
+const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         ref={ref}
         onClick={(e) => {
@@ -30,7 +32,7 @@ const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-             height="40"/>
+            height="40" />
         {children}
     </a>
 ));
@@ -39,7 +41,8 @@ const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
-
+    const [resetIsOpen, setResetIsOpen] = useState(false);
+    const [resetToast, setResetToast] = useState(false);
     const navigate = useNavigate();
 
     const auth = useContext(AuthContext);
@@ -70,6 +73,10 @@ const Navbar = props => {
         setRegisterIsOpen(false)
     }
 
+    const showResetSuccess = () => {
+        setLoginIsOpen(true)
+        setResetToast(true)
+    }
 
     // TODO: make dynamic with store according to actual login status
 
@@ -78,17 +85,17 @@ const Navbar = props => {
             {!isLandingPage ? (
                 <div className="d-flex">
                     <Form className="nav-search">
-                        <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
+                        <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2" />
                     </Form>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                            opts="me-2">Sign In</Button>
+                        opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </div>
             ) : (
                 <>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                            opts="me-2">Sign In</Button>
+                        opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </>
@@ -101,21 +108,21 @@ const Navbar = props => {
         navContent = (
             <div className="d-flex">
                 <Form className="nav-search">
-                    <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
+                    <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2" />
                 </Form>
                 <Dropdown>
-                    <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}} id="dropdown-menu-align-responsive-2">
+                    <Dropdown.Toggle as={AvatarToggle} align={{ lg: 'end' }} id="dropdown-menu-align-responsive-2">
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
                         <Dropdown.Item
                             href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
                             Profile</Dropdown.Item>
-                        <Dropdown.Divider/>
+                        <Dropdown.Divider />
                         <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
-                        <Dropdown.Divider/>
+                        <Dropdown.Divider />
                         <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
-                        <Dropdown.Divider/>
+                        <Dropdown.Divider />
                         <Dropdown.Item>
                             <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
                         </Dropdown.Item>
@@ -130,24 +137,34 @@ const Navbar = props => {
 
     return (
         <div>
-            <nav
-                className={`navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
-                <div className="container-fluid flex-nowrap">
-                    <a href="/overview" onClick={(e) => {
-                        handleNavigate("/overview", e)
-                    }} className="navbar-brand">
-                        {props.brandName}
-                        <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                             className="d-inline-block align-text-top"
-                             width="50" height="32"/>
-                    </a>
-                    <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
-                        {navContent}
+            <LoginContext.Provider value={
+                {
+                    loginOpen: loginIsOpen,
+                    resetOpen: resetIsOpen,
+                    setReset: setResetIsOpen,
+                    displaySuccess: showResetSuccess
+                }
+            }>
+                <nav
+                    className={`navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
+                    <div className="container-fluid flex-nowrap">
+                        <a href="/overview" onClick={(e) => {
+                            handleNavigate("/overview", e)
+                        }} className="navbar-brand">
+                            {props.brandName}
+                            <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
+                                className="d-inline-block align-text-top"
+                                width="50" height="32" />
+                        </a>
+                        <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
+                            {navContent}
+                        </div>
                     </div>
-                </div>
-            </nav>
-            <LoginForm loginOpen={loginIsOpen} hideLogin={hideLogin}/>
-            <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
+                </nav>
+                <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen} hideLogin={hideLogin} />
+                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister} />
+                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={()=> setResetIsOpen(false)} />
+            </LoginContext.Provider>
         </div>
     )
 }
