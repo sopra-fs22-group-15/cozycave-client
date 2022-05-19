@@ -208,12 +208,15 @@ const RegisterForm = props => {
                                     </Form.Select>
                                 </Col>
                             </Row>
-                        </Form>
-                        <Button variant="primary" onClick={() => requestRegister()}
-                                disabled={!firstName || !lastName || !email || !password || !(password === confirmPassword) ||
+                            <div className="d-flex justify-content-center mt-3">
+                                <Button variant="primary" onClick={() => requestRegister()} type="submit" style={{"width": "100%"}}
+                                    disabled={!firstName || !lastName || !email || !password || !(password === confirmPassword) ||
                                     !street || !houseNr || !city ||
                                     !zip_code || !gender}>Register
-                        </Button>
+                                </Button>
+                            </div>
+                        </Form>
+
                     </>
                 )}
             </Modal>

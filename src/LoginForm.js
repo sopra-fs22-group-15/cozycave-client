@@ -39,6 +39,7 @@ const LoginForm = props => {
             navigate(`/`);
         } catch (error) {
             alert(`Something went wrong during the login: \n${handleError(error)}`);
+            setLoading(false);
         }
     }
 
@@ -70,9 +71,12 @@ const LoginForm = props => {
                                 <Form.Control type="password" onChange={e => setPassword(e.target.value)}/>
                             </InputGroup>
                         </Form.Group>
+                        <div className="d-flex justify-content-center mt-5">
+                            <Button variant="primary" type="submit" style={{"width": "100%"}}
+                                    onClick={() => requestLogin()} disabled={!email | !password}>Log
+                                In</Button>
+                        </div>
                     </Form>
-                    <Button variant="primary" onClick={() => requestLogin()} disabled={!email | !password}>Log
-                        In</Button>
                 </>
             )}
         </Modal>
