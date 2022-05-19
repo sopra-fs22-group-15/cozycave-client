@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
@@ -7,6 +7,7 @@ import RegisterForm from "../../RegisterForm.js";
 import {Dropdown, Form, FormControl} from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/auth-context";
 
 
 /**
@@ -42,8 +43,10 @@ const Navbar = props => {
 
     const navigate = useNavigate();
 
+    const auth = useContext(AuthContext);
+
     const handleLogout = () => {
-        localStorage.clear();
+        auth.logout();
         setLoggedIn(false);
         navigate("/overview");
     };

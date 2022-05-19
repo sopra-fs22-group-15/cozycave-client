@@ -1,11 +1,14 @@
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { api, handleError } from './helpers/api'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
+import {AuthContext} from "./context/auth-context";
 
-function LoginForm(props) {
+const LoginForm = props => {
+  const auth = useContext(AuthContext);
+
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const navigate = useNavigate();
@@ -25,12 +28,10 @@ function LoginForm(props) {
       const responseToken = response.data.authentication.token;
       const responseUser = response.data;
 
+      auth.login(responseUser, responseToken);
+
       // Store the token into the local storage.
-      localStorage.setItem('token', responseToken, response.headers["Authorization"]);
-      localStorage.setItem('firstname', responseUser.details.first_name);
-      localStorage.setItem('lastname', responseUser.details.last_name);
-      localStorage.setItem('gender', responseUser.details.gender);
-      localStorage.setItem('user', JSON.stringify(responseUser));
+
 
       // Login successfully worked --> navigate to the landing page in the AppRouter
       navigate(`/`);
