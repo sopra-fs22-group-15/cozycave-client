@@ -39,9 +39,11 @@ const App = () => {
     }, []);
 
     useEffect(()=> {
-        const storedData = JSON.parse(localStorage.getItem('user'));
-        if (storedData && storedData.token) {
-            login(storedData.id, storedData.token);
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        const storedToken = localStorage.getItem('token');
+
+        if (storedUser && storedToken) {
+            login(storedUser, storedToken);
         }
     },[login]);
 
@@ -60,7 +62,7 @@ const App = () => {
                 <Routes>
                     <Route exact path="/" element={<LandingPage/>}/>
                     <Route exact path="/overview" element={<ResultsPage/>}/>
-                    <Route path="/profile-page/:id" element={<ProfilePage/>}/>
+                    <Route path="/profile-page/:id" exact element={<ProfilePage/>}/>
                     <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                     <Route path="/create-listing" element={<CreateAd/>}/>
                     <Route path="/edit-listing/:id" element={<EditListing/>}/>

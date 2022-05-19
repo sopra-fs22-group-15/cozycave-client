@@ -52,7 +52,6 @@ const Navbar = props => {
     const handleNavigate = (path, e) => {
         e.preventDefault();
         navigate(path);
-        setIsLandingPage(false)
     };
 
     useEffect(() => {
