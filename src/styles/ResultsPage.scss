@@ -6,3 +6,15 @@
   align-items: center;
   height: 100vh;
 }
+
+h3 {
+  width: 100%;
+  border-bottom: 1px solid #a9a9a9;
+  line-height: 0.1em;
+  margin: 10px 0 30px;
+}
+
+h3 span {
+  background:#fff;
+  padding:0 10px;
+}
