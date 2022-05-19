@@ -1,12 +1,16 @@
-$navbar-height: 400px;
+$navbar-height: 100px;
+$results-height: calc(100vh - 100px);
+
 
 .listing-cards {
   & .row {
     min-height: 310px;
   }
+
   cursor: pointer;
+
   &:hover {
-    border : 1px solid #4285F4;
+    border: 1px solid #4285F4;
     transition: all 0.2s ease-in-out;
   }
 
@@ -42,6 +46,7 @@ $navbar-height: 400px;
       color: lightslategrey;
     }
   }
+
   @media (min-width: 700px) {
     & .card-body {
       padding-right: 1.5rem;
@@ -73,5 +78,6 @@ $navbar-height: 400px;
 }
 
 .listing-results {
+  height: $results-height;
   margin-top: $navbar-height;
 }
