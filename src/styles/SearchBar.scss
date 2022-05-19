@@ -1,8 +1,4 @@
 .nav-search {
-  min-width: 400px;
+  min-width: 800px;
   max-width: 600px;
-  @media (max-width: 600px) {
-    max-width: 200px;
-  }
-  margin-right: 20px;
 }

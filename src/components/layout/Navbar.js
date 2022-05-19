@@ -4,10 +4,11 @@ import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
-import {Dropdown, Form, FormControl} from "react-bootstrap";
+import {Col, Dropdown, Form, FormControl, Row} from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../context/auth-context";
+import SearchBar from "../../SearchBar";
 
 
 /**
@@ -43,6 +44,9 @@ const Navbar = props => {
     const navigate = useNavigate();
 
     const auth = useContext(AuthContext);
+
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user);
 
     const handleLogout = () => {
         auth.logout();
@@ -99,29 +103,35 @@ const Navbar = props => {
     let navContent
     if (auth.isLoggedIn && localStorage.getItem("token") && localStorage.getItem("user")) {
         navContent = (
-            <div className="d-flex">
-                <Form className="nav-search">
-                    <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
-                </Form>
-                <Dropdown>
-                    <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}} id="dropdown-menu-align-responsive-2">
-                    </Dropdown.Toggle>
+            <>
+                <Col md={9}>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item
-                            href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
-                            Profile</Dropdown.Item>
-                        <Dropdown.Divider/>
-                        <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
-                        <Dropdown.Divider/>
-                        <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
-                        <Dropdown.Divider/>
-                        <Dropdown.Item>
-                            <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-            </div>
+                    <Form className="nav-search">
+                        <SearchBar/>
+                    </Form>
+                </Col>
+                <Col lg={2} md={1}>
+                    <Dropdown>
+                        <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}}
+                                         id="dropdown-menu-align-responsive-2">
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item
+                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
+                                Profile</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item>
+                                <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Col>
+            </>
         )
     } else {
         navContent = authInputGroup
@@ -131,20 +141,67 @@ const Navbar = props => {
     return (
         <div>
             <nav
-                className={`navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
-                <div className="container-fluid flex-nowrap">
-                    <a href="/overview" onClick={(e) => {
-                        handleNavigate("/overview", e)
-                    }} className="navbar-brand">
-                        {props.brandName}
-                        <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                             className="d-inline-block align-text-top"
-                             width="50" height="32"/>
-                    </a>
-                    <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
-                        {navContent}
-                    </div>
+                className={`d-flex flex-wrap navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
+                <div className="container-fluid flex-nowrap row">
+                    <Col md={2}>
+                        <a href="/overview" onClick={(e) => {
+                            handleNavigate("/overview", e)
+                        }} className="navbar-brand">
+                            {props.brandName}
+                            <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
+                                 className="d-inline-block align-text-top"
+                                 width="50" height="32"/>
+                        </a>
+                    </Col>
+                        <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
+                            {navContent}
+                        </div>
+
                 </div>
+                {!isLandingPage && (
+                    <div className="navbar-filter-area container-fluid">
+                        <Form>
+                            <Row>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>City</Form.Label>
+                                        <Form.Control type="text" placeholder="Zurich, 8006"/>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>Price range</Form.Label>
+                                        <Form.Control type="text" placeholder="CHF 1'000 - 2'000"/>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>Gender preference</Form.Label>
+                                        <Form.Select aria-label="Default select example">
+                                            <option
+                                                defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
+                                            >{auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}</option>
+                                            <option value="1">MALE</option>
+                                            <option value="2">FEMALE</option>
+                                            <option value="3">BOTH</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>Filters</Form.Label>
+                                        <Form.Select aria-label="Default select example">
+                                            <option selected>See more</option>
+                                            <option value="1">One</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </div>
+                )}
             </nav>
             <LoginForm loginOpen={loginIsOpen} hideLogin={hideLogin}/>
             <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
