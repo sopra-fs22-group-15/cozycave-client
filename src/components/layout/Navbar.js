@@ -39,7 +39,6 @@ const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
-    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
 
     const navigate = useNavigate();
 
@@ -47,7 +46,6 @@ const Navbar = props => {
 
     const handleLogout = () => {
         auth.logout();
-        setLoggedIn(false);
         navigate("/overview");
     };
 
@@ -63,7 +61,7 @@ const Navbar = props => {
         } else {
             setIsLandingPage(false);
         }
-    }, [window.location.pathname, loggedIn]);
+    }, [auth.isLoggedIn]);
     //The following two functions are passed down to the modals as props, and handle the display/hide behavior
 
     const hideLogin = () => {
@@ -99,35 +97,37 @@ const Navbar = props => {
         </>
     )
 
-    const navContent = !loggedIn ? (
-        authInputGroup
-    ) : (
-        // TODO: implement custom navbar to change when logged in.
-        // TODO: implement custom dropdown with speech bubble shape
-        <div className="d-flex">
-            <Form className="nav-search">
-                <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
-            </Form>
-            <Dropdown>
-                <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}} id="dropdown-menu-align-responsive-2">
-                </Dropdown.Toggle>
+    let navContent
+    if (auth.isLoggedIn && localStorage.getItem("token") && localStorage.getItem("user")) {
+        navContent = (
+            <div className="d-flex">
+                <Form className="nav-search">
+                    <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
+                </Form>
+                <Dropdown>
+                    <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}} id="dropdown-menu-align-responsive-2">
+                    </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                    <Dropdown.Item
-                        href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
-                        Profile</Dropdown.Item>
-                    <Dropdown.Divider/>
-                    <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
-                    <Dropdown.Divider/>
-                    <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
-                    <Dropdown.Divider/>
-                    <Dropdown.Item>
-                        <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
-                    </Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-        </div>
-    )
+                    <Dropdown.Menu>
+                        <Dropdown.Item
+                            href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
+                            Profile</Dropdown.Item>
+                        <Dropdown.Divider/>
+                        <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
+                        <Dropdown.Divider/>
+                        <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
+                        <Dropdown.Divider/>
+                        <Dropdown.Item>
+                            <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
+        )
+    } else {
+        navContent = authInputGroup
+    }
+
 
     return (
         <div>
@@ -142,7 +142,7 @@ const Navbar = props => {
                              className="d-inline-block align-text-top"
                              width="50" height="32"/>
                     </a>
-                    <div className={`${!loggedIn && isLandingPage ? "" : "d-flex"}`}>
+                    <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
                         {navContent}
                     </div>
                 </div>
