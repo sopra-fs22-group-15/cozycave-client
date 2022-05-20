@@ -12,12 +12,11 @@ const ProfileDetails = props => {
 
     const [firstName, setFirstName] = useState(user.details.first_name);
     const [lastName, setLastName] = useState(user.details.last_name);
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState(user.details.phone_number);
     const [gender, setGender] = useState(user.details.gender);
     const [bio, setBio] = useState(user.details.biography);
     const [address, setAddress] = useState("")
     const [loading, setLoading] = useState(false);
-
 
     const saveChanges = async () => {
         try {
