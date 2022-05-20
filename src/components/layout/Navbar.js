@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
 
-import { Dropdown, Form, FormControl, Row, Col } from "react-bootstrap";
+import {Dropdown, Form, Row, Col} from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import SearchBar from "../../SearchBar";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/auth-context";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/auth-context";
 import ResetPasswordForm from "../../ResetPasswordForm.js";
-import { LoginContext } from "../../context/login-context.js";
-import { toast } from "react-toastify";
+import {LoginContext} from "../../context/login-context.js";
 
 /**
  * Customizable Navbar component.
@@ -25,7 +24,7 @@ import { toast } from "react-toastify";
 
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
+const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
     <a
         ref={ref}
         onClick={(e) => {
@@ -34,7 +33,7 @@ const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-            height="40" />
+             height="40"/>
         {children}
     </a>
 ));
@@ -105,7 +104,7 @@ const Navbar = props => {
             )}
         </>
     )
-    
+
     let navContent
     if (auth.isLoggedIn && localStorage.getItem("token") && localStorage.getItem("user")) {
         navContent = (
@@ -138,7 +137,7 @@ const Navbar = props => {
     }
     useEffect(() => {
         setIsLandingPage(false);
-        if(window.location.pathname === "/"){
+        if (window.location.pathname === "/") {
             setIsLandingPage(true);
         } else {
             setIsLandingPage(false);
@@ -146,37 +145,37 @@ const Navbar = props => {
     }, [isLandingPage, auth.isLoggedIn, navigate]);
 
     return (
-        <div
-            <LoginContext.Provider value={
-                {
-                    loginOpen: loginIsOpen,
-                    resetOpen: resetIsOpen,
-                    setReset: setResetIsOpen,
-                    displaySuccess: showResetSuccess
-                }
-            }>
-               <nav
+        <div>
+        <LoginContext.Provider value={
+            {
+                loginOpen: loginIsOpen,
+                resetOpen: resetIsOpen,
+                setReset: setResetIsOpen,
+                displaySuccess: showResetSuccess
+            }
+        }>
+            <nav
                 className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
                 <div className="container-fluid">
-                <div className="row">
-                    <Col style={{marginRight: "1.4rem"}}>
-                        <a href="/overview" onClick={(e) => {
-                            handleNavigate("/overview", e)
-                        }} className="navbar-brand">
-                            {props.brandName}
-                            <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                                 className="d-inline-block align-text-top"
-                                 width="50" height="32"/>
-                        </a>
-                    </Col>
-                    {!isLandingPage && (
-                        <Col className="nav-search">
-                            <Form className="nav-search">
-                                <SearchBar/>
-                            </Form>
+                    <div className="row">
+                        <Col style={{marginRight: "1.4rem"}}>
+                            <a href="/overview" onClick={(e) => {
+                                handleNavigate("/overview", e)
+                            }} className="navbar-brand">
+                                {props.brandName}
+                                <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
+                                     className="d-inline-block align-text-top"
+                                     width="50" height="32"/>
+                            </a>
                         </Col>
-                    )}
-                </div>
+                        {!isLandingPage && (
+                            <Col className="nav-search">
+                                <Form className="nav-search">
+                                    <SearchBar/>
+                                </Form>
+                            </Col>
+                        )}
+                    </div>
                     <div className={`${auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
                         {navContent}
                     </div>
@@ -227,14 +226,14 @@ const Navbar = props => {
                     </div>
                 )}
             </nav>
-                <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen} hideLogin={hideLogin} />
-                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister} />
-                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={()=> setResetIsOpen(false)} />
-            </LoginContext.Provider>
-        </div>
-    )
+            <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen}
+                       hideLogin={hideLogin}/>
+            <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
+            <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
+        </LoginContext.Provider>
+</div>
+)
 }
-
 
 
 Navbar.propType = {
