@@ -161,7 +161,7 @@ const Navbar = props => {
             }>
                 <nav
                     className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
-                    <div className="container-fluid navbar-not-overview">
+                    <div className={`container-fluid ${isOverviewPage ? "" : "navbar-not-overview"}`}>
                         <div className="row">
                             <Col style={{marginRight: "1.4rem"}}>
                                 <a href="/overview" onClick={(e) => {
