@@ -134,7 +134,6 @@ const Navbar = props => {
             setIsLandingPage(true);
         } else {
             setIsLandingPage(false);
-            navigate("/overview")
         }
     }, [isLandingPage, auth.isLoggedIn, navigate]);
 
