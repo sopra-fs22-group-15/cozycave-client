@@ -69,7 +69,7 @@ const RegisterForm = props => {
 
             setLoading(false);
             // Login successfully worked --> navigate to the landing page in the AppRouter
-            navigate(`/`);
+            navigate(`/overview`);
         } catch (error) {
             alert(`Something went wrong during the registration: \n${handleError(error)}`);
             setLoading(false);

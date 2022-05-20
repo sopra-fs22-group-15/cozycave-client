@@ -40,12 +40,12 @@ function ResultsPage(props) {
         <div>
             {isLoading ? (
                 <div className="center-middle">
-                    <Spinner animation="border" variant="primary" />
+                    <Spinner animation="border" variant="primary"/>
                 </div>
             ) : (
-                <Container className="center-middle">
-                    {listings ? <ListingList listings={listings}/> : "Loading..."}
-                </Container>
+                    <Container className="center-middle">
+                        {listings ? <ListingList listings={listings}/> : "Loading..."}
+                    </Container>
             )}
         </div>
     )

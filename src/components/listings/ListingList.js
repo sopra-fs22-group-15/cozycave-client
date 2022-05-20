@@ -15,6 +15,9 @@ const ListingList = props => {
 
     return (
         <Container className="listing-results">
+            <Row>
+                <h3><span>Found {props.listings.length} results</span></h3>
+            </Row>
             <Row xs={1} md={colPerRow}>
                 {props.listings ? props.listings.map(listing => (
 

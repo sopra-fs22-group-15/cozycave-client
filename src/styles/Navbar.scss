@@ -1,3 +1,39 @@
 .navbar-custom {;
   background-color: #e3e3e3;
+  padding-bottom: 0;
+
+
+
+  & .navbar-brand {
+    margin-right: 0;
+  }
+  & .col-md-2 {
+    @media (min-width: 768px) {
+      width: 9.5%;
+    }
+  }
+  & .col-md-9 {
+    @media (min-width: 768px){
+      flex: 0 0 auto;
+      width: 89%;
+     }
+  }
+  & .navbar-filter-area {
+    background-color: #c4c4c4;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 10.4%;
+    margin-top: 5px;
+
+    & label {
+      color: #000;
+      font-weight: 500;
+    }
+
+    & .button-group {
+      margin-left: 200px;
+    }
+
+  }
 }
+

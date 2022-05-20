@@ -1,16 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
-import { Dropdown, Form, FormControl } from "react-bootstrap";
+
+import {Dropdown, Form, Row, Col} from "react-bootstrap";
 import "../../styles/Navbar.scss";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/auth-context";
+import SearchBar from "../../SearchBar";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/auth-context";
 import ResetPasswordForm from "../../ResetPasswordForm.js";
-import { LoginContext } from "../../context/login-context.js";
-import { toast } from "react-toastify";
+import {LoginContext} from "../../context/login-context.js";
 
 /**
  * Customizable Navbar component.
@@ -23,7 +24,7 @@ import { toast } from "react-toastify";
 
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
+const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
     <a
         ref={ref}
         onClick={(e) => {
@@ -32,7 +33,7 @@ const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-            height="40" />
+             height="40"/>
         {children}
     </a>
 ));
@@ -46,6 +47,9 @@ const Navbar = props => {
     const navigate = useNavigate();
 
     const auth = useContext(AuthContext);
+
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user);
 
     const handleLogout = () => {
         auth.logout();
@@ -84,18 +88,16 @@ const Navbar = props => {
         <>
             {!isLandingPage ? (
                 <div className="d-flex">
-                    <Form className="nav-search">
-                        <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2" />
-                    </Form>
-                    <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                        opts="me-2">Sign In</Button>
+                    <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)}
+                            outlined={true} variant="primary"
+                            opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </div>
             ) : (
                 <>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                        opts="me-2">Sign In</Button>
+                            opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </>
@@ -106,68 +108,133 @@ const Navbar = props => {
     let navContent
     if (auth.isLoggedIn && localStorage.getItem("token") && localStorage.getItem("user")) {
         navContent = (
-            <div className="d-flex">
-                <Form className="nav-search">
-                    <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2" />
-                </Form>
-                <Dropdown>
-                    <Dropdown.Toggle as={AvatarToggle} align={{ lg: 'end' }} id="dropdown-menu-align-responsive-2">
-                    </Dropdown.Toggle>
+            <>
+                <Col>
+                    <Dropdown>
+                        <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}}
+                                         id="dropdown-menu-align-responsive-2">
+                        </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item
-                            href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
-                            Profile</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item>
-                            <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-            </div>
+                        <Dropdown.Menu>
+                            <Dropdown.Item
+                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
+                                Profile</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item>
+                                <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Col>
+            </>
         )
     } else {
         navContent = authInputGroup
     }
-
+    useEffect(() => {
+        setIsLandingPage(false);
+        if (window.location.pathname === "/") {
+            setIsLandingPage(true);
+        } else {
+            setIsLandingPage(false);
+        }
+    }, [isLandingPage, auth.isLoggedIn, navigate]);
 
     return (
         <div>
-            <LoginContext.Provider value={
-                {
-                    loginOpen: loginIsOpen,
-                    resetOpen: resetIsOpen,
-                    setReset: setResetIsOpen,
-                    displaySuccess: showResetSuccess
-                }
-            }>
-                <nav
-                    className={`navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
-                    <div className="container-fluid flex-nowrap">
-                        <a href="/overview" onClick={(e) => {
-                            handleNavigate("/overview", e)
-                        }} className="navbar-brand">
-                            {props.brandName}
-                            <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                                className="d-inline-block align-text-top"
-                                width="50" height="32" />
-                        </a>
-                        <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
-                            {navContent}
-                        </div>
+        <LoginContext.Provider value={
+            {
+                loginOpen: loginIsOpen,
+                resetOpen: resetIsOpen,
+                setReset: setResetIsOpen,
+                displaySuccess: showResetSuccess
+            }
+        }>
+            <nav
+                className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
+                <div className="container-fluid">
+                    <div className="row">
+                        <Col style={{marginRight: "1.4rem"}}>
+                            <a href="/overview" onClick={(e) => {
+                                handleNavigate("/overview", e)
+                            }} className="navbar-brand">
+                                {props.brandName}
+                                <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
+                                     className="d-inline-block align-text-top"
+                                     width="50" height="32"/>
+                            </a>
+                        </Col>
+                        {!isLandingPage && (
+                            <Col className="nav-search">
+                                <Form className="nav-search">
+                                    <SearchBar/>
+                                </Form>
+                            </Col>
+                        )}
                     </div>
-                </nav>
-                <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen} hideLogin={hideLogin} />
-                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister} />
-                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={()=> setResetIsOpen(false)} />
-            </LoginContext.Provider>
-        </div>
-    )
+                    <div className={`${auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
+                        {navContent}
+                    </div>
+
+                </div>
+                {!isLandingPage && (
+                    <div className="navbar-filter-area container-fluid">
+                        <Form>
+                            <Row>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>City</Form.Label>
+                                        <Form.Control type="text" placeholder="Zurich, 8006"/>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>Price range</Form.Label>
+                                        <Form.Control type="text" placeholder="CHF 1'000 - 2'000"/>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>Gender preference</Form.Label>
+                                        <Form.Select aria-label="Default select example">
+                                            <option
+                                                defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
+                                            >{auth.isLoggedIn && user ? user.details.gender : "Choose preference"}</option>
+                                            <option value="1">MALE</option>
+                                            <option value="2">FEMALE</option>
+                                            <option value="3">BOTH</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col>
+                                    <Form.Group>
+                                        <Form.Label>Filters</Form.Label>
+                                        <Form.Select aria-label="Default select example">
+                                            <option selected>See more</option>
+                                            <option value="1">One</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </div>
+                )}
+            </nav>
+            <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen}
+                       hideLogin={hideLogin}/>
+            <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
+            <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
+        </LoginContext.Provider>
+</div>
+)
 }
+
 
 Navbar.propType = {
     /**
