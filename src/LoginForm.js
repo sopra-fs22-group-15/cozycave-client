@@ -36,7 +36,7 @@ const LoginForm = props => {
             // Store the token into the local storage.
             setLoading(false);
             // Login successfully worked --> navigate to the landing page in the AppRouter
-            navigate(`/`);
+            navigate(`/overview`);
         } catch (error) {
             alert(`Something went wrong during the login: \n${handleError(error)}`);
             setLoading(false);

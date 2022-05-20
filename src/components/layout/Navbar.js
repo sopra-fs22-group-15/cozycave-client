@@ -4,7 +4,7 @@ import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
-import {Col, Dropdown, Form, FormControl, Row} from "react-bootstrap";
+import {Col, Dropdown, Form, Row} from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../context/auth-context";
@@ -81,10 +81,8 @@ const Navbar = props => {
         <>
             {!isLandingPage ? (
                 <div className="d-flex">
-                    <Form className="nav-search">
-                        <FormControl type="search" placeholder="Find what you're looking for ... " className="mr-sm-2"/>
-                    </Form>
-                    <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
+                    <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)}
+                            outlined={true} variant="primary"
                             opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
@@ -104,13 +102,7 @@ const Navbar = props => {
     if (auth.isLoggedIn && localStorage.getItem("token") && localStorage.getItem("user")) {
         navContent = (
             <>
-                <Col md={9}>
-
-                    <Form className="nav-search">
-                        <SearchBar/>
-                    </Form>
-                </Col>
-                <Col lg={2} md={1}>
+                <Col>
                     <Dropdown>
                         <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}}
                                          id="dropdown-menu-align-responsive-2">
@@ -136,14 +128,23 @@ const Navbar = props => {
     } else {
         navContent = authInputGroup
     }
-
+    useEffect(() => {
+        setIsLandingPage(false);
+        if(window.location.pathname === "/"){
+            setIsLandingPage(true);
+        } else {
+            setIsLandingPage(false);
+            navigate("/overview")
+        }
+    }, [isLandingPage, auth.isLoggedIn, navigate]);
 
     return (
         <div>
             <nav
-                className={`d-flex flex-wrap navbar navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
-                <div className="container-fluid flex-nowrap row">
-                    <Col md={2}>
+                className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
+                <div className="container-fluid">
+                <div className="row">
+                    <Col style={{marginRight: "1.4rem"}}>
                         <a href="/overview" onClick={(e) => {
                             handleNavigate("/overview", e)
                         }} className="navbar-brand">
@@ -153,9 +154,17 @@ const Navbar = props => {
                                  width="50" height="32"/>
                         </a>
                     </Col>
-                        <div className={`${!auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
-                            {navContent}
-                        </div>
+                    {!isLandingPage && (
+                        <Col className="nav-search">
+                            <Form className="nav-search">
+                                <SearchBar/>
+                            </Form>
+                        </Col>
+                    )}
+                </div>
+                    <div className={`${auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
+                        {navContent}
+                    </div>
 
                 </div>
                 {!isLandingPage && (
@@ -180,7 +189,7 @@ const Navbar = props => {
                                         <Form.Select aria-label="Default select example">
                                             <option
                                                 defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
-                                            >{auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}</option>
+                                            >{auth.isLoggedIn && user ? user.details.gender : "Choose preference"}</option>
                                             <option value="1">MALE</option>
                                             <option value="2">FEMALE</option>
                                             <option value="3">BOTH</option>
@@ -208,6 +217,8 @@ const Navbar = props => {
         </div>
     )
 }
+
+
 
 Navbar.propType = {
     /**
