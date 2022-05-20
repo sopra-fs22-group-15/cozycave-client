@@ -42,6 +42,7 @@ const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
+    const [isOverviewPage, setIsOverviewPage] = useState(false);
     const [resetIsOpen, setResetIsOpen] = useState(false);
     const [resetToast, setResetToast] = useState(false);
     const navigate = useNavigate();
@@ -139,100 +140,104 @@ const Navbar = props => {
         setIsLandingPage(false);
         if (window.location.pathname === "/") {
             setIsLandingPage(true);
+        } else if (window.location.pathname !== "/overview") {
+            setIsLandingPage(false);
+            setIsOverviewPage(false);
         } else {
             setIsLandingPage(false);
+            setIsOverviewPage(true);
         }
-    }, [isLandingPage, auth.isLoggedIn, navigate]);
+    }, [isLandingPage, isOverviewPage, auth.isLoggedIn, navigate]);
 
     return (
         <div>
-        <LoginContext.Provider value={
-            {
-                loginOpen: loginIsOpen,
-                resetOpen: resetIsOpen,
-                setReset: setResetIsOpen,
-                displaySuccess: showResetSuccess
-            }
-        }>
-            <nav
-                className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
-                <div className="container-fluid">
-                    <div className="row">
-                        <Col style={{marginRight: "1.4rem"}}>
-                            <a href="/overview" onClick={(e) => {
-                                handleNavigate("/overview", e)
-                            }} className="navbar-brand">
-                                {props.brandName}
-                                <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                                     className="d-inline-block align-text-top"
-                                     width="50" height="32"/>
-                            </a>
-                        </Col>
-                        {!isLandingPage && (
-                            <Col className="nav-search">
-                                <Form className="nav-search">
-                                    <SearchBar/>
-                                </Form>
+            <LoginContext.Provider value={
+                {
+                    loginOpen: loginIsOpen,
+                    resetOpen: resetIsOpen,
+                    setReset: setResetIsOpen,
+                    displaySuccess: showResetSuccess
+                }
+            }>
+                <nav
+                    className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
+                    <div className="container-fluid navbar-not-overview">
+                        <div className="row">
+                            <Col style={{marginRight: "1.4rem"}}>
+                                <a href="/overview" onClick={(e) => {
+                                    handleNavigate("/overview", e)
+                                }} className="navbar-brand">
+                                    {props.brandName}
+                                    <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
+                                         className="d-inline-block align-text-top"
+                                         width="50" height="32"/>
+                                </a>
                             </Col>
-                        )}
-                    </div>
-                    <div className={`${auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
-                        {navContent}
-                    </div>
+                            {!isLandingPage && (
+                                <Col className="nav-search">
+                                    <Form className="nav-search">
+                                        <SearchBar/>
+                                    </Form>
+                                </Col>
+                            )}
+                        </div>
+                        <div className={`${auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
+                            {navContent}
+                        </div>
 
-                </div>
-                {!isLandingPage && (
-                    <div className="navbar-filter-area container-fluid">
-                        <Form>
-                            <Row>
-                                <Col>
-                                    <Form.Group>
-                                        <Form.Label>City</Form.Label>
-                                        <Form.Control type="text" placeholder="Zurich, 8006"/>
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group>
-                                        <Form.Label>Price range</Form.Label>
-                                        <Form.Control type="text" placeholder="CHF 1'000 - 2'000"/>
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group>
-                                        <Form.Label>Gender preference</Form.Label>
-                                        <Form.Select aria-label="Default select example">
-                                            <option
-                                                defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
-                                            >{auth.isLoggedIn && user ? user.details.gender : "Choose preference"}</option>
-                                            <option value="1">MALE</option>
-                                            <option value="2">FEMALE</option>
-                                            <option value="3">BOTH</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group>
-                                        <Form.Label>Filters</Form.Label>
-                                        <Form.Select aria-label="Default select example">
-                                            <option selected>See more</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Form>
                     </div>
-                )}
-            </nav>
-            <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen}
-                       hideLogin={hideLogin}/>
-            <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
-            <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
-        </LoginContext.Provider>
-</div>
-)
+                    {!isLandingPage && isOverviewPage && (
+                        <div className="navbar-filter-area container-fluid">
+                            <Form>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>City</Form.Label>
+                                            <Form.Control type="text" placeholder="Zurich, 8006"/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Price range</Form.Label>
+                                            <Form.Control type="text" placeholder="CHF 1'000 - 2'000"/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Gender preference</Form.Label>
+                                            <Form.Select aria-label="Default select example">
+                                                <option
+                                                    defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
+                                                >{auth.isLoggedIn && user ? user.details.gender : "Choose preference"}</option>
+                                                <option value="1">MALE</option>
+                                                <option value="2">FEMALE</option>
+                                                <option value="3">BOTH</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Filters</Form.Label>
+                                            <Form.Select aria-label="Default select example">
+                                                <option selected>See more</option>
+                                                <option value="1">One</option>
+                                                <option value="2">Two</option>
+                                                <option value="3">Three</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </div>
+                    )}
+                </nav>
+                <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen}
+                           hideLogin={hideLogin}/>
+                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
+                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
+            </LoginContext.Provider>
+        </div>
+    )
 }
 
 
