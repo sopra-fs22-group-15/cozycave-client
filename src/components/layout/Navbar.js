@@ -1,15 +1,18 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
-import {Col, Dropdown, Form, Row} from "react-bootstrap";
-import "../../styles/Navbar.scss";
-import {useNavigate} from "react-router-dom";
-import {AuthContext} from "../../context/auth-context";
-import SearchBar from "../../SearchBar";
 
+import { Dropdown, Form, FormControl, Row, Col } from "react-bootstrap";
+import "../../styles/Navbar.scss";
+import SearchBar from "../../SearchBar";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/auth-context";
+import ResetPasswordForm from "../../ResetPasswordForm.js";
+import { LoginContext } from "../../context/login-context.js";
+import { toast } from "react-toastify";
 
 /**
  * Customizable Navbar component.
@@ -22,7 +25,7 @@ import SearchBar from "../../SearchBar";
 
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
+const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         ref={ref}
         onClick={(e) => {
@@ -31,7 +34,7 @@ const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-             height="40"/>
+            height="40" />
         {children}
     </a>
 ));
@@ -40,7 +43,8 @@ const Navbar = props => {
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
-
+    const [resetIsOpen, setResetIsOpen] = useState(false);
+    const [resetToast, setResetToast] = useState(false);
     const navigate = useNavigate();
 
     const auth = useContext(AuthContext);
@@ -74,6 +78,10 @@ const Navbar = props => {
         setRegisterIsOpen(false)
     }
 
+    const showResetSuccess = () => {
+        setLoginIsOpen(true)
+        setResetToast(true)
+    }
 
     // TODO: make dynamic with store according to actual login status
 
@@ -97,7 +105,7 @@ const Navbar = props => {
             )}
         </>
     )
-
+    
     let navContent
     if (auth.isLoggedIn && localStorage.getItem("token") && localStorage.getItem("user")) {
         navContent = (
@@ -138,8 +146,16 @@ const Navbar = props => {
     }, [isLandingPage, auth.isLoggedIn, navigate]);
 
     return (
-        <div>
-            <nav
+        <div
+            <LoginContext.Provider value={
+                {
+                    loginOpen: loginIsOpen,
+                    resetOpen: resetIsOpen,
+                    setReset: setResetIsOpen,
+                    displaySuccess: showResetSuccess
+                }
+            }>
+               <nav
                 className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
                 <div className="container-fluid">
                 <div className="row">
@@ -211,8 +227,10 @@ const Navbar = props => {
                     </div>
                 )}
             </nav>
-            <LoginForm loginOpen={loginIsOpen} hideLogin={hideLogin}/>
-            <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
+                <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen} hideLogin={hideLogin} />
+                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister} />
+                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={()=> setResetIsOpen(false)} />
+            </LoginContext.Provider>
         </div>
     )
 }
