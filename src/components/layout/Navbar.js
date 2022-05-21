@@ -50,7 +50,6 @@ const Navbar = props => {
     const auth = useContext(AuthContext);
 
     const user = JSON.parse(localStorage.getItem('user'))
-    console.log(user);
 
     const handleLogout = () => {
         auth.logout();

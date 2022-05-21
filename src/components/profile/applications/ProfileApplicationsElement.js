@@ -16,8 +16,7 @@ const ProfileApplicationsElement = props => {
 
     const deleteApplication = async () => {
         try {
-            // TODO: change when API is ready
-            //let response = await api.delete('/applications' + application.id);
+            let response = await api.delete(`/applications/${application.id}`);
             toggleShowDeleted();
 
         } catch (error) {
@@ -38,7 +37,7 @@ const ProfileApplicationsElement = props => {
     }
 
     const renderApplication = () => {
-        if (application.applications_status === 'approved') {
+        if (application.applications_status === 'ACCEPTED') {
             return (
                 <div>
                     <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
@@ -53,7 +52,7 @@ const ProfileApplicationsElement = props => {
                     </div>
                 </div>
             )
-        } else if (application.applications_status === 'denied') {
+        } else if (application.applications_status === 'DENIED') {
             return (
                 <div>
                     <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
@@ -87,20 +86,21 @@ const ProfileApplicationsElement = props => {
         }
     };
 
-    const getListingByApplication = async (uuid) => {
+    const getListingByApplication = async (id) => {
         try {
-            //queryResponse = await api.get('/listings/' + uuid);
-            queryResponse = mockListings[1];
+            queryResponse = await api.get(`/listings/${id}`);
             setListing(queryResponse);
 
         } catch (error) {
+            queryResponse = mockListings[1];
+            setListing(queryResponse);
             alert(`Something went wrong during display of your applications: \n${handleError(error)}`);
         }
 
     };
 
     useLayoutEffect(() => {
-        getListingByApplication(application.uuid);
+        getListingByApplication(application.id);
     }, []);
 
     return (
