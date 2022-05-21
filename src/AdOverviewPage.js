@@ -41,7 +41,7 @@ function AdOverviewPage() {
         let replacedString = string.replace('ä', 'ae');
         replacedString = replacedString.replace('ö', 'oe');
         replacedString = replacedString.replace('ü', 'ue');
-        replacedString = replacedString.replace('Ä', 'ae');
+        replacedString = replacedString.replace('Ä', 'Ae');
         replacedString = replacedString.replace('Ö', 'Oe');
         replacedString = replacedString.replace('Ü', 'Ue'); //can be converted to single regex expression
         return (replacedString)
@@ -73,17 +73,20 @@ function AdOverviewPage() {
     }
 
     const handleApply = async () => {
-        const user = localStorage.getItem('user');
+        const user = JSON.parse(localStorage.getItem('user'));
         const application = JSON.stringify({
-            authentication: {
+            authentication: { //to be fixed in group
                 email: user.authentication.email,
-                password: user.authentication.token
+                token: user.authentication.token
             },
-            id: id,
-            application_status: "PENDING"
+            creation_date: "2020-05-14T02:41:20.182+00:00",
+            applicant: user,
+            listing: listing,
+            application_status: "Pending"
         })
+        console.log(JSON.parse(application))
         try {
-            let applyResponse = await api.post('/listings/', id, '/applications');
+            let applyResponse = await api.post(`/listings/${id}/applications`);
 
             alert('Successfully applied!')
 
@@ -137,14 +140,13 @@ function AdOverviewPage() {
     }, []);
 
     return (
-        <div>
             <Container fluid={true}>
-                <div className='d-inline-block border border-dark rounded' style={{ marginTop: 60, height: "60%" }}>
-                    <Row>
+                
+                    <Row style={{marginTop:'4em'}}>
                         <Col>
                             {displayPictures(listing.picture ? listing.picture.url : null)}
                         </Col>
-                        <Col style={{ marginRight: 20 }}>
+                        <Col>
                             <div className='border-bottom border-dark'>
                                 <Row>
                                     <Col>
@@ -172,7 +174,7 @@ function AdOverviewPage() {
                                         <h3>No address available</h3>
                                     )}
                                 </Row>
-                                <Row className='mb-2'>
+                                <Row className='mb-1'>
                                     <div>
                                         {decideBadgeColorListingType(listing.listing_type)}
                                     </div>
@@ -187,8 +189,8 @@ function AdOverviewPage() {
 
                                 </Row>
                             </div>
-                            <Row style={{ width: '90%' }}>
-                                <Col md={6}>
+                            <Row md={2}>
+                                <Col md="auto">
                                     <h4 className='opacity-50'>Additional Information</h4>
                                     <ul>
                                         <li>Preferred applicant gender: {decideGender(listing.available_to ? listing.available_to : null)}
@@ -205,7 +207,7 @@ function AdOverviewPage() {
                                         <Button type="button" size='lg' variant="outline-danger">Report</Button>
                                     </div>
                                 </Col>
-                                <Col md={6}>
+                                <Col md='auto'>
                                     <iframe src={listingMapURL}
                                         width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                                 </Col>
@@ -213,10 +215,10 @@ function AdOverviewPage() {
 
                         </Col>
                     </Row>
-                </div>
+                
             </Container>
 
-        </div>
+        
 
     )
 

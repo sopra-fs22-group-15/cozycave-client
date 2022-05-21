@@ -18,22 +18,23 @@ const ProfileListingsElement = props => {
 
     const navigate = useNavigate();
 
-    const requestApplications = async () => {
+    const requestApplications = async () => { //TODO: needs to be tested
         try {
-            //applicationsResponse = await api.get('/listings/' + listing.uuid + "/applications");
-            applicationsResponse = mockApplications;
+            applicationsResponse = await api.get(`/listings/${listing.id}/applications`);
             setApplications(applicationsResponse);
 
         } catch (error) {
+            applicationsResponse = mockApplications;
+            setApplications(applicationsResponse);
             alert(`Something went wrong during display of applicants: \n${handleError(error)}`);
         }
 
 
     }
 
-    const deleteListing = async () => {
+    const deleteListing = async () => { //TODO: needs to be tested
         try {
-            await api.delete('/listings/' + listing.id);
+            await api.delete(`/listings/${listing.id}`);
             props.getListings();
             toast.success("Listing deleted successfully!");
         } catch (error) {
@@ -42,13 +43,15 @@ const ProfileListingsElement = props => {
 
     }
 
-    const updateListingApplication = async (id, status) => {
+    const updateListingApplication = async (applicationId, status) => { //TODO: needs to be tested with API 
         try {
+            let user = JSON.parse(localStorage.getItem('user'));
             const requestBody = JSON.stringify({
+                authentication: user.authentication,
                 applications_status: status
             })
             console.log(requestBody);
-            //let response = await api.put('/listings/' + id, requestBody);
+            let response = await api.put(`/listings/${listing.id}/applications/${applicationId}`, requestBody);
         } catch (error) {
             alert(`${handleError(error)}`);
         }
@@ -66,8 +69,10 @@ const ProfileListingsElement = props => {
                 </tr>
                 </thead>
                 <tbody>
+                
+
                 {applications.map(application => {
-                    return (application.applications_status === 'pending' ?
+                    return (application.applications_status === 'PENDING' ?
                             (
                                 <tr key={application.id}>
                                     <td>{application.id}</td>
@@ -92,7 +97,7 @@ const ProfileListingsElement = props => {
                                     <td>{application.owner.firstname}</td>
                                     <td>{application.owner.lastname}</td>
                                     <td style={{textAlign: "center"}}>
-                                        {application.applications_status === 'approved' ?
+                                        {application.applications_status === 'ACCEPTED' ?
                                             (<Alert variant='success'>Approved, contact candidate by email</Alert>) :
                                             (<Alert variant='danger'>Denied</Alert>)
                                         }
@@ -139,7 +144,7 @@ const ProfileListingsElement = props => {
                 </Row>
                 <Row>
                     <h4>Applicants:</h4>
-                    {renderApplications()}
+                    {applications.length>0 ? renderApplications() : (<p>No applicants yet :(</p>)}
                 </Row>
             </Accordion.Body>
         </Accordion.Item>

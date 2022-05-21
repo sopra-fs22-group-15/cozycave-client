@@ -12,19 +12,19 @@ import ProfileApplicationsList from "./ProfileApplicationsList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { mockApplicationsFromOneUser } from '../../util/mockApplicationsFromOneUser';
+import { api } from '../../../helpers/api';
 
 
 const ProfileApplications = () => {
     const navigate = useNavigate();
     const [applications, setApplications] = useState([])
     let response = null;
-    const user = localStorage.getItem('user')
+    const user = JSON.parse(localStorage.getItem('user'))
 
     const requestResults = async () => {
         try {
-            // TODO: change when API is ready
-            //response = await api.get('/users/'+user.uuid+/applications');
-            setApplications(mockApplicationsFromOneUser)
+            response = await api.get(`/users/${user.id}/applications`);
+            setApplications(response)
         } catch (error) {
             alert(`Something went wrong during retrieval of your applications: \n${handleError(error)}`);
         }
@@ -39,12 +39,20 @@ const ProfileApplications = () => {
             <Row>
                 <Col>
                     <h5>
-                        Manage listings you have applied to:
+                        Manage your applications:
                     </h5>
                     <hr />
                 </Col>
             </Row>
-            <ProfileApplicationsList applications={applications} />
+            {applications.length > 0 ? <ProfileApplicationsList applications={applications}/> : (
+                <Row>
+                    <Col>
+                        <h6 style={{color: "#a9a9a9"}}>
+                            Wow, such empty! Apply to some listings to view your applications here
+                        </h6>
+                    </Col>
+                </Row>
+            )}
             <hr />
             <Row>
                 <Col className="d-flex justify-content-center align-content-center">
