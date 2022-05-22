@@ -81,11 +81,11 @@ const ProfileListingsElement = props => {
                                     <td style={{textAlign: "center"}}>
                                         <ButtonGroup>
                                             <Button variant="success" className='mx-auto'
-                                                    onClick={() => updateListingApplication(application.id, 'approved')}>
+                                                    onClick={() => updateListingApplication(application.id, 'ACCEPTED')}>
                                                 Accept
                                             </Button>
                                             <Button variant="dark" className='mx-auto'
-                                                    onClick={() => updateListingApplication(application.id, 'denied')}>
+                                                    onClick={() => updateListingApplication(application.id, 'DENIED')}>
                                                 Reject
                                             </Button>
                                         </ButtonGroup>

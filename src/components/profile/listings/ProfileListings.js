@@ -27,7 +27,6 @@ const ProfileListings = () => {
 
     useEffect(() => {
         requestResults();
-        console.log(listings);
     }, []);
 
 
