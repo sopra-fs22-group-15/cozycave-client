@@ -1,7 +1,7 @@
 export const mockApplicationsFromOneUser =   [
     {
         "id":1,
-        "applications_status":"approved",
+        "applications_status":"ACCEPTED",
         "owner":{
             "firstname": "Mark",
             "lastname": "Allen",
@@ -10,7 +10,7 @@ export const mockApplicationsFromOneUser =   [
     },
     {
         "id":2,
-        "applications_status":"pending",
+        "applications_status":"PENDING",
         "owner":{
             "firstname": "Mark",
             "lastname": "Allen",
@@ -19,7 +19,7 @@ export const mockApplicationsFromOneUser =   [
     },
     {
         "id":3,
-        "applications_status":"pending",
+        "applications_status":"PENDING",
         "owner":{
             "firstname": "Mark",
             "lastname": "Allen",
@@ -28,7 +28,7 @@ export const mockApplicationsFromOneUser =   [
     },
     {
         "id":4,
-        "applications_status":"denied",
+        "applications_status":"DENIED",
         "owner":{
             "firstname": "Mark",
             "lastname": "Allen",
