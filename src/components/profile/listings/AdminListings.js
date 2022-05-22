@@ -1,25 +1,25 @@
-import { Button, Row, Col, Container } from 'react-bootstrap'
+import { Button, Row, Col, Container, Spinner } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import {api, handleError} from '../../../helpers/api'
+import { api, handleError } from '../../../helpers/api'
 import { mockListings } from "../../util/mockListings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import ProfileListingsList from "./ProfileListingsList";
 
-const ProfileListings = () => {
+const AdminListings = () => {
     const navigate = useNavigate();
     const [listings, setListings] = useState([])
     let response = null;
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const requestResults = async () => {
+    const requestResults = async () => {//TODO: uncomment when admin functions are implemented
         try {
             // TODO: add endpoint for getting listings of a user
             response = await api.get('/listings');
 
-            setListings(response.data.filter(listing => listing.publisher.id === user.id));
-            // setListings(mockListings.slice(1, 3));
+            setListings(response.data);
+            //setListings(mockListings.slice(1, 3));
         } catch (error) {
             alert(`Something went wrong during display of listings: \n${handleError(error)}`);
         }
@@ -35,17 +35,17 @@ const ProfileListings = () => {
             <Row>
                 <Col>
                     <h5>
-                        Manage your listings:
+                        Manage listings:
                     </h5>
                     <hr />
                 </Col>
             </Row>
-            {listings.length > 0 ? <ProfileListingsList listings={listings} getListings={requestResults}/> : (
+            {listings.length > 0 ? <ProfileListingsList listings={listings} getListings={requestResults} /> : (
                 <Row>
                     <Col>
-                        <h6 style={{color: "#a9a9a9"}}>
-                            Wow, such empty! Create listings to see them here.
-                        </h6>
+                        <div className='center-middle'>
+                            <Spinner animation="border" variant="primary" />
+                        </div>
                     </Col>
                 </Row>
             )}
@@ -65,4 +65,4 @@ const ProfileListings = () => {
     );
 };
 
-export default ProfileListings;
+export default AdminListings;
