@@ -1,4 +1,4 @@
-import { Button, Row, Col, Container, Accordion, ToastContainer } from 'react-bootstrap'
+import { Button, Row, Col, Container, Accordion, ToastContainer, Spinner } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import { api, handleError } from '../../../helpers/api'
@@ -47,7 +47,7 @@ const AdminUsers = () => {
                                     <span style={{ marginLeft: "1rem" }}>({user.role})</span>
                                 </Accordion.Header>
                                 <AccordionBody>
-                                    <ForeignViewProfile user={user} />
+                                    <ForeignViewProfile user={user} openAsOwnPage={false} />
                                 </AccordionBody>
                             </Accordion.Item>
                         )
@@ -57,9 +57,9 @@ const AdminUsers = () => {
                 : (
                     <Row>
                         <Col>
-                            <h6 style={{ color: "#a9a9a9" }}>
-                                No users yet? Wonder how this happened
-                            </h6>
+                            <div className='center-middle'>
+                                <Spinner animation="border" variant="primary" />
+                            </div>
                         </Col>
                     </Row>
                 )}

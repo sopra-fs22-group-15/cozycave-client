@@ -1,7 +1,7 @@
-import { Button, Row, Col, Container } from 'react-bootstrap'
+import { Button, Row, Col, Container, Spinner } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import {api, handleError} from '../../../helpers/api'
+import { api, handleError } from '../../../helpers/api'
 import { mockListings } from "../../util/mockListings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
@@ -40,12 +40,12 @@ const AdminListings = () => {
                     <hr />
                 </Col>
             </Row>
-            {listings.length > 0 ? <ProfileListingsList listings={listings} getListings={requestResults}/> : (
+            {listings.length > 0 ? <ProfileListingsList listings={listings} getListings={requestResults} /> : (
                 <Row>
                     <Col>
-                        <h6 style={{color: "#a9a9a9"}}>
-                            Wow, such empty! Seems like nobody created any listings yet.
-                        </h6>
+                        <div className='center-middle'>
+                            <Spinner animation="border" variant="primary" />
+                        </div>
                     </Col>
                 </Row>
             )}

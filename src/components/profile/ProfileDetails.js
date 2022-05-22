@@ -53,7 +53,8 @@ const ProfileDetails = props => {
                              className="rounded-circle profile-avatar"
                              height="150"/>
                         <h1 style={{color: "white"}}>{lastName || firstName ? `${firstName + " " + lastName}` : "John Doe"}</h1>
-                        <h5 style={{color: "white"}}>{`${user.email ? user.email : "john.doe@uzh.ch"}`}</h5>
+                        <h5 style={{color: "white"}}>{`${user.authentication.email ? 
+                            user.authentication.email : "john.doe@uzh.ch"}`}</h5>
                     </Col>
                 </Row>
             </Card.Header>
@@ -81,10 +82,10 @@ const ProfileDetails = props => {
                         <Col>
                             <Form.Group>
                                 <Form.Label>Gender</Form.Label>
-                                <Form.Select aria-label="male" onChange={e => {
+                                <Form.Select aria-label="MALE" onChange={e => {
                                     setGender(e.target.value)
                                 }}>
-                                    <option>MALE</option>
+                                    <option>{user.details.gender}</option>
                                     <option value="1">FEMALE</option>
                                     <option value="2">OTHER</option>
                                 </Form.Select>
@@ -104,7 +105,7 @@ const ProfileDetails = props => {
                     <Row>
                         <Form.Group>
                             <Form.Label>Occupation</Form.Label>
-                            <Form.Select type="text" value={user.role === "STUDENT" ? 1 : 2} placeholder="Student"
+                            <Form.Select type="text" value={user.role === "STUDENT" ? 1 : 2}
                                          onChange={() => {
                                              alert("To change your account type please create a new account.")
                                          }}>
@@ -133,8 +134,8 @@ const ProfileDetails = props => {
                     <hr/>
                     <Row>
                         <Form.Group>
-                            <Form.Label>Biography</Form.Label>
-                            <Form.Control as="textarea" rows="10" placeholder="Tell us about yourself"
+                            <Form.Label>Describe yourself (this will be shown to listing owners if you apply):</Form.Label>
+                            <Form.Control as="textarea" rows="10" placeholder={user.details.biography}
                                           onChange={e => {
                                               setBio(e.target.value)
                                           }}/>

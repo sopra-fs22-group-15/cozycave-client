@@ -59,7 +59,8 @@ const ProfileListingsElement = props => {
     }
 
     const openProfile = (user) => {
-        return (<ForeignViewProfile user={user} />)
+        navigate(`/view-profile/${user.id}`)
+        return (<ForeignViewProfile user={user} openAsOwnPage={true}/>)
     }
 
     const renderApplications = () => {
