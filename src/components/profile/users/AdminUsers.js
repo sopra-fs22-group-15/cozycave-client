@@ -1,11 +1,9 @@
-import { Button, Row, Col, Container } from 'react-bootstrap'
+import { Button, Row, Col, Container, Accordion, ToastContainer } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 import { api, handleError } from '../../../helpers/api'
-import { mockListings } from "../../util/mockListings";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-import ProfileListingsList from "./ProfileListingsList";
+import ForeignViewProfile from '../ForeignViewProfile';
+import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
@@ -17,10 +15,10 @@ const AdminUsers = () => {
         try {
             response = await api.get('/users');
 
-            setListings(response.data);
+            setUsers(response.data);
             // setListings(mockListings.slice(1, 3));
         } catch (error) {
-            alert(`Something went wrong during display of listings: \n${handleError(error)}`);
+            alert(`Something went wrong during display of users: \n${handleError(error)}`);
         }
     }
 
@@ -39,17 +37,21 @@ const AdminUsers = () => {
                     <hr />
                 </Col>
             </Row>
-            {listings.users > 0 ?
+            {users.length > 0 ?
                 <Accordion defaultActiveKey="0">
-                    {props.listings ? props.listings.map((listing, index) => {
+                    {users.map((user, index) => {
                         return (
-                            <ProfileListingsElement key={index} listing={listing} index={index} getListings={reload} />
+                            <Accordion.Item eventKey={index}>
+                                <Accordion.Header>
+                                    {user.details.first_name} {user.details.last_name}
+                                    <span style={{ marginLeft: "1rem" }}>({user.role})</span>
+                                </Accordion.Header>
+                                <AccordionBody>
+                                    <ForeignViewProfile user={user} />
+                                </AccordionBody>
+                            </Accordion.Item>
                         )
-                    }) : (
-                        <Spinner animation="border" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>
-                    )}
+                    })}
                     <ToastContainer />
                 </Accordion>
                 : (

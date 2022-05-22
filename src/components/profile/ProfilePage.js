@@ -8,6 +8,7 @@ import ProfileListings from "./listings/ProfileListings";
 import AdminListings from './listings/AdminListings';
 import { AuthContext } from "../../context/auth-context";
 import { useNavigate } from "react-router-dom";
+import AdminUsers from './users/AdminUsers';
 
 const ProfilePage = () => {
     const auth = useContext(AuthContext);
@@ -52,7 +53,7 @@ const ProfilePage = () => {
                             <AdminListings />
                         </Tab>
                         <Tab eventKey="admin_users" title="(Admin) Users">
-                            <ProfileListings />
+                            <AdminUsers />
                         </Tab>
                     </Tabs>
                 </Card>
