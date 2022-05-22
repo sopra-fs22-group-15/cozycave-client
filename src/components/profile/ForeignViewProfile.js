@@ -1,53 +1,40 @@
-import React, {useState} from "react";
-import {Button, Card, Col, Form, Row} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSave} from "@fortawesome/free-solid-svg-icons";
-import {api} from "../../helpers/api";
+import React, { useState } from "react";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import 'react-phone-number-input/style.css'
-import {addressStringBuilder} from "../../helpers/addressStringBuilder";
+import { addressStringBuilder } from "../../helpers/addressStringBuilder";
 
-const ProfileDetails = props => {
+const ForeignViewProfile = props => {
 
     const user = props.user;
-
-    const [firstName, setFirstName] = useState(user.details.first_name);
-    const [lastName, setLastName] = useState(user.details.last_name);
     const [phoneNumber, setPhoneNumber] = useState(user.details.phone_number);
-    const [gender, setGender] = useState(user.details.gender);
-    const [bio, setBio] = useState(user.details.biography);
-    const [address, setAddress] = useState("")
-    const [loading, setLoading] = useState(false);
 
     return (
         <>
-            <Card.Header className="d-flex justify-content-center" style={{backgroundColor: "#708AFF"}}>
+            <Card.Header className="d-flex justify-content-center" style={{ backgroundColor: "#708AFF" }}>
                 <Row>
                     <Col className="d-flex flex-column align-items-center ">
                         <img src="https://www.placecage.com/c/300/300" alt="profile"
-                             className="rounded-circle profile-avatar"
-                             height="150"/>
-                        <h1 style={{color: "white"}}>{lastName || firstName ? `${firstName + " " + lastName}` : "John Doe"}</h1>
-                        <h5 style={{color: "white"}}>{`${user.email ? user.email : "john.doe@uzh.ch"}`}</h5>
+                            className="rounded-circle profile-avatar"
+                            height="150" />
+                        <h1 style={{ color: "white" }}>{user.details.lastName || user.details.firstName ?
+                            `${user.details.firstName + " " + user.details.lastName}` : "John Doe"}</h1>
+                        <h5 style={{ color: "white" }}>{`${user.email ? user.email : "john.doe@uzh.ch"}`}</h5>
                     </Col>
                 </Row>
             </Card.Header>
             <Card.Body>
-                <Form onSubmit={saveChanges}>
+                <Form>
                     <Row>
                         <Col>
                             <Form.Group>
                                 <Form.Label>First Name</Form.Label>
-                                <Form.Control type="text" placeholder={user.details.first_name} onChange={e => {
-                                    setFirstName(e.target.value)
-                                }}/>
+                                <Form.Control type="text" placeholder={user.details.first_name} disabled />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label>Last Name</Form.Label>
-                                <Form.Control type="text" placeholder={user.details.last_name} onChange={e => {
-                                    setLastName(e.target.value)
-                                }}/>
+                                <Form.Control type="text" placeholder={user.details.last_name} disabled />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -55,9 +42,7 @@ const ProfileDetails = props => {
                         <Col>
                             <Form.Group>
                                 <Form.Label>Gender</Form.Label>
-                                <Form.Select aria-label="male" onChange={e => {
-                                    setGender(e.target.value)
-                                }}>
+                                <Form.Select aria-label={user.details.gender} disabled>
                                     <option>MALE</option>
                                     <option value="1">FEMALE</option>
                                     <option value="2">OTHER</option>
@@ -68,66 +53,45 @@ const ProfileDetails = props => {
                             <Form.Group>
                                 <Form.Label>Phone Number</Form.Label>
                                 <Form.Control type="text"
-                                              placeholder={phoneNumber ? phoneNumber : "No phone number yet"}
-                                              onChange={e => {
-                                                  setPhoneNumber(e.target.value)
-                                              }}/>
+                                    placeholder={user.details.phone_number ?
+                                        user.details.phone_number : "No phone number yet"}
+                                    disabled />
                             </Form.Group>
                         </Col>
                     </Row>
                     <Row>
                         <Form.Group>
                             <Form.Label>Occupation</Form.Label>
-                            <Form.Select type="text" value={user.role === "STUDENT" ? 1 : 2} placeholder="Student"
-                                         onChange={() => {
-                                             alert("To change your account type please create a new account.")
-                                         }}>
+                            <Form.Select type="text" placeholder={user.role} disabled>
                                 <option value="1">Student</option>
                                 <option value="2">Landlord</option>
                             </Form.Select>
                         </Form.Group>
                     </Row>
-                    <hr/>
+                    <hr />
                     <Row>
                         <Form.Group>
                             <Form.Label>1st Address</Form.Label>
-                            <Form.Control type="text" placeholder={addressStringBuilder(user.details.address)} onChange={e => {
-                                setAddress(e.target.value)
-                            }}/>
+                            <Form.Control type="text" placeholder={addressStringBuilder(user.details.address)} disabled />
                         </Form.Group>
                     </Row>
                     <Row>
                         <Form.Group>
                             <Form.Label>2nd Address</Form.Label>
-                            <Form.Control type="text" placeholder="Add a second address" onChange={e => {
-                                setAddress(e.target.value)
-                            }}/>
+                            <Form.Control type="text" placeholder="Add a second address" disabled />
                         </Form.Group>
                     </Row>
-                    <hr/>
+                    <hr />
                     <Row>
                         <Form.Group>
                             <Form.Label>Biography</Form.Label>
-                            <Form.Control as="textarea" rows="10" placeholder="Tell us about yourself"
-                                          onChange={e => {
-                                              setBio(e.target.value)
-                                          }}/>
+                            <Form.Control as="textarea" rows="10" placeholder={user.details.biography} disabled />
                         </Form.Group>
                     </Row>
                 </Form>
             </Card.Body>
-            <Card.Footer>
-                <Row>
-                    <Col className="d-flex justify-content-center align-content-center">
-                        <Button variant="primary" type="submit" onClick={submitForm}>
-                            <span style={{marginRight: "10px"}}>Save</span>
-                            <FontAwesomeIcon icon={faSave}/>
-                        </Button>
-                    </Col>
-                </Row>
-            </Card.Footer>
         </>
     )
 }
 
-export default ProfileDetails;
+export default ForeignViewProfile;

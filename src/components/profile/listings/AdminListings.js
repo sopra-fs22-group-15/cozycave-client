@@ -16,10 +16,10 @@ const AdminListings = () => {
     const requestResults = async () => {//TODO: uncomment when admin functions are implemented
         try {
             // TODO: add endpoint for getting listings of a user
-            //response = await api.get('/listings');
+            response = await api.get('/listings');
 
-            //setListings(response.data);
-            setListings(mockListings.slice(1, 3));
+            setListings(response.data);
+            //setListings(mockListings.slice(1, 3));
         } catch (error) {
             alert(`Something went wrong during display of listings: \n${handleError(error)}`);
         }
