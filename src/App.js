@@ -4,6 +4,7 @@ import LandingPage from "./LandingPage";
 import ResultsPage from './ResultsPage';
 import AdOverviewPage from './AdOverviewPage';
 import {AuthContext} from "./context/auth-context";
+import ForeignViewProfile from './components/profile/ForeignViewProfile';
 
 import {
     BrowserRouter as Router,
@@ -66,6 +67,7 @@ const App = () => {
                     <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                     <Route path="/create-listing" element={<CreateAd/>}/>
                     <Route path="/edit-listing/:id" element={<EditListing/>}/>
+                    <Route path="/view-profile/:id" element={<ForeignViewProfile openAsOwnPage={true}/>}/> 
 
                 </Routes>
             </Router>
