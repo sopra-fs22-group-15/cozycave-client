@@ -11,7 +11,7 @@ const ProfileApplicationsList = props => {
             {props.applications ? props.applications.map((application, index) => {
                 return (
                     <ProfileApplicationsElement
-                        key={index} application={application} index={index}
+                        key={index} application={application} index={index} getApplications = {props.getApplications}
                     />
                 )
             }) : (

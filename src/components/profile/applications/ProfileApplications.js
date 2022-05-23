@@ -15,7 +15,7 @@ import { mockApplicationsFromOneUser } from '../../util/mockApplicationsFromOneU
 import { api } from '../../../helpers/api';
 
 
-const ProfileApplications = () => {
+const ProfileApplications = props => {
     const navigate = useNavigate();
     const [applications, setApplications] = useState([])
     let response = null;
@@ -25,6 +25,7 @@ const ProfileApplications = () => {
         try {
             response = await api.get(`/users/${user.id}/applications`);
             setApplications(response)
+            console.log(response.data)
         } catch (error) {
             alert(`Something went wrong during retrieval of your applications: \n${handleError(error)}`);
         }
@@ -32,7 +33,7 @@ const ProfileApplications = () => {
 
     useEffect(() => {
         requestResults();
-    }, []);
+    }, [applications]);
 
     return (
         <Container>
@@ -44,7 +45,7 @@ const ProfileApplications = () => {
                     <hr />
                 </Col>
             </Row>
-            {applications.length > 0 ? <ProfileApplicationsList applications={applications}/> : (
+            {applications.length > 0 ? <ProfileApplicationsList applications={applications} getApplications={requestResults}/> : (
                 <Row>
                     <Col>
                         <h6 style={{color: "#a9a9a9"}}>
