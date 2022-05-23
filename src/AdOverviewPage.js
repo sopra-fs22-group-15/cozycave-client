@@ -1,25 +1,26 @@
-import {Button, Row, Col, Container, Alert} from 'react-bootstrap'
-import {useNavigate, useParams} from 'react-router-dom'
-import React, {useState, useEffect} from 'react';
-import {api, handleError} from './helpers/api'
-import {mockListings} from './components/util/mockListings';
-import {decideBadgeColorListingType} from './helpers/decideColorByListingType';
-import {decideGender} from './helpers/decideGender';
-import {displayPictures} from './helpers/displayPictures';
+import { Button, Row, Col, Container, Alert } from 'react-bootstrap'
+import { useNavigate, useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { api, handleError } from './helpers/api'
+import { mockListings } from './components/util/mockListings';
+import { decideBadgeColorListingType } from './helpers/decideColorByListingType';
+import { decideGender } from './helpers/decideGender';
+import { displayPictures } from './helpers/displayPictures';
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
 
 function AdOverviewPage() {
     let response = null;
     const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
-    const {id} = useParams();
+    const { id } = useParams();
     let address = ''; //do not use this in the returned form
     const [listing, setListing] = useState([]);
     const [travelTimes, setTravelTimes] = useState([])
 
     const locationAPI = axios.create({
         baseURL: 'https://transport.opendata.ch/v1',
-        headers: {'Content-Type': 'application/json'}
+        headers: { 'Content-Type': 'application/json' }
     });
 
     const requestListing = async () => {
@@ -51,8 +52,8 @@ function AdOverviewPage() {
         let alertType = 'danger'
         if (string.length > 0) {
             let formattedString = (string.slice(0, 2) === "00" ? '' :
-                    (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
-                    +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
+                (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
+                +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
                 (string.slice(3, 5) === "00" ? '' :
                     (string.slice(3, 4) === "0" ? '' : string.slice(3, 4)) +
                     +(string.slice(4, 5) === "0" ? '' : string.slice(4, 5)) + ' hours ') +
@@ -85,24 +86,26 @@ function AdOverviewPage() {
     }
 
     const handleApply = async () => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const application = JSON.stringify({
-            applicant: applyUser,
-            listing: listing,
-            application_status: "PENDING"
-        })
-        console.log(JSON.parse(application))
-        //console.log(localStorage.getItem('token'))
-        try {
-            let applyResponse = await api.post(`/listings/${id}/applications`, application);
+        if (user.role === "LANDLORD") {
+            toast.warn("You can only apply to listings as a student")
+        } else {
+            const application = JSON.stringify({
+                applicant: applyUser,
+                listing: listing,
+                application_status: "PENDING"
+            })
+            console.log(JSON.parse(application))
+            //console.log(localStorage.getItem('token'))
+            try {
+                let applyResponse = await api.post(`/listings/${id}/applications`, application);
 
 
-            alert('Successfully applied!')
+                toast.success('Successfully applied!');
 
-        } catch (error) {
-            alert(`Something went wrong during application process: \n${handleError(error)}`);
+            } catch (error) {
+                alert(`Something went wrong during application process: \n${handleError(error)}`);
+            }
         }
-
     }
 
     const requestLocation = async (address) => {
@@ -152,11 +155,12 @@ function AdOverviewPage() {
     return (
         <Container fluid={true}>
 
-            <Row style={{marginTop: '4em'}}>
+            <Row style={{ marginTop: '4em' }}>
                 <Col>
                     {displayPictures(listing.picture ? listing.picture.url : null)}
                 </Col>
                 <Col>
+                    <ToastContainer />
                     <div className='border-bottom border-dark'>
                         <Row>
                             <Col>
@@ -214,14 +218,14 @@ function AdOverviewPage() {
                             <p>Address 2</p>
                             <div className='align-self-end'>
                                 <Button type="button" size='lg' variant="primary"
-                                        onClick={() => handleApply()}>Apply</Button>
+                                    onClick={() => handleApply()}>Apply</Button>
                                 <span> </span>
                                 <Button type="button" size='lg' variant="outline-danger">Report</Button>
                             </div>
                         </Col>
                         <Col md='auto'>
                             <iframe src={listingMapURL}
-                                    width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
+                                width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                         </Col>
                     </Row>
 

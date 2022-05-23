@@ -24,8 +24,7 @@ const ProfileApplications = props => {
     const requestResults = async () => {
         try {
             response = await api.get(`/users/${user.id}/applications`);
-            setApplications(response)
-            console.log(response.data)
+            setApplications(response.data)
         } catch (error) {
             alert(`Something went wrong during retrieval of your applications: \n${handleError(error)}`);
         }
@@ -33,7 +32,7 @@ const ProfileApplications = props => {
 
     useEffect(() => {
         requestResults();
-    }, [applications]);
+    }, []);
 
     return (
         <Container>

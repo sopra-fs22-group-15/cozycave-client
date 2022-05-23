@@ -13,10 +13,11 @@ const ProfileApplicationsElement = props => {
     let queryResponse = null;
     const [showDeleted, setShowDeleted] = useState(false);
     const toggleShowDeleted = () => { setShowDeleted(!showDeleted) };
+    const user = JSON.parse(localStorage.getItem('user'))
 
     const deleteApplication = async () => {
         try {
-            let response = await api.delete(`/applications/${application.id}`);
+            let response = await api.delete(`/users/${user.id}/applications/${application.id}`);
             toggleShowDeleted();
 
         } catch (error) {
@@ -89,7 +90,9 @@ const ProfileApplicationsElement = props => {
     const getListingByApplication = async (id) => {
         try {
             queryResponse = await api.get(`/listings/${id}`);
-            setListing(queryResponse);
+            console.log(queryResponse.data);
+            setListing(queryResponse.data);
+            
 
         } catch (error) {
             queryResponse = mockListings[1];
@@ -100,17 +103,17 @@ const ProfileApplicationsElement = props => {
     };
 
     useLayoutEffect(() => {
-        getListingByApplication(application.id);
+        getListingByApplication(application.listing.id);
     }, []);
 
     return (
         <Accordion.Item eventKey={index}>
             <Accordion.Header>
-                {listing.name}
+                {listing.title}
                 <span style={{ marginLeft: "10px" }}>{decideBadgeColorListingType(listing.listing_type)}</span>
             </Accordion.Header>
             <Accordion.Body>
-                <ListingElement listing={listing} image={displayPictures(listing.picture.url)} />
+                <ListingElement listing={listing} image={displayPictures(listing.picture ? listing.picture.url : null)} />
                 <h4>Application Status:</h4>
                 {renderApplication()}
             </Accordion.Body>
