@@ -148,19 +148,31 @@ function AdOverviewPage() {
 
     }
 
+    const displayAddress = (address) => {
+        if (listing.address !== undefined) {
+            return (
+                <h4>{listing.address.street} {listing.address.house_number}, {listing.address.zip_code} {listing.address.city}</h4>
+            )
+        } else {
+            return (
+                <h4>No address available</h4>
+            )
+        }
+    }
+
     useEffect(() => {
         requestListing();
     }, []);
 
     return (
-        <Container fluid={true}>
 
+        <Container fluid={true}>
+            <ToastContainer />
             <Row style={{ marginTop: '4em' }}>
                 <Col>
                     {displayPictures(listing.picture ? listing.picture.url : null)}
                 </Col>
                 <Col>
-                    <ToastContainer />
                     <div className='border-bottom border-dark'>
                         <Row>
                             <Col>
@@ -182,11 +194,9 @@ function AdOverviewPage() {
                             <h4 className='opacity-50'>Address</h4>
                         </Row>
                         <Row>
-                            {listing.address ? (
-                                <h3>{listing.address.street} {listing.address.house_number}, {listing.address.zip_code} {listing.address.city}</h3>
-                            ) : (
-                                <h3>No address available</h3>
-                            )}
+                            <Col>
+                                {displayAddress(listing.address)}
+                            </Col>
                         </Row>
                         <Row className='mb-1'>
                             <div>
