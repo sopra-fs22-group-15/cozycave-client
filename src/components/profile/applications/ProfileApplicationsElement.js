@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from "react";
-import { Accordion, Alert, Button, Toast } from "react-bootstrap";
+import { Accordion, Alert, Button } from "react-bootstrap";
 import { decideBadgeColorListingType } from "../../../helpers/decideColorByListingType";
 import { api, handleError } from '../../../helpers/api'
 import { mockListings } from "../../util/mockListings";
@@ -7,33 +7,22 @@ import ListingElement from "../../listings/ListingElement";
 import { displayPictures } from "../../../helpers/displayPictures";
 
 
+
 const ProfileApplicationsElement = props => {
     const { application, index } = props;
+    const { showDeleted } = props;
     const [listing, setListing] = useState(mockListings[0]);
     let queryResponse = null;
-    const [showDeleted, setShowDeleted] = useState(false);
-    const toggleShowDeleted = () => { setShowDeleted(!showDeleted) };
+    const user = JSON.parse(localStorage.getItem('user'))
 
     const deleteApplication = async () => {
         try {
-            let response = await api.delete(`/applications/${application.id}`);
-            toggleShowDeleted();
+            let response = await api.delete(`/users/${user.id}/applications/${application.id}`);
+            showDeleted()
 
         } catch (error) {
             alert(`Could not delete application: \n${handleError(error)}`);
         }
-    }
-
-    const getToast = () => {
-        return (
-            <Toast show={showDeleted} position='bottom-center' onClose={toggleShowDeleted}>
-                <Toast.Header>
-                    <strong className="me-auto">Admin</strong>
-                    <small>a few seconds ago</small>
-                </Toast.Header>
-                <Toast.Body>Successfully removed application</Toast.Body>
-            </Toast>
-        )
     }
 
     const renderApplication = () => {
@@ -48,7 +37,6 @@ const ProfileApplicationsElement = props => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
-                        {getToast()}
                     </div>
                 </div>
             )
@@ -63,7 +51,6 @@ const ProfileApplicationsElement = props => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
-                        {getToast()}
                     </div>
                 </div>
             )
@@ -78,7 +65,6 @@ const ProfileApplicationsElement = props => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
-                        {getToast()}
                     </div>
                 </div>
 
@@ -89,7 +75,9 @@ const ProfileApplicationsElement = props => {
     const getListingByApplication = async (id) => {
         try {
             queryResponse = await api.get(`/listings/${id}`);
-            setListing(queryResponse);
+            console.log(queryResponse.data);
+            setListing(queryResponse.data);
+            
 
         } catch (error) {
             queryResponse = mockListings[1];
@@ -100,17 +88,18 @@ const ProfileApplicationsElement = props => {
     };
 
     useLayoutEffect(() => {
-        getListingByApplication(application.id);
+        getListingByApplication(application.listing.id);
     }, []);
 
     return (
         <Accordion.Item eventKey={index}>
+            
             <Accordion.Header>
-                {listing.name}
+                {listing.title}
                 <span style={{ marginLeft: "10px" }}>{decideBadgeColorListingType(listing.listing_type)}</span>
             </Accordion.Header>
             <Accordion.Body>
-                <ListingElement listing={listing} image={displayPictures(listing.picture.url)} />
+                <ListingElement listing={listing} image={displayPictures(listing.picture ? listing.picture.url : null)} />
                 <h4>Application Status:</h4>
                 {renderApplication()}
             </Accordion.Body>
