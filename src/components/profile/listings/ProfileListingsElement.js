@@ -22,8 +22,8 @@ const ProfileListingsElement = props => {
     const requestApplications = async () => { //TODO: needs to be tested
         try {
             applicationsResponse = await api.get(`/listings/${listing.id}/applications`);
-            setApplications(applicationsResponse);
-
+            setApplications(applicationsResponse.data);
+            console.log(applicationsResponse);
         } catch (error) {
             applicationsResponse = mockApplications;
             setApplications(applicationsResponse);
@@ -82,7 +82,7 @@ const ProfileListingsElement = props => {
                                 <tr key={application.id}>
                                     <td>{application.id}</td>
                                     <td><Button variant='link' onClick={() => openProfile(application.owner)}>
-                                        {application.owner.firstname} {application.owner.lastname}</Button>
+                                        {application.owner.first_name} {application.owner.last_name}</Button>
                                     </td>
                                     <td style={{ textAlign: "center" }}>
                                         <ButtonGroup>
@@ -101,7 +101,7 @@ const ProfileListingsElement = props => {
                                 <tr key={application.id}>
                                     <td>{application.id}</td>
                                     <td><Button variant='link' onClick={() => openProfile(application.owner)}>
-                                        {application.owner.firstname} {application.owner.lastname}</Button>
+                                        {application.owner.first_name} {application.owner.last_name}</Button>
                                     </td>
                                     <td style={{ textAlign: "center" }}>
                                         {application.applications_status === 'ACCEPTED' ?
