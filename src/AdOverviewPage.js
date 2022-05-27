@@ -12,7 +12,7 @@ import axios from 'axios';
 
 function AdOverviewPage() {
     let response = null;
-    const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.pixelkarte-farbe&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,&E=2682872.25&N=1247585.63&zoom=10');
+    const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.swissimage&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,');
     const { id } = useParams();
     let address = ''; //do not use this in the returned form
     const [listing, setListing] = useState([]);
@@ -50,7 +50,9 @@ function AdOverviewPage() {
 
     const formatTravelDuration = (string) => {
         let alertType = 'danger'
-        if (string.length > 0) {
+        if (string === undefined || string===null) {
+            return <Alert variant={'danger'}>Could not calculate travel time</Alert>
+        } else if (string.length > 0) {
             let formattedString = (string.slice(0, 2) === "00" ? '' :
                 (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
                 +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
@@ -69,6 +71,8 @@ function AdOverviewPage() {
                 alertType = 'success'
             }
             return <Alert variant={alertType}>{formattedString}</Alert>
+        } else {
+            return <Alert variant={'danger'}>Could not calculate travel time</Alert>
         }
     }
     const user = JSON.parse(localStorage.getItem('user'));
@@ -94,8 +98,6 @@ function AdOverviewPage() {
                 listing: listing,
                 application_status: "PENDING"
             })
-            console.log(JSON.parse(application))
-            //console.log(localStorage.getItem('token'))
             try {
                 let applyResponse = await api.post(`/listings/${id}/applications`, application);
 
@@ -121,27 +123,29 @@ function AdOverviewPage() {
             ;
 
         } catch (error) {
-            alert(`Something went wrong during location display: \n${handleError(error)}`);
+            toast.warn("Couldn't find specified address :( Feel free to use the map yourself")
         }
     }
 
     const calculateTravelTime = async (street, house_number, zip_code) => {
         try {
-            //const user = localStorage.get('user')
-            //if(user==null){
-            //  return <p>Please log in to see estimated travel times<p>    
-            //}else{}
-            //user.addresses.forEach(address => )
-            address = {
-                street: "Schulhausstrasse",
-                house_number: "9",
-                zip_code: "8127",
-                city: "Forch",
+            const user = JSON.parse(localStorage.getItem('user'))
+            if (user == null) {
+                return <p>Please log in to see estimated travel times</p>
+            } else {
+                address = user.details.address;
+                let address2 = await api.get(`users/${user.id}/specialaddress`)[0]
+                let response = await locationAPI.get(`/connections?from=${address.street}%20${address.house_number}%20${address.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
+                let response2 = null;
+                if (address2) {
+                    response2 = await locationAPI.get(`/connections?from=${address2.street}%20${address2.house_number}%20${address2.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
+                    setTravelTimes([response.data.connections[0].duration, response2.data.connections[0].duration])
+                }else{
+                    setTravelTimes([response.data.connections[0].duration, null])
+                }
+                
+                //TODO: fix when address structure is available
             }
-            response = await locationAPI.get(`/connections?from=${address.street}%20${address.house_number}%20${address.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
-            console.log(response.data.connections[0])
-            setTravelTimes(response.data.connections[0].duration)
-            //TODO: fix when address structure is available
         } catch (error) {
             alert(`Something went wrong during calculation of travel time: \n${handleError(error)}`);
         }
@@ -165,7 +169,6 @@ function AdOverviewPage() {
     }, []);
 
     return (
-
         <Container fluid={true}>
             <ToastContainer />
             <Row style={{ marginTop: '4em' }}>
@@ -209,7 +212,7 @@ function AdOverviewPage() {
                         </Row>
                         <Row>
 
-                            <p>{listing.description}</p>
+                            <span>{listing.description}</span>
 
                         </Row>
                     </div>
@@ -224,8 +227,8 @@ function AdOverviewPage() {
                                 <li>Deposit: {listing.deposit} CHF</li>
                             </ul>
                             <h5>Travel Times to your addresses:</h5>
-                            <p>Address 1 {formatTravelDuration(travelTimes)}</p>
-                            <p>Address 2</p>
+                            <p>Address 1 {formatTravelDuration(travelTimes[0])}</p>
+                            <p>Address 2 {formatTravelDuration(travelTimes[1])}</p>
                             <div className='align-self-end'>
                                 <Button type="button" size='lg' variant="primary"
                                     onClick={() => handleApply()}>Apply</Button>

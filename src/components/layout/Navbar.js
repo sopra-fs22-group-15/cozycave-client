@@ -184,7 +184,7 @@ const Navbar = props => {
                                 </Col>
                             )}
 
-                            {auth.isLoggedIn && (
+                            {auth.isLoggedIn && !isLandingPage && (
                                 <Col style={{paddingLeft:'2rem'}}>
                                     <Button variant={gatherTogether.searchStarted ? 'success' : 'secondary'} 
                                     //button color based on whether connection is open
