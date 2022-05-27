@@ -1,13 +1,13 @@
-import { Row, Col, Container, Stack, Spinner, Image, Button } from 'react-bootstrap'
+import { Row, Col, Container, Stack, Spinner, Image, Button, CloseButton } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import { api, handleError } from './helpers/api'
 import { mockParticipants } from './components/util/mockParticipants';
 import { GatherContext } from './context/gather-context';
 import {toast, ToastContainer} from 'react-toastify';
 
 const GatherTogetherPage = () => {
-    const {searchStarted, reRenderPage, setSearchStarted, setReRenderPage} = useContext(GatherContext);
+    const {searchStarted, setSearchStarted} = useContext(GatherContext);
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([])
     let response = null;
@@ -22,7 +22,7 @@ const GatherTogetherPage = () => {
         } else {
             setSearchStarted(false);
             setParticipants([]);
-            toast.warn('Connection currently inactive')
+            toast.warn('Connection stopped')
             //TODO: end connection
         }
     }
@@ -38,25 +38,19 @@ const GatherTogetherPage = () => {
     }
 
     useEffect(() => {
-        if(reRenderPage){
-            requestResults();
-            toast.info('Others will now see you on their list')
-            setReRenderPage(false);
-        }else if(!searchStarted){
-            //TODO: end connection here
-            setParticipants([]);
-            toast.warn('Connection currently inactive')
-        }
-    }, [searchStarted, reRenderPage]);
+    }, [searchStarted]);
 
     return (
         <Container fluid={true}>
             <Container style={{ maxWidth: '75%', alignContent: 'center', alignItems: 'center', marginTop: '5rem' }}>
                 {searchStarted ?
                     <Row>
+                        <Stack direction='horizontal'>
                         <h5>
                             Connect with prospective flatmates here:
                         </h5>
+                        <CloseButton className='ms-auto' aria-label="Hide" onClick={() => toggleSearch()}/> 
+                        </Stack>
                         <hr />
                         {participants.length > 0 ?
                             <Stack direction='vertical' gap={2}>
