@@ -1,6 +1,6 @@
 import { Row, Col, Container, Stack, Spinner, Image, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { api, handleError } from './helpers/api'
 import { mockParticipants } from './components/util/mockParticipants';
 import { GatherContext } from './context/gather-context';
@@ -22,9 +22,9 @@ const GatherTogetherPage = () => {
         } else {
             setSearchStarted(false);
             setParticipants([]);
+            toast.warn('Connection currently inactive')
             //TODO: end connection
         }
-        toast.info("You can click on the Gather Together button to toggle your visibility")
     }
 
     const requestResults = async () => { //TODO: websocket magic here
@@ -45,8 +45,8 @@ const GatherTogetherPage = () => {
         }else if(!searchStarted){
             //TODO: end connection here
             setParticipants([]);
+            toast.warn('Connection currently inactive')
         }
-
     }, [searchStarted, reRenderPage]);
 
     return (
@@ -82,7 +82,7 @@ const GatherTogetherPage = () => {
                                     )
                                 })}
 
-                                <ToastContainer />
+                                
                             </Stack>
 
                             : (
@@ -99,6 +99,7 @@ const GatherTogetherPage = () => {
                         Connect with prospective roommates
                     </Button></div>}
             </Container>
+            <ToastContainer />
         </Container>
     );
 };
