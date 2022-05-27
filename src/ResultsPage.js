@@ -2,13 +2,10 @@ import {Container, Spinner} from 'react-bootstrap'
 import React, {useState, useEffect, useContext} from 'react';
 import ListingList from "./components/listings/ListingList";
 import "./styles/ResultsPage.scss";
-import {FilterContext} from "./context/filter-context";
 
 function ResultsPage(props) {
     const [listings, setListings] = useState(props.listings);
     const [isLoading, setIsLoading] = useState(true);
-
-    const filter = useContext(FilterContext);
 
     useEffect(() => {
         if (props.listings) {

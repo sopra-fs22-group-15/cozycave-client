@@ -15,6 +15,8 @@ import {LoginContext} from "../../context/login-context.js";
 import {GatherContext} from "../../context/gather-context.js";
 import {FilterContext} from "../../context/filter-context";
 import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTimes} from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Customizable Navbar component.
@@ -129,9 +131,6 @@ const Navbar = props => {
             filter.setFilter(name, value);
         }
     }
-
-
-    console.log(filter)
 
     const applyFilters = e => {
         e.preventDefault()
@@ -277,7 +276,7 @@ const Navbar = props => {
                                         <Form.Group>
                                             <Form.Label>City</Form.Label>
                                             <Form.Control value={filter.city} name="city" type="text"
-                                                          placeholder="Zurich, 8006"
+                                                          placeholder="Zurich"
                                                           onChange={e => handleChange(e)} on/>
                                         </Form.Group>
                                     </Col>
@@ -376,9 +375,9 @@ const Navbar = props => {
                                             </Dropdown>
                                         </Form.Group>
                                     </Col>
-                                    <Col className="d-flex align-items-end" style={{maxWidth: "80px"}}>
+                                    <Col className="d-flex align-items-end" style={{maxWidth: "50px"}}>
                                         <Button variant="dark" onClick={resetFilters}>
-                                            Reset
+                                            <span><FontAwesomeIcon icon={faTimes}/></span>
                                         </Button>
                                     </Col>
                                     <Col className="d-flex align-items-end">

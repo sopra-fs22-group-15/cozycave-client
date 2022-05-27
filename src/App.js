@@ -59,30 +59,23 @@ const App = () => {
         setUserId(null);
         localStorage.clear();
     }, []);
-    // list of all the filters
 
 
     const requestResults = async () => {
         if (city === "" && minPrice === 0 && maxPrice === 0 && gender === "" && listingType === "" && zipCode === "" && minSqm === 0 && maxSqm === 0) {
             try {
                 setIsLoading(true)
-                // setListings([]);
-                // Get the returned listings, create new objects for each.
                 const response = await api.get('/listings');
                 setListings(response.data.filter(listing => listing.published === true));
                 setIsLoading(false);
-                // setListings(mockListings);
             } catch (error) {
                 alert(`Something went wrong during the registration: \n${handleError(error)}`);
                 // TODO: Remove mock listings when API is ready
-                // setListings(mockListings);
                 setIsLoading(false);
             }
         } else {
             try {
-                // setListings([])
                 setIsLoading(true);
-                // let queryString = `?${city ? "CITY=" + city : ""}${maxPrice ? "&MAX_RENT=" + maxPrice : ""}${minPrice ? "&MIN_RENT=" + minPrice : ""}&AVAILABLE_TO=${gender}`;
                 let queryString = queryStringBuilder({
                     "CITY": city,
                     "MAX_RENT": maxPrice,
@@ -97,16 +90,11 @@ const App = () => {
                 const response = await api.get(`/listings${queryString}`);
                 // setListings([]);
                 setListings(response.data.filter(listing => listing.published === true));
-                console.log(listings)
                 setIsLoading(false);
             } catch (error) {
                 alert(`Something went wrong \n${handleError(error)}`);
             }
         }
-    }
-
-    const requestResultsWithFilters = async () => {
-
     }
 
     const setFilter = useCallback((name, value) => {
@@ -150,8 +138,6 @@ const App = () => {
             login(storedUser, storedToken);
         }
     }, [login]);
-
-    console.log(listings)
 
     return (
         <AuthContext.Provider value={
