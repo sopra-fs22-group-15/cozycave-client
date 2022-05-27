@@ -37,6 +37,8 @@ const CreateAd = () => {
     const [rent, setRent] = React.useState(null);
     const [area, setArea] = React.useState(null);
     const [rooms, setRooms] = React.useState(null);
+
+    const [files, setFiles] = React.useState();
     const [imageUrl, setImageUrl] = React.useState([]);
 
     const navigate = useNavigate();
@@ -55,8 +57,9 @@ const CreateAd = () => {
             }
             console.log(requestBody);
             if(validated){
+
                 try {
-                    await api.post('/listings', requestBody);
+                    const response = await api.post('/listings', requestBody);
                     toast.success("Listing created successfully! See your listings under the profile page. 🥳", {
                         position: toast.POSITION.TOP_CENTER,
                         autoClose: 7000,
@@ -66,6 +69,7 @@ const CreateAd = () => {
                         draggable: true,
                         progress: undefined,
                     });
+
                     navigate('/overview');
                 } catch (error) {
                     console.log(error);
@@ -93,9 +97,10 @@ const CreateAd = () => {
                     setPreviewSrc(reader.result);
                 }
                 setImageUrl([...imageUrl, reader.result]);
-                setPictures([...pictures, file]);
+                setFiles(file);
             };
         }
+        console.log(files);
     };
 
 
@@ -143,7 +148,7 @@ const CreateAd = () => {
             <Card className="menu-card">
                 <Card.Header className="d-flex justify-content-around" style={{backgroundColor: "#708AFF"}}>
                     <div className="header-group">
-                        {pictures.length > 0 ? (
+                        {files.length > 0 ? (
                             <div className="listing-header-image">
                                 <ImageCarousel images={imageUrl} preview={previewSrc}/>
                             </div>
