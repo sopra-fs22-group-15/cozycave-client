@@ -18,9 +18,9 @@ function ResultsPage(props) {
             } else {
                 //for future search terms
             }
-            // TODO: Uncomment when backend is ready
-            setListings(response.data);
-            // TODO: remove when backend is ready
+            
+            setListings(response.data.filter(listing => listing.published===true));
+            
             // setListings(mockListings);
             setIsLoading(false);
         } catch (error) {

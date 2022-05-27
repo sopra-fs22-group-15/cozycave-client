@@ -4,6 +4,7 @@ import LandingPage from "./LandingPage";
 import ResultsPage from './ResultsPage';
 import AdOverviewPage from './AdOverviewPage';
 import {AuthContext} from "./context/auth-context";
+import { GatherContext } from './context/gather-context';
 import ForeignViewProfile from './components/profile/ForeignViewProfile';
 
 import {
@@ -14,6 +15,7 @@ import {
 import CreateAd from "./components/crud/CreateAd";
 import ProfilePage from "./components/profile/ProfilePage";
 import EditListing from "./components/crud/EditListing";
+import GatherTogetherPage from './GatherTogetherPage';
 
 // TEST DEPLOYMENT TO HEROKU
 
@@ -22,6 +24,8 @@ const App = () => {
 
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [searchStarted, setSearchStarted] = useState(false);
+    const [reRenderGather, setReRenderGather] = useState(false);
 
     const login = useCallback((responseUser, responseToken) => {
         setToken(responseToken);
@@ -58,6 +62,14 @@ const App = () => {
                 logout: logout
             }
         }>
+            <GatherContext.Provider value={
+                    {
+                        searchStarted,
+                        reRenderPage: reRenderGather,
+                        setSearchStarted,
+                        setReRenderPage: setReRenderGather
+                    }
+                }>
             <Router>
                 <Navbar brandName="Cozy Cave"/>
                 <Routes>
@@ -68,9 +80,11 @@ const App = () => {
                     <Route path="/create-listing" element={<CreateAd/>}/>
                     <Route path="/edit-listing/:id" element={<EditListing/>}/>
                     <Route path="/view-profile/:id" element={<ForeignViewProfile openAsOwnPage={true}/>}/> 
+                    <Route exact path="/gather-together" element = {<GatherTogetherPage/>}/>
 
                 </Routes>
             </Router>
+            </GatherContext.Provider>
         </AuthContext.Provider>
     )
 }
