@@ -1,17 +1,18 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
 
-import {Dropdown, Form, Row, Col} from "react-bootstrap";
+import { Dropdown, Form, Row, Col } from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import SearchBar from "../../SearchBar";
-import {useNavigate} from "react-router-dom";
-import {AuthContext} from "../../context/auth-context";
+import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../context/auth-context";
 import ResetPasswordForm from "../../ResetPasswordForm.js";
-import {LoginContext} from "../../context/login-context.js";
+import { LoginContext } from "../../context/login-context.js";
+import { GatherContext } from "../../context/gather-context.js";
 
 /**
  * Customizable Navbar component.
@@ -24,7 +25,7 @@ import {LoginContext} from "../../context/login-context.js";
 
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
+const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
     <a
         ref={ref}
         onClick={(e) => {
@@ -33,12 +34,13 @@ const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-             height="40"/>
+            height="40" />
         {children}
     </a>
 ));
 
 const Navbar = props => {
+    const path = window.location.pathname
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
@@ -47,6 +49,7 @@ const Navbar = props => {
     const [resetToast, setResetToast] = useState(false);
     const navigate = useNavigate();
 
+    const gatherTogether = useContext(GatherContext);
     const auth = useContext(AuthContext);
 
     const user = JSON.parse(localStorage.getItem('user'))
@@ -89,15 +92,15 @@ const Navbar = props => {
             {!isLandingPage ? (
                 <div className="d-flex">
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)}
-                            outlined={true} variant="primary"
-                            opts="me-2">Sign In</Button>
+                        outlined={true} variant="primary"
+                        opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </div>
             ) : (
                 <>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                            opts="me-2">Sign In</Button>
+                        opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </>
@@ -111,19 +114,19 @@ const Navbar = props => {
             <>
                 <Col>
                     <Dropdown>
-                        <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}}
-                                         id="dropdown-menu-align-responsive-2">
+                        <Dropdown.Toggle as={AvatarToggle} align={{ lg: 'end' }}
+                            id="dropdown-menu-align-responsive-2">
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
                             <Dropdown.Item
                                 href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
                                 Profile</Dropdown.Item>
-                            <Dropdown.Divider/>
+                            <Dropdown.Divider />
                             <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
-                            <Dropdown.Divider/>
+                            <Dropdown.Divider />
                             <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
-                            <Dropdown.Divider/>
+                            <Dropdown.Divider />
                             <Dropdown.Item>
                                 <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
                             </Dropdown.Item>
@@ -158,27 +161,46 @@ const Navbar = props => {
                     displaySuccess: showResetSuccess
                 }
             }>
+                
                 <nav
                     className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
                     <div className="container-fluid navbar-not-overview">
                         <div className="row">
-                            <Col style={{marginRight: "1.4rem"}}>
+                            <Col style={{ marginRight: "1.4rem" }}>
                                 <a href="/overview" onClick={(e) => {
                                     handleNavigate("/overview", e)
                                 }} className="navbar-brand">
                                     {props.brandName}
                                     <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                                         className="d-inline-block align-text-top"
-                                         width="50" height="32"/>
+                                        className="d-inline-block align-text-top"
+                                        width="50" height="32" />
                                 </a>
                             </Col>
                             {!isLandingPage && (
                                 <Col className="nav-search">
                                     <Form className="nav-search">
-                                        <SearchBar/>
+                                        <SearchBar />
                                     </Form>
                                 </Col>
                             )}
+
+                            {auth.isLoggedIn && (
+                                <Col style={{paddingLeft:'2rem'}}>
+                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'secondary'} 
+                                    //button color based on whether connection is open
+                                    onClick={()=> {
+                                        if(!gatherTogether.searchStarted && path==='/gather-together'){
+                                            gatherTogether.setSearchStarted(true);
+                                            gatherTogether.setReRenderPage(true);
+                                        }else if(gatherTogether.searchStarted){
+                                            gatherTogether.setSearchStarted(false);
+                                        }else{
+                                            navigate("/gather-together");
+                                        }
+                                    }}>Gather Together</Button>
+                                </Col>
+                            )}
+
                         </div>
                         <div className={`${auth.isLoggedIn && isLandingPage ? "" : "d-flex"}`}>
                             {navContent}
@@ -192,13 +214,13 @@ const Navbar = props => {
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>City</Form.Label>
-                                            <Form.Control type="text" placeholder="Zurich, 8006"/>
+                                            <Form.Control type="text" placeholder="Zurich, 8006" />
                                         </Form.Group>
                                     </Col>
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>Price range</Form.Label>
-                                            <Form.Control type="text" placeholder="CHF 1'000 - 2'000"/>
+                                            <Form.Control type="text" placeholder="CHF 1'000 - 2'000" />
                                         </Form.Group>
                                     </Col>
                                     <Col>
@@ -231,9 +253,9 @@ const Navbar = props => {
                     )}
                 </nav>
                 <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen}
-                           hideLogin={hideLogin}/>
-                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
-                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
+                    hideLogin={hideLogin} />
+                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister} />
+                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)} />
             </LoginContext.Provider>
         </div>
     )
