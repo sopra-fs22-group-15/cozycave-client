@@ -1,18 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from "../util/Button.js"
 import PropTypes from "prop-types";
 import LoginForm from "../../LoginForm.js";
 import RegisterForm from "../../RegisterForm.js";
 
-import { Dropdown, Form, Row, Col } from "react-bootstrap";
+import {Dropdown, Form, Row, Col} from "react-bootstrap";
 import "../../styles/Navbar.scss";
 import SearchBar from "../../SearchBar";
-import { useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "../../context/auth-context";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/auth-context";
 import ResetPasswordForm from "../../ResetPasswordForm.js";
-import { LoginContext } from "../../context/login-context.js";
-import { GatherContext } from "../../context/gather-context.js";
+import {LoginContext} from "../../context/login-context.js";
+import {GatherContext} from "../../context/gather-context.js";
+import {FilterContext} from "../../context/filter-context";
+import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
 
 /**
  * Customizable Navbar component.
@@ -25,7 +27,7 @@ import { GatherContext } from "../../context/gather-context.js";
 
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
+const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
     <a
         ref={ref}
         onClick={(e) => {
@@ -34,10 +36,11 @@ const AvatarToggle = React.forwardRef(({ children, onClick }, ref) => (
         }}
     >
         <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-            height="40" />
+             height="40"/>
         {children}
     </a>
 ));
+
 
 const Navbar = props => {
     const path = window.location.pathname
@@ -47,10 +50,22 @@ const Navbar = props => {
     const [isOverviewPage, setIsOverviewPage] = useState(false);
     const [resetIsOpen, setResetIsOpen] = useState(false);
     const [resetToast, setResetToast] = useState(false);
+
+    const [cityFilter, setCityFilter] = useState("");
+    const [genderFilter, setGenderFilter] = useState("BOTH");
+    const [minPriceFilter, setMinPriceFilter] = useState(null);
+    const [maxPriceFilter, setMaxPriceFilter] = useState(null);
+    const [listingTypeFilter, setListingTypeFilter] = useState("");
+    const [minSqmFilter, setMinSqmFilter] = useState(0);
+    const [maxSqmFilter, setMaxSqmFilter] = useState(0);
+    const [zipCodeFilter, setZipCodeFilter] = useState("");
+
     const navigate = useNavigate();
 
     const gatherTogether = useContext(GatherContext);
     const auth = useContext(AuthContext);
+    const filter = useContext(FilterContext);
+
 
     const user = JSON.parse(localStorage.getItem('user'))
 
@@ -70,7 +85,7 @@ const Navbar = props => {
         } else {
             setIsLandingPage(false);
         }
-    }, [auth.isLoggedIn]);
+    }, [auth.isLoggedIn, filter]);
     //The following two functions are passed down to the modals as props, and handle the display/hide behavior
 
     const hideLogin = () => {
@@ -85,6 +100,52 @@ const Navbar = props => {
         setResetToast(true)
     }
 
+    const handleChange = e => {
+        e.preventDefault();
+        const {name, value} = e.target;
+        if (name === "city") {
+            setCityFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "gender") {
+            setGenderFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "minPrice") {
+            setMinPriceFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "maxPrice") {
+            setMaxPriceFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "minSqm") {
+            setMinPriceFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "maxSqm") {
+            setMaxSqmFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "listingType") {
+            setListingTypeFilter(value);
+            filter.setFilter(name, value);
+        } else if (name === "zipCode") {
+            setZipCodeFilter(value);
+            filter.setFilter(name, value);
+        }
+    }
+
+
+    console.log(filter)
+
+    const applyFilters = e => {
+        e.preventDefault()
+        props.requestFilteredResults()
+        // filter.clearFilters();
+    }
+
+    const resetFilters = e => {
+        filter.clearFilters();
+        if (filter.city === "" && filter.gender === "" && filter.minPrice === 0 && filter.maxPrice === 0 && filter.listingType === "" && filter.zipCode === "" && filter.minSqm === 0 && filter.maxSqm === 0) {
+            applyFilters(e)
+        }
+    }
+
     // TODO: make dynamic with store according to actual login status
 
     const authInputGroup = (
@@ -92,15 +153,15 @@ const Navbar = props => {
             {!isLandingPage ? (
                 <div className="d-flex">
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)}
-                        outlined={true} variant="primary"
-                        opts="me-2">Sign In</Button>
+                            outlined={true} variant="primary"
+                            opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </div>
             ) : (
                 <>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
-                        opts="me-2">Sign In</Button>
+                            opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
                         Up</Button>
                 </>
@@ -114,19 +175,19 @@ const Navbar = props => {
             <>
                 <Col>
                     <Dropdown>
-                        <Dropdown.Toggle as={AvatarToggle} align={{ lg: 'end' }}
-                            id="dropdown-menu-align-responsive-2">
+                        <Dropdown.Toggle as={AvatarToggle} align={{lg: 'end'}}
+                                         id="dropdown-menu-align-responsive-2">
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
                             <Dropdown.Item
                                 href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
                                 Profile</Dropdown.Item>
-                            <Dropdown.Divider />
+                            <Dropdown.Divider/>
                             <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
-                            <Dropdown.Divider />
+                            <Dropdown.Divider/>
                             <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
-                            <Dropdown.Divider />
+                            <Dropdown.Divider/>
                             <Dropdown.Item>
                                 <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
                             </Dropdown.Item>
@@ -149,7 +210,8 @@ const Navbar = props => {
             setIsLandingPage(false);
             setIsOverviewPage(true);
         }
-    }, [isLandingPage, isOverviewPage, auth.isLoggedIn, navigate]);
+    }, [isLandingPage, isOverviewPage, auth.isLoggedIn, navigate, minPriceFilter]);
+
 
     return (
         <div>
@@ -161,43 +223,43 @@ const Navbar = props => {
                     displaySuccess: showResetSuccess
                 }
             }>
-                
+
                 <nav
                     className={`d-flex navbar flex-wrap navbar-expand-lg navbar-light ${isLandingPage ? "bg-transparent" : "navbar-custom"} justify-content-between fixed-top`}>
                     <div className="container-fluid navbar-not-overview">
                         <div className="row">
-                            <Col style={{ marginRight: "1.4rem" }}>
+                            <Col style={{marginRight: "1.4rem"}}>
                                 <a href="/overview" onClick={(e) => {
                                     handleNavigate("/overview", e)
                                 }} className="navbar-brand">
                                     {props.brandName}
                                     <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
-                                        className="d-inline-block align-text-top"
-                                        width="50" height="32" />
+                                         className="d-inline-block align-text-top"
+                                         width="50" height="32"/>
                                 </a>
                             </Col>
                             {!isLandingPage && (
                                 <Col className="nav-search">
                                     <Form className="nav-search">
-                                        <SearchBar />
+                                        <SearchBar/>
                                     </Form>
                                 </Col>
                             )}
 
                             {auth.isLoggedIn && (
-                                <Col style={{paddingLeft:'2rem'}}>
-                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'secondary'} 
-                                    //button color based on whether connection is open
-                                    onClick={()=> {
-                                        if(!gatherTogether.searchStarted && path==='/gather-together'){
-                                            gatherTogether.setSearchStarted(true);
-                                            gatherTogether.setReRenderPage(true);
-                                        }else if(gatherTogether.searchStarted){
-                                            gatherTogether.setSearchStarted(false);
-                                        }else{
-                                            navigate("/gather-together");
-                                        }
-                                    }}>Gather Together</Button>
+                                <Col style={{paddingLeft: '2rem'}}>
+                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'secondary'}
+                                        //button color based on whether connection is open
+                                            onClick={() => {
+                                                if (!gatherTogether.searchStarted && path === '/gather-together') {
+                                                    gatherTogether.setSearchStarted(true);
+                                                    gatherTogether.setReRenderPage(true);
+                                                } else if (gatherTogether.searchStarted) {
+                                                    gatherTogether.setSearchStarted(false);
+                                                } else {
+                                                    navigate("/gather-together");
+                                                }
+                                            }}>Gather Together</Button>
                                 </Col>
                             )}
 
@@ -214,38 +276,115 @@ const Navbar = props => {
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>City</Form.Label>
-                                            <Form.Control type="text" placeholder="Zurich, 8006" />
+                                            <Form.Control value={filter.city} name="city" type="text"
+                                                          placeholder="Zurich, 8006"
+                                                          onChange={e => handleChange(e)} on/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>Price range</Form.Label>
-                                            <Form.Control type="text" placeholder="CHF 1'000 - 2'000" />
+                                            <Dropdown autoClose="outside">
+                                                <Dropdown.Toggle className="price-range-dropdown"
+                                                                 id="dropdown-autoclose-inside">
+                                                    {filter.minPrice || filter.maxPrice ? priceRangeStringBuilder(filter.minPrice, filter.maxPrice) : "Please choose"}
+                                                </Dropdown.Toggle>
+
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item>
+                                                        <Form.Label>min. Price</Form.Label>
+                                                        <Form.Control value={filter.minPrice} name="minPrice"
+                                                                      type="text" placeholder="CHF 1000"
+                                                                      onChange={e => handleChange(e)}/>
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item>
+                                                        <Form.Label>max. Price</Form.Label>
+                                                        <Form.Control value={filter.maxPrice} name="maxPrice"
+                                                                      type="text" placeholder="CHF 1000"
+                                                                      onChange={e => handleChange(e)}/>
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
                                         </Form.Group>
                                     </Col>
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>Gender preference</Form.Label>
-                                            <Form.Select aria-label="Default select example">
+                                            <Form.Select name="gender" aria-label="Default select example"
+                                                         onChange={e => handleChange(e)}>
                                                 <option
                                                     defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
-                                                >{auth.isLoggedIn && user ? user.details.gender : "Choose preference"}</option>
-                                                <option value="1">MALE</option>
-                                                <option value="2">FEMALE</option>
-                                                <option value="3">BOTH</option>
+                                                >Please choose
+                                                </option>
+                                                <option value="MALE">Male</option>
+                                                <option value="FEMALE">Female</option>
+                                                <option value="both">Both</option>
                                             </Form.Select>
                                         </Form.Group>
                                     </Col>
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>Filters</Form.Label>
-                                            <Form.Select aria-label="Default select example">
-                                                <option selected>See more</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
-                                            </Form.Select>
+                                            <Dropdown autoClose="outside">
+                                                <Dropdown.Toggle className="price-range-dropdown"
+                                                                 id="dropdown-autoclose-inside">
+                                                    See more filters
+                                                </Dropdown.Toggle>
+
+                                                <Dropdown.Menu style={{width: "300%"}}>
+                                                    <Row style={{padding: "10px"}}>
+                                                        <Col>
+                                                            <Form.Label>Zip Code</Form.Label>
+
+                                                            <Form.Control value={filter.zipCode} name="zipCode"
+                                                                          type="text" placeholder="8000"
+                                                                          onChange={e => handleChange(e)}/>
+                                                        </Col>
+                                                        <Col>
+                                                            <Form.Label>Listing Type</Form.Label>
+
+                                                            <Form.Select value={filter.listingType} name="listingType"
+                                                                         type="text" placeholder="Flat"
+                                                                         onChange={e => handleChange(e)}>
+                                                                <option
+                                                                    defaultValue="Choose your preference"
+                                                                >Please choose
+                                                                </option>
+                                                                <option value="FLAT">Flat</option>
+                                                                <option value="HOUSE">House</option>
+                                                                <option value="ROOM">Room</option>
+                                                            </Form.Select>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row style={{padding: "10px"}}>
+                                                        <Col>
+                                                            <Form.Label>max. m²</Form.Label>
+
+                                                            <Form.Control value={filter.minSqm} name="minSqm"
+                                                                          type="text" placeholder="80 m²"
+                                                                          onChange={e => handleChange(e)}/>
+                                                        </Col>
+                                                        <Col>
+                                                            <Form.Label>min. m²</Form.Label>
+
+                                                            <Form.Control value={filter.maxSqm} name="maxSqm"
+                                                                          type="text" placeholder="200 m²"
+                                                                          onChange={e => handleChange(e)}/>
+                                                        </Col>
+                                                    </Row>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
                                         </Form.Group>
+                                    </Col>
+                                    <Col className="d-flex align-items-end" style={{maxWidth: "80px"}}>
+                                        <Button variant="dark" onClick={resetFilters}>
+                                            Reset
+                                        </Button>
+                                    </Col>
+                                    <Col className="d-flex align-items-end">
+                                        <Button variant="success" onClick={applyFilters}>
+                                            Apply Filters
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Form>
@@ -253,9 +392,9 @@ const Navbar = props => {
                     )}
                 </nav>
                 <LoginForm resetToast={resetToast} setResetToast={setResetToast} loginOpen={loginIsOpen}
-                    hideLogin={hideLogin} />
-                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister} />
-                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)} />
+                           hideLogin={hideLogin}/>
+                <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
+                <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
             </LoginContext.Provider>
         </div>
     )

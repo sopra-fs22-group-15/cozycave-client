@@ -1,40 +1,21 @@
 import {Container, Spinner} from 'react-bootstrap'
-import React, {useState, useEffect} from 'react';
-import {api, handleError} from './helpers/api'
+import React, {useState, useEffect, useContext} from 'react';
 import ListingList from "./components/listings/ListingList";
-import {mockListings} from "./components/util/mockListings";
 import "./styles/ResultsPage.scss";
+import {FilterContext} from "./context/filter-context";
 
 function ResultsPage(props) {
-    const [listings, setListings] = useState([]);
+    const [listings, setListings] = useState(props.listings);
     const [isLoading, setIsLoading] = useState(true);
-    let response = null;
 
-    const requestResults = async () => {
-        try {
-            if (!props.query) {
-                // Get the returned listings, create new objects for each.
-                response = await api.get('/listings');
-            } else {
-                //for future search terms
-            }
-            
-            setListings(response.data.filter(listing => listing.published===true));
-            
-            // setListings(mockListings);
-            setIsLoading(false);
-        } catch (error) {
-            alert(`Something went wrong during the registration: \n${handleError(error)}`);
-            // TODO: Remove mock listings when API is ready
-            setListings(mockListings);
-            setIsLoading(false);
-        }
-    }
+    const filter = useContext(FilterContext);
 
     useEffect(() => {
-        requestResults();
-    }, [requestResults]);
-
+        if (props.listings) {
+            setListings(props.listings);
+            setIsLoading(false);
+        }
+    }, [props.listings]);
 
     return (
         <div>
@@ -44,7 +25,7 @@ function ResultsPage(props) {
                 </div>
             ) : (
                     <Container className="center-middle">
-                        {listings ? <ListingList listings={listings}/> : "Loading..."}
+                        {props.listings ? <ListingList listings={listings}/> : "Loading..."}
                     </Container>
             )}
         </div>
