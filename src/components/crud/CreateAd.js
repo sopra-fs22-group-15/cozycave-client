@@ -125,7 +125,7 @@ const CreateAd = () => {
             // TODO: send pictures when backend is ready
             // pictures: pictures,
             publisher_id: currentUser.id,
-            published: false,
+            published: true,
             deposit: parseFloat(deposit),
             listing_type: type,
             description,
@@ -137,7 +137,7 @@ const CreateAd = () => {
     };
 
     // TODO: add more validation to the form like (character limit, number of rooms, etc)
-
+    console.log(address)
     return (
         <Container className="d-flex justify-content-center">
             <Card className="menu-card">

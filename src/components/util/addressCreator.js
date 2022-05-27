@@ -1,6 +1,6 @@
 import Address from "../schemas/Address";
 
-export const addressCreator = (street, house_number, zip_code, city, state, apartment_number=null, name=null) => {
+export const addressCreator = (street, house_number, city, zip_code, state, apartment_number=null, name=null) => {
     const address = new Address()
     address.street = street;
     address.name = name;
