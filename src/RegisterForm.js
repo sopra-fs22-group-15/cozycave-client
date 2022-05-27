@@ -39,7 +39,7 @@ const RegisterForm = props => {
                     first_name: firstName,
                     last_name: lastName,
                     gender,
-                    birthday: null,
+                    birthday: "1950-05-14T02:41:20.182+00:00",
                     address: {
                         name: null,
                         description: null,
@@ -51,7 +51,7 @@ const RegisterForm = props => {
                         zip_code: zip_code,
                         country
                     },
-                    biography: null,
+                    biography: "Tell us something about yourself",
                     phone_number: phone,
                 },
             });

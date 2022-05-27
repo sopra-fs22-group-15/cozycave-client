@@ -10,6 +10,47 @@
 
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: black 0px 0px 3px;
+    box-shadow: black 0 0 3px;
+  }
+
+}
+
+.profile-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .profile-file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+
+    & + label {
+      display: flex;
+      flex-direction: column;
+      width: 50px;
+      padding: 8px;
+      border: 0.5px solid #ffffff;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+
+    &:hover + label {
+      background-color: #ffffff;
+      color: #000000;
+      transition: all 0.2s ease-in-out;
+    }
   }
 }
+
+
