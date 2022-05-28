@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Accordion, Button, ButtonGroup, Alert, Col, Row, Stack, Table } from "react-bootstrap";
+import {Accordion, Button, ButtonGroup, Alert, Col, Row, Stack, Table, Spinner} from "react-bootstrap";
 import { decideBadgeColorListingType } from "../../../helpers/decideColorByListingType";
 import ListingElement from "../../listings/ListingElement";
 import { displayPictures } from "../../../helpers/displayPictures";
@@ -8,7 +8,11 @@ import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { api, handleError } from '../../../helpers/api'
 import { mockApplications } from "../../util/mockApplications";
 import { useNavigate } from "react-router-dom";
+import { useAccordionButton } from 'react-bootstrap/AccordionButton';
+
 import { toast } from "react-toastify";
+import "../../../styles/Listings.scss";
+
 import ForeignViewProfile from "../ForeignViewProfile";
 
 
@@ -16,6 +20,7 @@ const ProfileListingsElement = props => {
     let applicationsResponse = null;
     const { listing, index } = props;
     const [applications, setApplications] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -35,6 +40,7 @@ const ProfileListingsElement = props => {
     }
 
     const deleteListing = async () => { //TODO: needs to be tested
+        setLoading(true);
         try {
             await api.delete(`/listings/${listing.id}`);
             props.getListings();
@@ -42,7 +48,7 @@ const ProfileListingsElement = props => {
         } catch (error) {
             toast.error(`Could not delete listing: \n${handleError(error)}`);
         }
-
+        setLoading(false);
     }
 
     const updateListingApplication = async (applicationId, applicant, listing, status) => { //TODO: needs to be tested with API 
@@ -131,6 +137,11 @@ const ProfileListingsElement = props => {
 
 
     return (
+    <>{loading ? (
+        <div className="d-flex justify-content-center align-items-center spinner-center">
+            <Spinner animation="border" variant="primary"/>
+        </div>
+    ) : (
         <Accordion.Item eventKey={index}>
             <Accordion.Header>
                 {listing.title}
@@ -138,7 +149,7 @@ const ProfileListingsElement = props => {
             </Accordion.Header>
             <Accordion.Body>
                 <ListingElement listing={listing}
-                    image={displayPictures(listing.picture ? listing.picture.url : null)} />
+                                image={displayPictures(listing.pictures)} />
                 <Row>
                     <Col style={{ marginBottom: 20 }}>
                         <Stack direction="horizontal">
@@ -162,6 +173,7 @@ const ProfileListingsElement = props => {
                 </Row>
             </Accordion.Body>
         </Accordion.Item>
+    )}</>
     )
 }
 export default ProfileListingsElement;

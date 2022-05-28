@@ -28,6 +28,7 @@ const App = () => {
 
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [user, setUser] = useState(null);
     const [searchStarted, setSearchStarted] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +47,7 @@ const App = () => {
     const login = useCallback((responseUser, responseToken) => {
         setToken(responseToken);
         setUserId(responseUser.id);
+        setUser(responseUser);
         localStorage.setItem('token', responseToken);
         localStorage.setItem('firstname', responseUser.details.first_name);
         localStorage.setItem('lastname', responseUser.details.last_name);
@@ -58,6 +60,18 @@ const App = () => {
         setUserId(null);
         localStorage.clear();
     }, []);
+
+    const getUser = useCallback(
+        async () => {
+            // TODO: correct when backend is ready
+            try {
+                const response = await api.get(`/users/${userId}`);
+                console.log(response.data);
+                setUser(response.data);
+            } catch (e) {
+                console.log(e);
+            }
+        }, [userId]);
 
 
     const requestResults = async () => {
@@ -144,6 +158,7 @@ const App = () => {
                 isLoggedIn: !!token,
                 token: token,
                 userId: userId,
+                user: user,
                 login: login,
                 logout: logout
             }
@@ -169,7 +184,7 @@ const App = () => {
                             zipCode: zipCode
                         }
                     }>
-                        <Navbar requestFilteredResults={requestResults} brandName="Cozy Cave"/>
+                        <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser} brandName="Cozy Cave"/>
                         <Routes>
                             <Route exact path="/" element={<LandingPage/>}/>
                             <Route exact path="/overview" element={isLoading ? (
@@ -181,7 +196,7 @@ const App = () => {
                             )}/>
                             <Route path="/profile-page/:id" exact element={<ProfilePage/>}/>
                             <Route path="/listings/:id" element={<AdOverviewPage/>}/>
-                            <Route path="/create-listing" element={<CreateAd/>}/>
+                            <Route path="/create-listing" element={<CreateAd requestResults={requestResults}/>}/>
                             <Route path="/edit-listing/:id" element={<EditListing/>}/>
                             <Route path="/view-profile/:id" element={<ForeignViewProfile openAsOwnPage={true}/>}/>
                             <Route exact path="/gather-together" element={<GatherTogetherPage/>}/>

@@ -1,27 +1,30 @@
-import { Button, Row, Col, Container, Alert } from 'react-bootstrap'
-import { useNavigate, useParams } from 'react-router-dom'
-import React, { useState, useEffect } from 'react';
-import { api, handleError } from './helpers/api'
-import { mockListings } from './components/util/mockListings';
-import { decideBadgeColorListingType } from './helpers/decideColorByListingType';
-import { decideGender } from './helpers/decideGender';
-import { displayPictures } from './helpers/displayPictures';
-import { toast, ToastContainer } from 'react-toastify';
+import {Button, Row, Col, Container, Alert} from 'react-bootstrap'
+import {useParams} from 'react-router-dom'
+import React, {useState, useEffect, useContext} from 'react';
+import {api, handleError} from './helpers/api'
+import {mockListings} from './components/util/mockListings';
+import {decideBadgeColorListingType} from './helpers/decideColorByListingType';
+import {decideGender} from './helpers/decideGender';
+import {displayPictures} from './helpers/displayPictures';
+import {toast, ToastContainer} from 'react-toastify';
 import axios from 'axios';
+import {AuthContext} from "./context/auth-context";
 
 
 function AdOverviewPage() {
     let response = null;
     const [listingMapURL, setListingMapURL] = useState('https://map.geo.admin.ch/embed.html?lang=en&topic=ech&bgLayer=ch.swisstopo.swissimage&layers=ch.swisstopo.zeitreihen,ch.bfs.gebaeude_wohnungs_register,ch.bav.haltestellen-oev,ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen&layers_opacity=1,1,1,0.8,0.8&layers_visibility=false,false,false,false,false&layers_timestamp=18641231,,,,');
-    const { id } = useParams();
+    const {id} = useParams();
     let address = ''; //do not use this in the returned form
     const [listing, setListing] = useState([]);
     const [travelTimes, setTravelTimes] = useState([])
 
     const locationAPI = axios.create({
         baseURL: 'https://transport.opendata.ch/v1',
-        headers: { 'Content-Type': 'application/json' }
+        headers: {'Content-Type': 'application/json'}
     });
+
+    const auth = useContext(AuthContext);
 
     const requestListing = async () => {
         try {
@@ -54,8 +57,8 @@ function AdOverviewPage() {
             return <Alert variant={'danger'}>Could not calculate travel time</Alert>
         } else if (string.length > 0) {
             let formattedString = (string.slice(0, 2) === "00" ? '' :
-                (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
-                +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
+                    (string.slice(0, 1) === "0" ? '' : string.slice(0, 1)) +
+                    +(string.slice(1, 2) === "0" ? '' : string.slice(1, 2)) + ' days ') +
                 (string.slice(3, 5) === "00" ? '' :
                     (string.slice(3, 4) === "0" ? '' : string.slice(3, 4)) +
                     +(string.slice(4, 5) === "0" ? '' : string.slice(4, 5)) + ' hours ') +
@@ -78,7 +81,7 @@ function AdOverviewPage() {
     const user = JSON.parse(localStorage.getItem('user'));
 
     let applyUser = {
-        id: user.id,
+        id: auth.user.id,
         role: user.role,
         details: {
             address: user.details.address,
@@ -120,7 +123,7 @@ function AdOverviewPage() {
                 setListingMapURL(frameLink);
                 calculateTravelTime(replaceGermanCharsInString(address.street), address.house_number, address.zip_code)
             }
-            ;
+
 
         } catch (error) {
             toast.warn("Couldn't find specified address :( Feel free to use the map yourself")
@@ -151,7 +154,7 @@ function AdOverviewPage() {
 
     }
 
-    const displayAddress = (address) => {
+    const displayAddress = () => {
         if (listing.address !== undefined) {
             return (
                 <h4>{listing.address.street} {listing.address.house_number}, {listing.address.zip_code} {listing.address.city}</h4>
@@ -166,13 +169,13 @@ function AdOverviewPage() {
     useEffect(() => {
         requestListing();
     }, []);
-
+    console.log(listing)
     return (
         <Container fluid={true}>
-            <ToastContainer />
-            <Row style={{ marginTop: '4em' }}>
+            <ToastContainer/>
+            <Row style={{marginTop: '4em'}}>
                 <Col>
-                    {displayPictures(listing.picture ? listing.picture.url : null)}
+                    {<img src={displayPictures(listing.pictures)} alt="listing" style={{width: '100%'}}/>}
                 </Col>
                 <Col>
                     <div className='border-bottom border-dark'>
@@ -197,7 +200,7 @@ function AdOverviewPage() {
                         </Row>
                         <Row>
                             <Col>
-                                {displayAddress(listing.address)}
+                                {displayAddress()}
                             </Col>
                         </Row>
                         <Row className='mb-1'>
@@ -230,14 +233,14 @@ function AdOverviewPage() {
                             <p>Address 2 {formatTravelDuration(travelTimes[1])}</p>
                             <div className='align-self-end'>
                                 <Button type="button" size='lg' variant="primary"
-                                    onClick={() => handleApply()}>Apply</Button>
+                                        onClick={() => handleApply()}>Apply</Button>
                                 <span> </span>
                                 <Button type="button" size='lg' variant="outline-danger">Report</Button>
                             </div>
                         </Col>
                         <Col md='auto'>
                             <iframe src={listingMapURL}
-                                width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
+                                    width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                         </Col>
                     </Row>
 
