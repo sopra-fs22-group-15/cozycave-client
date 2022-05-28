@@ -30,7 +30,6 @@ const App = () => {
     const [userId, setUserId] = useState(null);
     const [user, setUser] = useState(null);
     const [searchStarted, setSearchStarted] = useState(false);
-    const [reRenderGather, setReRenderGather] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -167,9 +166,7 @@ const App = () => {
             <GatherContext.Provider value={
                 {
                     searchStarted,
-                    reRenderPage: reRenderGather,
                     setSearchStarted,
-                    setReRenderPage: setReRenderGather
                 }
             }>
                 <Router>
