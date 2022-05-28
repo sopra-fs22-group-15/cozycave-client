@@ -1,19 +1,19 @@
 import { Row, Col, Container, Stack, Spinner, Image, Button, CloseButton } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { mockParticipants } from './components/util/mockParticipants';
 import { GatherContext } from './context/gather-context';
 import { toast, ToastContainer } from 'react-toastify';
 
 const GatherTogetherPage = () => {
-    const { searchStarted, setSearchStarted } = useContext(GatherContext);
+    const { searchStarted, setSearchStarted, showRequest, setShowRequest, 
+        showDetails, setShowDetails, sendRequest, setSendRequest } = useContext(GatherContext);
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([])
     let response = null;
     const user = JSON.parse(localStorage.getItem('user'));
 
-    let ws = searchStarted? new WebSocket('wss://ws.link1') : ''
-
+    const socket = useRef(null);
 
     const toggleSearch = () => {
         if (!searchStarted) {
@@ -22,56 +22,78 @@ const GatherTogetherPage = () => {
 
         } else {
             setSearchStarted(false);
+            socket.current.close();
             setParticipants([]);
             toast.warn('Connection stopped')
         }
     }
 
-    const startCall = {
-        event: 'bts:subscribe',
-        data: { channel: 'order_book_btcusd' }, //set stuff
-    };
-
     const requestContactDetails = (id) => {
-        ws.send('request contact details');
+        socket.current.send('request contact details');
         toast.success('Requested contact details');
+    }
+
+    const displayDetailsRequest = (user) => {
+        setShowRequest(user);
+    }
+
+    const displayDetails = (user) => {
+        setShowDetails(user);
     }
 
 
     useEffect(() => {
         if (searchStarted) {
-            ws.onopen = (event) => {
-                ws.send(JSON.stringify(startCall));
-            };
-            ws.onmessage = function (event) {
+            console.log('attempt')
+            setShowRequest(user);
+            socket.current = new WebSocket(`wss://sopra-fs22-group-15-server.herokuapp.com/v1/gathertogether?token=${localStorage.getItem('token')}`);
+            socket.current.onmessage = function (event) {
+                console.log('reached')
                 const json = JSON.parse(event.data);
+                console.log(json)
                 try {
-                    if ((json.event == 'data')) {
-                        setParticipants(json.data.participants);
-                    } else if (json.event == 'request') { //set event
-                        //show prompt to user
+                    if (json.action_id === '9') {
+                        setParticipants(json.data); //set users on joining
+                    } else if (json.action_id === '8') { //request denied
+
+                    } else if (json.action_id === '7') { //request accepted, showDetails
+                        setShowDetails(json.data);
+
+                    } else if (json.action_id === '4') { //requested from user, showRequest
+                        setShowRequest(json.data);
+
+                    } else if (json.action_id === '2') { //remove user
+                        let arr = participants;
+                        const index = arr.indexOf(5);
+                        if (index > -1) {
+                            arr.splice(index, 1); // 2nd parameter means remove one item only
+                        }
+                        setParticipants(arr)
+
+                    } else if (json.action_id === '1') { //new user
+                        let arr = participants;
+                        arr.push(json.data);
+                        setParticipants(arr);
                     }
                 } catch (err) {
                     console.log(err);
                 }
             };
-            ws.onclose = function (event) {
+            socket.current.onclose = function (event) {
                 if (event.wasClean) {
                     alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
                 } else {
                     //server process killed / network down (1006)
-                    alert(`[close] Connection died, event code=${event.code}`);
+                    alert(`[close] Connection died, event code=${event.code} message=${event.reason}`);
                 }
             }
-        }
-        if (ws.readyState === WebSocket.OPEN) {
-            return () => ws.close(); //clean up function to prevent multiple websocket instances
+            return () => socket.current.close(); //clean up function to prevent multiple websocket instances
         }
     }, [searchStarted]);
 
     return (
         <Container fluid={true}>
-            <Container style={{ maxWidth: '75%', alignContent: 'center', alignItems: 'center', marginTop: '5rem' }}>
+            <Container style={{ maxWidth: '75%', alignContent: 'center', alignItems: 'center', marginTop: '7rem' }}>
                 {searchStarted ?
                     <Row>
                         <Stack direction='horizontal'>

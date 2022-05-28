@@ -21,14 +21,18 @@ import {api, handleError} from "./helpers/api";
 import {Spinner} from "react-bootstrap";
 import {queryStringBuilder} from "./components/util/queryStringBuilder";
 
-// TEST DEPLOYMENT TO HEROKU
+
 
 
 const App = () => {
 
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
+
     const [searchStarted, setSearchStarted] = useState(false);
+    const [showRequest, setShowRequest] = useState(null); //these are the gather together hooks, used in context
+    const [showDetails, setShowDetails] = useState(null);
+    const [sendRequest, setSendRequest] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -69,7 +73,7 @@ const App = () => {
                 setIsLoading(false);
             } catch (error) {
                 alert(`Something went wrong during the registration: \n${handleError(error)}`);
-                // TODO: Remove mock listings when API is ready
+                
                 setIsLoading(false);
             }
         } else {
@@ -85,9 +89,9 @@ const App = () => {
                     "MAX_SQM": maxSqm,
                     "LISTING_TYPE": listingType
                 });
-                // Get the returned listings, create new objects for each.
+                
                 const response = await api.get(`/listings${queryString}`);
-                // setListings([]);
+                
                 setListings(response.data.filter(listing => listing.published === true));
                 setIsLoading(false);
             } catch (error) {
@@ -152,6 +156,12 @@ const App = () => {
                 {
                     searchStarted,
                     setSearchStarted,
+                    showRequest,
+                    setShowRequest,
+                    showDetails,
+                    setShowDetails,
+                    sendRequest,
+                    setSendRequest
                 }
             }>
                 <Router>
