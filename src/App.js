@@ -184,7 +184,7 @@ const App = () => {
                             )}/>
                             <Route path="/profile-page/:id" exact element={<ProfilePage/>}/>
                             <Route path="/listings/:id" element={<AdOverviewPage/>}/>
-                            <Route path="/create-listing" element={<CreateAd/>}/>
+                            <Route path="/create-listing" element={<CreateAd requestResults={requestResults}/>}/>
                             <Route path="/edit-listing/:id" element={<EditListing/>}/>
                             <Route path="/view-profile/:id" element={<ForeignViewProfile openAsOwnPage={true}/>}/>
                             <Route exact path="/gather-together" element={<GatherTogetherPage/>}/>

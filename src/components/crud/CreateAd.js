@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import React, {useEffect, useState} from 'react';
+import {Card, Col, Container, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
@@ -11,10 +11,13 @@ import {api} from "../../helpers/api";
 import {addressCreator} from "../util/addressCreator";
 import ImageCarousel from "../listings/ImageCarousel";
 import {useNavigate} from "react-router-dom";
+import Button from "../util/Button";
 
-const CreateAd = () => {
+const CreateAd = props => {
 
     //TODO: add authorization check, only display if user is signed in a seller
+
+    const {requestResults} = props;
 
     const [validated, setValidated] = React.useState(false);
 
@@ -29,7 +32,7 @@ const CreateAd = () => {
     const [name, setName] = React.useState('');
     // const [floorplan, setFloorplan] = useState(null);
     const [pictures, setPictures] = React.useState([]);
-    const [previewSrc, setPreviewSrc] = useState('');
+    const [previewSrc, setPreviewSrc] = useState("");
     const [floorplanPreviewSrc, setFloorplanPreviewSrc] = React.useState('');
     const [deposit, setDeposit] = React.useState(null);
     const [type, setType] = React.useState("flat");
@@ -38,13 +41,20 @@ const CreateAd = () => {
     const [area, setArea] = React.useState(null);
     const [rooms, setRooms] = React.useState(null);
 
-    const [files, setFiles] = React.useState();
+    const [files, setFiles] = React.useState([]);
     const [imageUrl, setImageUrl] = React.useState([]);
+
+    const [loading, setLoading] = React.useState(false);
 
     const navigate = useNavigate();
 
 
+    const isValid = !!(address && deposit && rent && area && rooms && description && type && name && availableTo);
+    console.log(isValid);
+
+
     const handleSubmit = async e => {
+        setLoading(true);
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
             setValidated(false)
@@ -52,57 +62,61 @@ const CreateAd = () => {
             e.stopPropagation();
         } else {
             const requestBody = createListing();
-            if(address && streetName && houseNumber && city && state && postalCode && deposit && rent && area && rooms && name && description){
+            if (address && streetName && houseNumber && city && state && postalCode && deposit && rent && area && rooms && name && description) {
                 setValidated(true);
             }
-            console.log(requestBody);
-            if(validated){
+            if (isValid) {
+                api.post('/listings', requestBody).then(response => {
+                    console.log("receiving ok first promise");
+                    const formData = new FormData();
+                    formData.append('file', files[0]);
+                    setTimeout(() => {
+                        api.get(`/listings/${response.data.id}`).then((response => {
+                            api.post(`/pictures/listings/${response.data.id}`, formData).then(response => {
 
-                try {
-                    const response = await api.post('/listings', requestBody);
-                    toast.success("Listing created successfully! See your listings under the profile page. 🥳", {
-                        position: toast.POSITION.TOP_CENTER,
-                        autoClose: 7000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
+                                console.log("receiving ok second promise");
+                                console.log(response);
 
-                    navigate('/overview');
-                } catch (error) {
+                            }).catch(error => {
+                                console.log(error);
+                                console.log(error);
+                            })
+                        }))
+                            .catch(error => {
+                                console.log(error);
+                                console.log(error);
+                            });
+                    }, 10000);
+                }).catch(error => {
                     console.log(error);
                     if (error.response.status === 400) {
                         toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
                     } else {
                         toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
                     }
-                }
+                    props.requestResults();
+                });
+                navigate('/overview', props.requestResults());
             } else {
                 toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
             }
         }
 
     };
-
     const handleImages = e => {
         const files = e.target.files;
-        // for (let i = 0; i < files.length; i++) {
-        //     const reader = new FileReader();
-        //     let file = files[i];
-        //     reader.readAsDataURL(file);
-        //     reader.onloadend = () => {
-        //         if (i === 0) {
-        //             setPreviewSrc(reader.result);
-        //         }
-        //         setImageUrl([...imageUrl, reader.result]);
-        //         setFiles(file);
-        //     };
-        // }
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            let file = files[i];
+            if (i === 0) {
+                setPreviewSrc(URL.createObjectURL(file));
+            }
+            setImageUrl([...imageUrl, URL.createObjectURL(file)]);
+            setFiles([...files, file]);
+        }
         console.log(files);
     };
-
+    console.log(previewSrc);
 
     // TODO: add support for floorplan maybe?
 
@@ -115,11 +129,6 @@ const CreateAd = () => {
         console.log(address);
 
         // TODO: add image upload handling
-
-        if (!address) {
-            setValidated(false);
-            toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
-        }
 
         const currentUser = JSON.parse(localStorage.getItem('user'));
         return {
@@ -141,16 +150,25 @@ const CreateAd = () => {
         }
     };
 
+    useEffect(() => {
+        requestResults();
+    }, [previewSrc, isValid]);
+
     // TODO: add more validation to the form like (character limit, number of rooms, etc)
-    console.log(address)
     return (
         <Container className="d-flex justify-content-center">
             <Card className="menu-card">
                 <Card.Header className="d-flex justify-content-around" style={{backgroundColor: "#708AFF"}}>
                     <div className="header-group">
-                        
+                        {files && files.length ? (
+                            <div className="listing-header-image">
                                 <ImageCarousel images={imageUrl} preview={previewSrc}/>
-                            
+                            </div>
+
+                        ) : (
+                            <img src="https://via.placeholder.com/500x300.png?text=Flat"
+                                 className="listing-header-image" alt="preview"/>
+                        )}
                         <input type="file" multiple={true} name="edit-image" id="image-file"
                                className="header-file-input"
                                onChange={handleImages}/>
@@ -173,7 +191,7 @@ const CreateAd = () => {
                     </div>
                 </Card.Header>
                 <Card.Body>
-                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Form noValidate validated={isValid} onSubmit={handleSubmit}>
                         <Row>
                             <Col>
                                 <Form.Group>
@@ -297,7 +315,7 @@ const CreateAd = () => {
                 <Card.Footer>
                     <Row>
                         <Col className="d-flex justify-content-center align-content-center">
-                            <Button variant="primary" type="submit" onClick={handleSubmit}>
+                            <Button disabled={!isValid} variant="primary" type="submit" onClick={handleSubmit}>
                                 <span>Create Listing</span>
                             </Button>
                         </Col>
