@@ -154,7 +154,7 @@ const ProfileListingsElement = props => {
                     <Col style={{ marginBottom: 20 }}>
                         <Stack direction="horizontal">
                             <Button variant="warning" className="mx-auto" onClick={() => {
-                                navigate(`/edit-listing/${listing.uuid}`)
+                                navigate(`/edit-listing/${listing.id}`)
                             }}>
                                 <span style={{ marginRight: "5px" }}>Edit Listing</span>
                                 <FontAwesomeIcon icon={faEdit} />

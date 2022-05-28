@@ -63,12 +63,18 @@ const CreateAd = props => {
             const requestBody = createListing();
             api.post('/listings', requestBody).then(response => {
                 const formData = new FormData();
-                formData.append('file', files[0]);
-                api.post(`/pictures/listings/${response.data.id}`, formData).then(response => {
-                    console.log(response);
-                }).catch(error => {
-                    console.log(error);
-                })
+                for (let i = 0; i < files.length; i++) {
+                    setTimeout(() => {
+                        formData.append('file', files[i]);
+                        console.log(formData);
+                        api.post(`/pictures/listings/${response.data.id}`, formData).then(response => {
+                            console.log(response);
+                        }).catch(error => {
+                            console.log(error);
+                        })
+                    }, 2000)
+                }
+
             }).catch(error => {
                 console.log(error);
                 if (error.response.status === 400) {
@@ -132,6 +138,7 @@ const CreateAd = props => {
                 }
                 setImageUrl([...imageUrl, URL.createObjectURL(file)]);
                 setFiles([...files, file]);
+                console.log(file);
             }
             console.log(files);
         };
