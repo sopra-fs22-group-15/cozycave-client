@@ -80,6 +80,7 @@ const ProfileDetails = props => {
 
     useEffect(() => {
         props.getUser();
+        
     }, []);
 
 

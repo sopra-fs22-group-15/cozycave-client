@@ -88,18 +88,18 @@ const CreateAd = () => {
 
     const handleImages = e => {
         const files = e.target.files;
-        for (let i = 0; i < files.length; i++) {
-            const reader = new FileReader();
-            let file = files[i];
-            reader.readAsDataURL(file);
-            reader.onloadend = () => {
-                if (i === 0) {
-                    setPreviewSrc(reader.result);
-                }
-                setImageUrl([...imageUrl, reader.result]);
-                setFiles(file);
-            };
-        }
+        // for (let i = 0; i < files.length; i++) {
+        //     const reader = new FileReader();
+        //     let file = files[i];
+        //     reader.readAsDataURL(file);
+        //     reader.onloadend = () => {
+        //         if (i === 0) {
+        //             setPreviewSrc(reader.result);
+        //         }
+        //         setImageUrl([...imageUrl, reader.result]);
+        //         setFiles(file);
+        //     };
+        // }
         console.log(files);
     };
 
@@ -148,14 +148,9 @@ const CreateAd = () => {
             <Card className="menu-card">
                 <Card.Header className="d-flex justify-content-around" style={{backgroundColor: "#708AFF"}}>
                     <div className="header-group">
-                        {files.length > 0 ? (
-                            <div className="listing-header-image">
+                        
                                 <ImageCarousel images={imageUrl} preview={previewSrc}/>
-                            </div>
-                        ) : (
-                            <img src="https://via.placeholder.com/500x300.png?text=Flat"
-                                 className="listing-header-image" alt="preview"/>
-                        )}
+                            
                         <input type="file" multiple={true} name="edit-image" id="image-file"
                                className="header-file-input"
                                onChange={handleImages}/>

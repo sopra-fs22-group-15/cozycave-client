@@ -312,7 +312,7 @@ const Navbar = props => {
                                             <Form.Label>Gender preference</Form.Label>
                                             <Form.Select name="gender" aria-label="Default select example"
                                                          onChange={e => handleChange(e)}>
-                                                <option
+                                                <option selected disabled hidden
                                                     defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
                                                 >Please choose
                                                 </option>
@@ -346,7 +346,7 @@ const Navbar = props => {
                                                             <Form.Select value={filter.listingType} name="listingType"
                                                                          type="text" placeholder="Flat"
                                                                          onChange={e => handleChange(e)}>
-                                                                <option
+                                                                <option selected disabled hidden
                                                                     defaultValue="Choose your preference"
                                                                 >Please choose
                                                                 </option>
