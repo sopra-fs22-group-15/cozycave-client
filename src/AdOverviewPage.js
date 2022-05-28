@@ -201,7 +201,7 @@ function AdOverviewPage() {
                         </Row>
                         <Row>
                             <Col>
-                                {displayAddress(listing.address)}
+                                {displayAddress()}
                             </Col>
                         </Row>
                         <Row className='mb-1'>
