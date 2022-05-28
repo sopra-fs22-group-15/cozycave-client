@@ -10,7 +10,7 @@ const ProfileListingsList = props => {
     }
 
     return (
-        <Accordion defaultActiveKey="0">
+        <Accordion>
             {props.listings ? props.listings.map((listing, index) => {
                 return (
                     <ProfileListingsElement key={index} listing={listing} index={index} getListings={reload}/>

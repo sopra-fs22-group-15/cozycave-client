@@ -17,7 +17,6 @@ import {FilterContext} from "../../context/filter-context";
 import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
-import {displayPictures} from "../../helpers/displayPictures";
 
 /**
  * Customizable Navbar component.
@@ -38,7 +37,7 @@ const Navbar = props => {
     const [profilePicture, setProfilePicture] = useState("");
     const {user, getUser} = props
 
-    const AvatarToggle = React.forwardRef(({children,onClick}, ref) => (
+    const AvatarToggle = React.forwardRef(({onClick}, ref) => (
         <a
             ref={ref}
             onClick={(e) => {
@@ -53,8 +52,6 @@ const Navbar = props => {
 
     // console.log(auth.user.details.picture.picture_url);
 
-
-    const path = window.location.pathname
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
@@ -185,15 +182,14 @@ const Navbar = props => {
 
                         <Dropdown.Menu className="d-flex flex-column justify-content-center">
                             <Dropdown.Item
-                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
+                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/me`}>My
                                 Profile</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item>
+                            <Dropdown.Item href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/listings`}>
                                 My Listings
                             </Dropdown.Item>
                             <Dropdown.Divider/>
-
-                            <Dropdown.Item>
+                            <Dropdown.Item href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/applications`}>
                                 My Applications
                             </Dropdown.Item>
                             <Dropdown.Divider/>

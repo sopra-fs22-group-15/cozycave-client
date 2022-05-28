@@ -142,8 +142,7 @@ const App = () => {
     }, [])
 
     useEffect(() => {
-
-        requestResults();
+        requestResults()
         const storedUser = JSON.parse(localStorage.getItem('user'));
         const storedToken = localStorage.getItem('token');
 
@@ -184,7 +183,8 @@ const App = () => {
                             zipCode: zipCode
                         }
                     }>
-                        <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser} brandName="Cozy Cave"/>
+                        <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser}
+                                brandName="Cozy Cave"/>
                         <Routes>
                             <Route exact path="/" element={<LandingPage/>}/>
                             <Route exact path="/overview" element={isLoading ? (
@@ -194,7 +194,7 @@ const App = () => {
                             ) : (
                                 <ResultsPage requestResults={requestResults} listings={listings}/>
                             )}/>
-                            <Route path="/profile-page/:id" exact element={<ProfilePage/>}/>
+                            <Route path="/profile-page/:id/:location" element={<ProfilePage/>}/>
                             <Route path="/listings/:id" element={<AdOverviewPage/>}/>
                             <Route path="/create-listing" element={<CreateAd requestResults={requestResults}/>}/>
                             <Route path="/edit-listing/:id" element={<EditListing/>}/>
