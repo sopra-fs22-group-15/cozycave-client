@@ -6,7 +6,7 @@ import { GatherContext } from './context/gather-context';
 import { toast, ToastContainer } from 'react-toastify';
 
 const GatherTogetherPage = () => {
-    const { searchStarted, setSearchStarted, showRequest, setShowRequest, 
+    const { searchStarted, setSearchStarted, showRequest, setShowRequest,
         showDetails, setShowDetails, sendRequest, setSendRequest } = useContext(GatherContext);
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([])
@@ -28,27 +28,19 @@ const GatherTogetherPage = () => {
         }
     }
 
-    const requestContactDetails = (id) => {
-        socket.current.send('request contact details');
-        toast.success('Requested contact details');
+    const requestContactDetails = (id, first_name, last_name) => {
+        console.log(JSON.stringify({
+            action_id: 3,
+            data: {
+                id: id
+            }}));
+        toast.success(`Requested contact details from ${first_name} ${last_name}`);
     }
-
-    const displayDetailsRequest = (user) => {
-        setShowRequest(user);
-    }
-
-    const displayDetails = (user) => {
-        setShowDetails(user);
-    }
-
 
     useEffect(() => {
         if (searchStarted) {
-            console.log('attempt')
-            setShowRequest(user);
             socket.current = new WebSocket(`wss://sopra-fs22-group-15-server.herokuapp.com/v1/gathertogether?token=${localStorage.getItem('token')}`);
             socket.current.onmessage = function (event) {
-                console.log('reached')
                 const json = JSON.parse(event.data);
                 console.log(json)
                 try {
@@ -81,15 +73,37 @@ const GatherTogetherPage = () => {
             };
             socket.current.onclose = function (event) {
                 if (event.wasClean) {
-                    alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+                    alert(`[close] Connection closed cleanly, code=${event.code}`);
                 } else {
                     //server process killed / network down (1006)
-                    alert(`[close] Connection died, event code=${event.code} message=${event.reason}`);
+                    alert(`[close] Connection died, event code=${event.code}`);
                 }
             }
             return () => socket.current.close(); //clean up function to prevent multiple websocket instances
         }
     }, [searchStarted]);
+
+    useEffect(() => {
+        if (searchStarted && sendRequest) {
+            if (sendRequest[0] === true) {
+                socket.current.send(JSON.stringify({
+                    action_id: 5,
+                    data: {
+                        id: sendRequest[1]
+                    }
+                }))
+            } else {
+                socket.current.send(JSON.stringify({
+                    action_id: 6,
+                    data: {
+                        id: sendRequest[1]
+                    }
+                }))
+
+            }
+        }
+
+    }, [sendRequest]);
 
     return (
         <Container fluid={true}>
@@ -121,7 +135,9 @@ const GatherTogetherPage = () => {
                                                     <p style={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>
                                                         {participant.details.biography}</p>
                                                     <Button variant='success' className='ms-auto'
-                                                        onClick={() => requestContactDetails}>Request Contact Details</Button>
+                                                        onClick={
+                                                            () => requestContactDetails(participant.id, participant.details.first_name, participant.details.last_name)}>
+                                                        Request Contact Details</Button>
                                                 </Stack>
                                             </Col>
                                         </Row>

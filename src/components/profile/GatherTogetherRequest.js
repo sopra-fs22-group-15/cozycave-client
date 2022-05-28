@@ -13,13 +13,12 @@ const GatherTogetherRequest = props => {
     const requestAccepted = () => {
         gatherTogether.setShowRequest(null);
         gatherTogether.setSendRequest([true, user.id])
-
-
+        console.log('done')
     }
 
     const requestDenied = () => {
         gatherTogether.setShowRequest(null);
-
+        gatherTogether.setSendRequest([false, user.id])
     }
 
     return (

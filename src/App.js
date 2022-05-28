@@ -45,7 +45,7 @@ const App = () => {
     const [listingType, setListingType] = useState("");
     const [zipCode, setZipCode] = useState("");
 
-    const [listings, setListings] = useState([]);
+    const [listings, setListings] = useState(null);
 
     const login = useCallback((responseUser, responseToken) => {
         setToken(responseToken);
