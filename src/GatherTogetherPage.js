@@ -1,43 +1,72 @@
 import { Row, Col, Container, Stack, Spinner, Image, Button, CloseButton } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import React, { useState, useEffect, useContext} from 'react';
-import { api, handleError } from './helpers/api'
+import React, { useState, useEffect, useContext } from 'react';
 import { mockParticipants } from './components/util/mockParticipants';
 import { GatherContext } from './context/gather-context';
-import {toast, ToastContainer} from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const GatherTogetherPage = () => {
-    const {searchStarted, setSearchStarted} = useContext(GatherContext);
+    const { searchStarted, setSearchStarted } = useContext(GatherContext);
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([])
     let response = null;
     const user = JSON.parse(localStorage.getItem('user'));
 
+    let ws = searchStarted? new WebSocket('wss://ws.link1') : ''
+
+
     const toggleSearch = () => {
         if (!searchStarted) {
             setSearchStarted(true);
-            requestResults();
-            toast.info('Others will now see you on their list')
-            
+            toast.info(`Connection started, don't forget to press the close button when done`)
+
         } else {
             setSearchStarted(false);
             setParticipants([]);
             toast.warn('Connection stopped')
-            //TODO: end connection
         }
     }
 
-    const requestResults = async () => { //TODO: websocket magic here
-        try {
-            //response = await api.get('/users');
-            //setParticipants(response.data);
-            setParticipants(mockParticipants);
-        } catch (error) {
-            alert(`Something went wrong when establishing connection to the server: \n${handleError(error)}`);
-        }
+    const startCall = {
+        event: 'bts:subscribe',
+        data: { channel: 'order_book_btcusd' }, //set stuff
+    };
+
+    const requestContactDetails = (id) => {
+        ws.send('request contact details');
+        toast.success('Requested contact details');
     }
+
 
     useEffect(() => {
+        if (searchStarted) {
+            ws.onopen = (event) => {
+                ws.send(JSON.stringify(startCall));
+            };
+            ws.onmessage = function (event) {
+                const json = JSON.parse(event.data);
+                try {
+                    if ((json.event == 'data')) {
+                        setParticipants(json.data.participants);
+                    } else if (json.event == 'request') { //set event
+                        //show prompt to user
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            };
+            ws.onclose = function (event) {
+                if (event.wasClean) {
+                    alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+                } else {
+                    //server process killed / network down (1006)
+                    alert(`[close] Connection died, event code=${event.code}`);
+                }
+            }
+        }
+        if (ws.readyState === WebSocket.OPEN) {
+            return () => ws.close(); //clean up function to prevent multiple websocket instances
+        }
     }, [searchStarted]);
 
     return (
@@ -46,10 +75,10 @@ const GatherTogetherPage = () => {
                 {searchStarted ?
                     <Row>
                         <Stack direction='horizontal'>
-                        <h5>
-                            Connect with prospective flatmates here:
-                        </h5>
-                        <CloseButton className='ms-auto' aria-label="Hide" onClick={() => toggleSearch()}/> 
+                            <h5>
+                                Connect with prospective flatmates here:
+                            </h5>
+                            <CloseButton className='ms-auto' aria-label="Hide" onClick={() => toggleSearch()} />
                         </Stack>
                         <hr />
                         {participants.length > 0 ?
@@ -69,14 +98,15 @@ const GatherTogetherPage = () => {
                                                     <h6 style={{ opacity: '0.8' }}>Gender: {participant.details.gender} </h6>
                                                     <p style={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>
                                                         {participant.details.biography}</p>
-                                                    <Button variant='success' className='ms-auto'>Request Contact Details</Button>
+                                                    <Button variant='success' className='ms-auto'
+                                                        onClick={() => requestContactDetails}>Request Contact Details</Button>
                                                 </Stack>
                                             </Col>
                                         </Row>
                                     )
                                 })}
 
-                                
+
                             </Stack>
 
                             : (
