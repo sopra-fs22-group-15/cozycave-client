@@ -1,5 +1,5 @@
 import {Container, Spinner} from 'react-bootstrap'
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import ListingList from "./components/listings/ListingList";
 import "./styles/ResultsPage.scss";
 
@@ -12,7 +12,7 @@ function ResultsPage(props) {
             setListings(props.listings);
             setIsLoading(false);
         }
-    }, [props.listings]);
+    }, []);
 
     return (
         <div>

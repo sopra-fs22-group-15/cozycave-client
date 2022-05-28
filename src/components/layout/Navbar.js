@@ -17,6 +17,7 @@ import {FilterContext} from "../../context/filter-context";
 import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import {displayPictures} from "../../helpers/displayPictures";
 
 /**
  * Customizable Navbar component.
@@ -26,25 +27,33 @@ import {faTimes} from "@fortawesome/free-solid-svg-icons";
  */
 
 
-
 // TODO: change navbar content when user is not on landing page.
 
-const AvatarToggle = React.forwardRef(({children, onClick}, ref) => (
-    <a
-        ref={ref}
-        onClick={(e) => {
-            e.preventDefault();
-            onClick(e);
-        }}
-    >
-        <img src="https://www.placecage.com/c/300/300" alt="profile" className="rounded-circle"
-             height="40"/>
-        {children}
-    </a>
-));
+
 
 
 const Navbar = props => {
+
+    const auth = useContext(AuthContext);
+    const [profilePicture, setProfilePicture] = useState("");
+    const {user, getUser} = props
+
+    const AvatarToggle = React.forwardRef(({children,onClick}, ref) => (
+        <a
+            ref={ref}
+            onClick={(e) => {
+                e.preventDefault();
+                onClick(e);
+            }}
+        >
+            <img src={user ? user.details.picture.picture_url : profilePicture} alt="profile" className="rounded-circle"
+                 height="40" width="40"/>
+        </a>
+    ));
+
+    // console.log(auth.user.details.picture.picture_url);
+
+
     const path = window.location.pathname
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
@@ -65,11 +74,7 @@ const Navbar = props => {
     const navigate = useNavigate();
 
     const gatherTogether = useContext(GatherContext);
-    const auth = useContext(AuthContext);
     const filter = useContext(FilterContext);
-
-
-    const user = JSON.parse(localStorage.getItem('user'))
 
     const handleLogout = () => {
         auth.logout();
@@ -87,7 +92,7 @@ const Navbar = props => {
         } else {
             setIsLandingPage(false);
         }
-    }, [auth.isLoggedIn, filter]);
+    }, [auth.isLoggedIn, filter, auth.user]);
     //The following two functions are passed down to the modals as props, and handle the display/hide behavior
 
     const hideLogin = () => {
@@ -178,15 +183,21 @@ const Navbar = props => {
                                          id="dropdown-menu-align-responsive-2">
                         </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
+                        <Dropdown.Menu className="d-flex flex-column justify-content-center">
                             <Dropdown.Item
                                 href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
                                 Profile</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item href="#/action-2">Account Settings</Dropdown.Item>
+                            <Dropdown.Item>
+                                My Listings
+                            </Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item href="#/action-3">Manage Group</Dropdown.Item>
+
+                            <Dropdown.Item>
+                                My Applications
+                            </Dropdown.Item>
                             <Dropdown.Divider/>
+
                             <Dropdown.Item>
                                 <Button variant="outline-secondary" onClick={handleLogout}>Log out</Button>{' '}
                             </Dropdown.Item>
@@ -209,8 +220,11 @@ const Navbar = props => {
             setIsLandingPage(false);
             setIsOverviewPage(true);
         }
+        //setProfilePicture(user.details.picture.picture_url);
+        setTimeout(() => {
+            getUser();
+        }, 1000)
     }, [isLandingPage, isOverviewPage, auth.isLoggedIn, navigate, minPriceFilter]);
-
 
     return (
         <div>

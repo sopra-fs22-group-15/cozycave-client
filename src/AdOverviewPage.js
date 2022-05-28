@@ -1,6 +1,6 @@
 import {Button, Row, Col, Container, Alert} from 'react-bootstrap'
 import {useParams} from 'react-router-dom'
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {api, handleError} from './helpers/api'
 import {mockListings} from './components/util/mockListings';
 import {decideBadgeColorListingType} from './helpers/decideColorByListingType';
@@ -8,6 +8,7 @@ import {decideGender} from './helpers/decideGender';
 import {displayPictures} from './helpers/displayPictures';
 import {toast, ToastContainer} from 'react-toastify';
 import axios from 'axios';
+import {AuthContext} from "./context/auth-context";
 
 
 function AdOverviewPage() {
@@ -22,6 +23,8 @@ function AdOverviewPage() {
         baseURL: 'https://transport.opendata.ch/v1',
         headers: {'Content-Type': 'application/json'}
     });
+
+    const auth = useContext(AuthContext);
 
     const requestListing = async () => {
         try {
@@ -78,7 +81,7 @@ function AdOverviewPage() {
     const user = JSON.parse(localStorage.getItem('user'));
 
     let applyUser = {
-        id: user.id,
+        id: auth.user.id,
         role: user.role,
         details: {
             address: user.details.address,
