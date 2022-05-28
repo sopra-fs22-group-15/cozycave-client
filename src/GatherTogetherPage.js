@@ -12,7 +12,7 @@ const GatherTogetherPage = () => {
     let response = null;
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const ws = new WebSocket('wss://ws.link'); //set link 
+    let ws = searchStarted? new WebSocket('wss://ws.link1') : ''
 
 
     const toggleSearch = () => {
