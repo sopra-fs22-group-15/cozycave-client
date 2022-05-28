@@ -108,7 +108,7 @@ function AdOverviewPage() {
                 toast.success('Successfully applied!');
 
             } catch (error) {
-                alert(`Something went wrong during application process: \n${handleError(error)}`);
+                toast.warn(error.response.data.message);
             }
         }
     }
@@ -146,11 +146,10 @@ function AdOverviewPage() {
                 } else {
                     setTravelTimes([response.data.connections[0].duration, null])
                 }
-
                 //TODO: fix when address structure is available
             }
         } catch (error) {
-            alert(`Something went wrong during calculation of travel time: \n${handleError(error)}`);
+            toast.warn('Could not calculate travel times');
         }
 
     }

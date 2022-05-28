@@ -27,8 +27,9 @@ const ProfileListingsElement = props => {
     const requestApplications = async () => { //TODO: needs to be tested
         try {
             applicationsResponse = await api.get(`/listings/${listing.id}/applications`);
-            setApplications(applicationsResponse.data);
             console.log(applicationsResponse);
+            setApplications(applicationsResponse.data);
+            
         } catch (error) {
             applicationsResponse = mockApplications;
             setApplications(applicationsResponse);
@@ -50,15 +51,19 @@ const ProfileListingsElement = props => {
         setLoading(false);
     }
 
-    const updateListingApplication = async (applicationId, status) => { //TODO: needs to be tested with API 
+    const updateListingApplication = async (applicationId, applicant, listing, status) => { //TODO: needs to be tested with API 
         try {
             let user = JSON.parse(localStorage.getItem('user'));
             const requestBody = JSON.stringify({
+                id: applicationId,
                 authentication: user.authentication,
-                applications_status: status
+                applicant,
+                listing,
+                application_status: status
             })
             console.log(requestBody);
             let response = await api.put(`/listings/${listing.id}/applications/${applicationId}`, requestBody);
+            requestApplications();
         } catch (error) {
             alert(`${handleError(error)}`);
         }
@@ -81,23 +86,25 @@ const ProfileListingsElement = props => {
                 </thead>
                 <tbody>
 
-
-                    {applications.map(application => {
-                        return (application.applications_status === 'PENDING' ?
+                
+                    {applications ? applications.map((application, index) => {
+                        return (application.application_status === 'PENDING' ?
                             (
                                 <tr key={application.id}>
-                                    <td>{application.id}</td>
-                                    <td><Button variant='link' onClick={() => openProfile(application.owner)}>
-                                        {application.owner.first_name} {application.owner.last_name}</Button>
+                                    <td>{index}</td>
+                                    <td><Button variant='link' onClick={() => openProfile(application.applicant)}>
+                                        {application.applicant.details.first_name} {application.applicant.details.last_name}</Button>
                                     </td>
                                     <td style={{ textAlign: "center" }}>
                                         <ButtonGroup>
                                             <Button variant="success" className='mx-auto'
-                                                onClick={() => updateListingApplication(application.id, 'ACCEPTED')}>
+                                                onClick={() => 
+                                                updateListingApplication(application.id, application.applicant, application.listing, 'ACCEPTED')}>
                                                 Accept
                                             </Button>
                                             <Button variant="dark" className='mx-auto'
-                                                onClick={() => updateListingApplication(application.id, 'DENIED')}>
+                                                onClick={() => 
+                                                updateListingApplication(application.id, application.applicant, application.listing, 'DENIED')}>
                                                 Reject
                                             </Button>
                                         </ButtonGroup>
@@ -105,12 +112,12 @@ const ProfileListingsElement = props => {
                                 </tr>
                             ) : (
                                 <tr key={application.id}>
-                                    <td>{application.id}</td>
-                                    <td><Button variant='link' onClick={() => openProfile(application.owner)}>
-                                        {application.owner.first_name} {application.owner.last_name}</Button>
+                                    <td>{index}</td>
+                                    <td><Button variant='link' onClick={() => openProfile(application.applicant)}>
+                                        {application.applicant.details.first_name} {application.applicant.details.last_name}</Button>
                                     </td>
                                     <td style={{ textAlign: "center" }}>
-                                        {application.applications_status === 'ACCEPTED' ?
+                                        {application.application_status === 'ACCEPTED' ?
                                             (<Alert variant='success'>Approved, contact candidate by email</Alert>) :
                                             (<Alert variant='danger'>Denied</Alert>)
                                         }
@@ -118,7 +125,7 @@ const ProfileListingsElement = props => {
                                 </tr>
                             )
                         )
-                    })}
+                    }) :''}
                 </tbody>
             </Table>
         )
