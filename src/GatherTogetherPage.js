@@ -1,7 +1,6 @@
 import { Row, Col, Container, Stack, Spinner, Image, Button, CloseButton } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect, useContext} from 'react';
-import { api, handleError } from './helpers/api'
 import { mockParticipants } from './components/util/mockParticipants';
 import { GatherContext } from './context/gather-context';
 import {toast, ToastContainer} from 'react-toastify';
@@ -13,31 +12,52 @@ const GatherTogetherPage = () => {
     let response = null;
     const user = JSON.parse(localStorage.getItem('user'));
 
+    
+
     const toggleSearch = () => {
         if (!searchStarted) {
             setSearchStarted(true);
-            requestResults();
-            toast.info('Others will now see you on their list')
+            toast.info(`Connection started, don't forget to press the close button when done`)
             
         } else {
             setSearchStarted(false);
             setParticipants([]);
             toast.warn('Connection stopped')
-            //TODO: end connection
         }
     }
 
-    const requestResults = async () => { //TODO: websocket magic here
-        try {
-            //response = await api.get('/users');
-            //setParticipants(response.data);
-            setParticipants(mockParticipants);
-        } catch (error) {
-            alert(`Something went wrong when establishing connection to the server: \n${handleError(error)}`);
-        }
-    }
+    const call = {
+        event: 'bts:subscribe',
+        data: { channel: 'order_book_btcusd' },
+    };
 
     useEffect(() => {
+        if(searchStarted){
+            const ws = new WebSocket('wss://ws.link');
+        ws.onopen = (event) => {
+            ws.send(JSON.stringify(call));
+        };
+        ws.onmessage = function (event) {
+            const json = JSON.parse(event.data);
+            try {
+                if ((json.event == 'data')) {
+                    setParticipants(json.data.participants);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        ws.onclose = function (event) {
+            if (event.wasClean) {
+                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+              } else {
+                //server process killed / network down (1006)
+                alert(`[close] Connection died, event code=${event.code}`);
+              }
+        }
+         
+        return () => ws.close(); //use effect returns cleanup function to avoid creating multiple connections
+        }
     }, [searchStarted]);
 
     return (
