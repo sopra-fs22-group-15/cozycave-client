@@ -1,6 +1,9 @@
 $navbar-height: 190px;
 $results-height: calc(100vh - 190px);
 
+.spinner-center {
+  min-height: 100px;
+}
 
 .listing-cards {
   & .row {

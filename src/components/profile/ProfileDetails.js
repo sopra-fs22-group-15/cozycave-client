@@ -31,7 +31,7 @@ const ProfileDetails = props => {
             const formData = new FormData();
             formData.append('file', file);
             try {
-                const response = await api.post(`/pictures/users`, formData);
+                await api.post(`/pictures/users`, formData);
             } catch (e) {
                 console.log(e);
             }
@@ -53,8 +53,9 @@ const ProfileDetails = props => {
                     phone_number: phoneNumber,
                 }
             })
-            const response = await api.put(`users/${user.id}`, requestBody)
+            await api.put(`users/${user.id}`, requestBody)
             setLoading(false);
+            window.location.reload();
             props.getUser();
         } catch (error) {
             console.log(error);

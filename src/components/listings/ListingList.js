@@ -28,7 +28,7 @@ const ListingList = props => {
                 setSortedListings(_.cloneDeep(unsorted));
             }
     }
-
+    console.log(sortedListings);
     return (
         <Container className="listing-results">
             <Row style={{marginTop: "10px"}}>
@@ -51,7 +51,7 @@ const ListingList = props => {
                 {props.listings && sortedListings ? sortedListings.map(listing => (
                     <ListingElement
                         key={listing.id}
-                        image={displayPictures(listing.picture ? listing.picture.url : null)}
+                        image={displayPictures(listing.pictures)}
                         listing={listing}
                     />
                 )) : (
