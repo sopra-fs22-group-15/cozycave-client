@@ -17,6 +17,8 @@ import {FilterContext} from "../../context/filter-context";
 import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import GatherTogetherDetails from "../profile/GatherTogetherDetails.js";
+import GatherTogetherRequest from "../profile/GatherTogetherRequest.js";
 
 /**
  * Customizable Navbar component.
@@ -388,6 +390,8 @@ const Navbar = props => {
                            hideLogin={hideLogin}/>
                 <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
                 <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
+                {gatherTogether.showDetails ? <GatherTogetherDetails user={gatherTogether.showDetails}/> : ''}
+                {(gatherTogether.showRequest && !gatherTogether.showDetails) ? <GatherTogetherRequest user={gatherTogether.showRequest}/> : ''}
             </LoginContext.Provider>
         </div>
     )
