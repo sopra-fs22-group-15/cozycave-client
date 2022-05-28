@@ -247,17 +247,10 @@ const Navbar = props => {
 
                             {auth.isLoggedIn && !isLandingPage && (
                                 <Col style={{paddingLeft:'2rem'}}>
-                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'secondary'} 
+                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'danger'} 
                                     //button color based on whether connection is open
                                     onClick={()=> {
-                                        if(!gatherTogether.searchStarted && path==='/gather-together'){
-                                            gatherTogether.setSearchStarted(true);
-                                            gatherTogether.setReRenderPage(true);
-                                        }else if(gatherTogether.searchStarted){
-                                            gatherTogether.setSearchStarted(false);
-                                        }else{
                                             navigate("/gather-together");
-                                        }
                                     }}>Gather Together</Button>
 
                                 </Col>

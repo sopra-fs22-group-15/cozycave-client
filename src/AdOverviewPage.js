@@ -50,7 +50,7 @@ function AdOverviewPage() {
 
     const formatTravelDuration = (string) => {
         let alertType = 'danger'
-        if (string === undefined || string===null) {
+        if (string === undefined || string === null) {
             return <Alert variant={'danger'}>Could not calculate travel time</Alert>
         } else if (string.length > 0) {
             let formattedString = (string.slice(0, 2) === "00" ? '' :
@@ -105,7 +105,7 @@ function AdOverviewPage() {
                 toast.success('Successfully applied!');
 
             } catch (error) {
-                alert(`Something went wrong during application process: \n${handleError(error)}`);
+                toast.warn(error.response.data.message);
             }
         }
     }
@@ -140,14 +140,13 @@ function AdOverviewPage() {
                 if (address2) {
                     response2 = await locationAPI.get(`/connections?from=${address2.street}%20${address2.house_number}%20${address2.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
                     setTravelTimes([response.data.connections[0].duration, response2.data.connections[0].duration])
-                }else{
+                } else {
                     setTravelTimes([response.data.connections[0].duration, null])
                 }
-                
                 //TODO: fix when address structure is available
             }
         } catch (error) {
-            alert(`Something went wrong during calculation of travel time: \n${handleError(error)}`);
+            toast.warn('Could not calculate travel times');
         }
 
     }

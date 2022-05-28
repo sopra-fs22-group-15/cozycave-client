@@ -26,7 +26,7 @@ const ProfileApplicationsElement = props => {
     }
 
     const renderApplication = () => {
-        if (application.applications_status === 'ACCEPTED') {
+        if (application.application_status === 'ACCEPTED') {
             return (
                 <div>
                     <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
@@ -36,11 +36,11 @@ const ProfileApplicationsElement = props => {
 
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
+                        <Button variant='danger' onClick={() => deleteApplication()}>Delete Application</Button>
                     </div>
                 </div>
             )
-        } else if (application.applications_status === 'DENIED') {
+        } else if (application.application_status === 'DENIED') {
             return (
                 <div>
                     <div style={{ display: 'block', justifyContent: 'center', alignItems: 'center' }}>
@@ -50,7 +50,7 @@ const ProfileApplicationsElement = props => {
 
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button variant='danger' onClick={deleteApplication}>Delete Application</Button>
+                        <Button variant='danger' onClick={() => deleteApplication()}>Delete Application</Button>
                     </div>
                 </div>
             )
@@ -75,7 +75,6 @@ const ProfileApplicationsElement = props => {
     const getListingByApplication = async (id) => {
         try {
             queryResponse = await api.get(`/listings/${id}`);
-            console.log(queryResponse.data);
             setListing(queryResponse.data);
             
 

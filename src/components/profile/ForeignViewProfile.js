@@ -13,12 +13,7 @@ const ForeignViewProfile = props => {
     const id=useParams();
     const navigate=useNavigate();
     const openAsOwnPage = props.openAsOwnPage;
-    if(openAsOwnPage===true){
-        getUser(id)
-    }else{
-        user=props.user
-    }
-
+    
     const getUser = async (id) => {
         try {
             let response = await api.get(`/users/${id}`);
@@ -26,6 +21,12 @@ const ForeignViewProfile = props => {
         } catch (error) {
             alert(`${handleError(error)}`);
         }
+    }
+    
+    if(openAsOwnPage===true){
+        getUser(id)
+    }else{
+        user=props.user
     }
 
     const renderDeleteButton = () => { //this is only rendered for admin
