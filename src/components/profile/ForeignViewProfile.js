@@ -27,7 +27,7 @@ const ForeignViewProfile = props => {
     if (openAsOwnPage === true) {
         getUser(id)
     } else {
-        user = props.user
+        setUser(props.user);
     }
 
     const renderDeleteButton = () => { //this is only rendered for admin
