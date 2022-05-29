@@ -80,19 +80,20 @@ function AdOverviewPage() {
     }
     const user = JSON.parse(localStorage.getItem('user'));
 
-    let applyUser = {
-        id: auth.user.id,
-        role: user.role,
-        details: {
-            address: user.details.address,
-            gender: user.details.gender,
-            first_name: user.details.first_name,
-            last_name: user.details.last_name,
-            phone_number: user.details.phone_number
-        }
-    }
-
     const handleApply = async () => {
+
+        let applyUser = {
+            id: user.id,
+            role: user.role,
+            details: {
+                address: user.details.address,
+                gender: user.details.gender,
+                first_name: user.details.first_name,
+                last_name: user.details.last_name,
+                phone_number: user.details.phone_number
+            }
+        }
+
         if (user.role === "LANDLORD") {
             toast.warn("You can only apply to listings as a student")
         } else {

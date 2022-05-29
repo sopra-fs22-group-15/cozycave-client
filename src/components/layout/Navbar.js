@@ -35,7 +35,7 @@ const Navbar = props => {
 
     const auth = useContext(AuthContext);
     const [profilePicture, setProfilePicture] = useState("");
-    const {user, getUser} = props
+    const {user, getUser, requestFilteredResults} = props
 
     const AvatarToggle = React.forwardRef(({onClick}, ref) => (
         <a
@@ -78,9 +78,9 @@ const Navbar = props => {
         navigate("/overview");
     };
 
-    const handleNavigate = (path, e) => {
+    const handleNavigate = (path, e, func) => {
         e.preventDefault();
-        navigate(path);
+        navigate(path, func);
     };
 
     useEffect(() => {
@@ -239,7 +239,7 @@ const Navbar = props => {
                         <div className="row">
                             <Col style={{marginRight: "1.4rem"}}>
                                 <a href="/overview" onClick={(e) => {
-                                    handleNavigate("/overview", e)
+                                    handleNavigate("/overview", e, requestFilteredResults())
                                 }} className="navbar-brand">
                                     {props.brandName}
                                     <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"

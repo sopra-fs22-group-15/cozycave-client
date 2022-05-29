@@ -1,14 +1,12 @@
-.edit-listing-container {
-  position: relative;
+.edit-listing-header {
+  display: flex;
+  justify-content: center;
 
-  & .edit-listing-image {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    min-height: 10rem;
-    max-height: 10rem;
-    margin-bottom: 1rem;
-    border-radius: 0.25rem;
+  .edit-listing-container {
+    display: flex;
+    max-width: 50%;
+    margin-bottom: 20px;
+
     // bootstrap hover effect
     &:hover {
       cursor: pointer;
@@ -18,19 +16,21 @@
     @media (max-width: 500px) {
       max-height: 100%;
     }
-  }
 
-  & .edit-listing-button {
-    position: absolute;
-    top: 15%;
-    left: 85%;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
+    & .edit-listing-button {
+      position: absolute;
+      top: 15%;
+      left: 85%;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
 
+  }
 }
+
+
 
 

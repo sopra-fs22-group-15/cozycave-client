@@ -23,7 +23,7 @@ const EditListing = props => {
 
     const [currentListing, setCurrentListing] = useState(null);
 
-    const [address, setAddress] = useState(null);
+    // const [address, setAddress] = useState(null);
     const [streetName, setStreetName] = useState('');
     const [houseNumber, setHouseNumber] = useState('');
     const [city, setCity] = useState('');
@@ -32,6 +32,7 @@ const EditListing = props => {
     const [name, setName] = useState('');
     const [pictures, setPictures] = useState(null);
     const [deposit, setDeposit] = useState('');
+    const [state, setState] = useState('')
     const [type, setType] = useState("flat");
     const [description, setDescription] = useState('');
     const [rent, setRent] = useState('');
@@ -45,30 +46,25 @@ const EditListing = props => {
         try {
 
             // TODO: get listing by id when backend is ready
-            if(auth.isLoggedIn && auth.user) {
+            if (auth.isLoggedIn && auth.user) {
                 const response = await api.get(`/listings/${id}`);
                 setCurrentListing(response.data);
-                console.log(response.data);
                 setLoading(false);
             }
-            // setCurrentListing(response.data);
-            // setCurrentListing(response.data);
-            // setCurrentListing(mockListings[0]);
-            // setAddress(addressCreator(currentListing.address));
-            // setStreetName(currentListing.address.street);
-            // setHouseNumber(currentListing.address.house_number);
-            // setCity(currentListing.address.city);
-            // setPostalCode(currentListing.address.zip_code);
-            // setAvailableTo(currentListing.availableTo);
-            // setName(currentListing.name);
-            // setPictures(currentListing.pictures);
-            // setDeposit(currentListing.deposit);
-            // setType(currentListing.type);
-            // setDescription(currentListing.description);
-            // setRent(currentListing.rent);
-            // setArea(currentListing.area);
-            // setRooms(currentListing.rooms);
-            // setPictures(currentListing.pictures);
+            setStreetName(currentListing.address.street);
+            setHouseNumber(currentListing.address.house_number);
+            setCity(currentListing.address.city);
+            setPostalCode(currentListing.address.zip_code);
+            setAvailableTo(currentListing.availableTo);
+            setName(currentListing.name);
+            setPictures(currentListing.pictures);
+            setDeposit(currentListing.deposit);
+            setType(currentListing.type);
+            setDescription(currentListing.description);
+            setRent(currentListing.rent);
+            setArea(currentListing.area);
+            setRooms(currentListing.rooms);
+            setPictures(currentListing.pictures);
         } catch (error) {
             console.log(error);
         }
@@ -89,8 +85,8 @@ const EditListing = props => {
             const requestBody = createListing();
             console.log(requestBody);
             try {
-                const response = await api.put(`/listings/${currentListing.uuid}`, requestBody);
-                setCurrentListing(response.data);
+                const response = await api.put(`/listings/${currentListing.id}`, requestBody);
+                // setCurrentListing(response.data);
             } catch (e) {
                 console.log(e);
             }
@@ -98,205 +94,204 @@ const EditListing = props => {
     };
 
     const createListing = () => {
-        setAddress(addressCreator(streetName, houseNumber, city, postalCode));
-        console.log(address);
+        // setAddress(addressCreator(streetName, houseNumber, city, postalCode, state));
 
         // TODO: add image upload handling
 
-        return new Listing({
-            name,
-            address,
-            availableTo,
+        return {
+            title: name || currentListing.title,
+            address: {
+                street: streetName || currentListing.address.street,
+                house_number: houseNumber || currentListing.address.house_number,
+                city: city || currentListing.address.city,
+                zip_code: postalCode || currentListing.address.zip_code,
+                state: state || currentListing.address.state,
+                country: city || currentListing.address.country
+            },
+            availableTo: availableTo ? availableTo : currentListing.available_to,
             pictures: currentListing.pictures,
             published: true,
             publisher: currentListing.publisher,
-            deposit,
-            listing_type: type,
-            description,
-            rent,
-            sqm: area,
-            rooms,
+            deposit: deposit ? deposit : currentListing.deposit,
+            listing_type: type ? type : currentListing.listing_type,
+            description: description ? description : currentListing.description,
+            floorplan: [],
+            rent: rent ? rent : currentListing.rent,
+            sqm: area ? area : currentListing.sqm,
+            rooms: rooms ? rooms : currentListing.rooms,
             furnished: false
-        });
+        }
     };
 
     useEffect(() => {
         props.getUser();
-        getListing().then(() => setLoading(false));
-        console.log(currentListing);
+        getListing().then(() => {
+            setLoading(false);
+        });
+
     }, []);
     return (
         <>
             {currentListing ? (
                 <Container className="d-flex justify-content-center">
-                        <Card className="menu-card">
-                            <Card.Header style={{backgroundColor: "#ffffff"}}>
+                    <Card className="menu-card">
+                        <Row style={{paddingLeft: "10px", paddingTop: "10px"}}>
+                            <Col>
+                                <h4>{"Editing listing: "}
+                                    <span style={{color: "#8b8b8b"}}>
+                                            {currentListing.title}
+                                        </span>
+                                </h4>
+                            </Col>
+                        </Row>
+                        <Card.Header className="edit-listing-header" style={{backgroundColor: "#ffffff"}}>
+
+
+                            {currentListing.pictures ? (<Row className="edit-listing-container">
+                                <Card.Img variant="top" src={currentListing.pictures[0].picture_url}/>
+                            </Row>) : (
+                                <div className="center-middle">
+                                    <Spinner animation="border" variant="primary"/>
+                                </div>
+                            )}
+                        </Card.Header>
+                        <Card.Body>
+                            <Form noValidate validated={validated} onSubmit={handleEdit}>
                                 <Row>
                                     <Col>
-                                        <h4>{"Editing listing: "}
-                                            <span style={{color: "#8b8b8b"}}>
-                                            {currentListing.name}
-                                        </span>
-                                        </h4>
-                                    </Col>
-                                </Row>
-                                <div className="row">
-                                    <div className="col-md">
-                                        <div className="row no-gutters">
-                                            {currentListing.pictures.map((picture, index) => {
-                                                return (
-                                                    <div className="col-sm-4 edit-listing-container" key={index}>
-                                                        <img src={picture.picture_url} className="edit-listing-image" alt="listing_image"/>
-                                                        <Button key={index} variant="danger" size="sm"
-                                                                className="edit-listing-button"
-                                                                onClick={() => {
-                                                                    handleDeleteImage(picture.picture_url);
-                                                                }}>
-                                                            <FontAwesomeIcon icon={faTrash}/>
-                                                        </Button>
-                                                    </div>)
-                                            })
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </Card.Header>
-                            <Card.Body>
-                                <Form noValidate validated={validated} onSubmit={handleEdit}>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Street Name</Form.Label>
-                                                <Form.Control required type="text"
-                                                              placeholder={currentListing.address.street} onChange={e => {
-                                                    setStreetName(e.target.value)
-                                                }}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Form.Group>
-                                                <Form.Label>House Nr.</Form.Label>
-                                                <Form.Control required type="text"
-                                                              placeholder={`${currentListing.address.house_number}`}
-                                                              onChange={e => {
-                                                                  setHouseNumber(e.target.value)
-                                                              }}/>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Postal Code</Form.Label>
-                                                <Form.Control required type="text"
-                                                              placeholder={currentListing.address.zip_code} onChange={e => {
-                                                    setPostalCode(e.target.value)
-                                                }}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>City</Form.Label>
-                                                <Form.Control required type="text" placeholder={currentListing.address.city}
-                                                              onChange={e => {
-                                                                  setCity(e.target.value)
-                                                              }}/>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Area</Form.Label>
-                                                <Form.Control required type="text" placeholder={currentListing.sqm}
-                                                              onChange={e => {
-                                                                  setArea(e.target.value)
-                                                              }}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Rooms</Form.Label>
-                                                <Form.Control required type="text" placeholder={currentListing.rooms}
-                                                              onChange={e => {
-                                                                  setRooms(e.target.value)
-                                                              }}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Rent</Form.Label>
-                                                <Form.Control required type="text" placeholder={currentListing.rent}
-                                                              onChange={e => {
-                                                                  setRent(e.target.value)
-                                                              }}/>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Deposit</Form.Label>
-                                                <Form.Control required type="text" placeholder={`${currentListing.deposit}`}
-                                                              onChange={e => {
-                                                                  setDeposit(e.target.value)
-                                                              }}/>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Available To</Form.Label>
-                                                <Form.Select required onChange={e => (setAvailableTo(e.target.value))}>
-                                                    <option>MALE</option>
-                                                    <option>FEMALE</option>
-                                                    <option>OTHER</option>
-                                                </Form.Select>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group>
-                                                <Form.Label>Type</Form.Label>
-                                                <Form.Select required onChange={e => (setType(e.target.value))}>
-                                                    <option>ROOM</option>
-                                                    <option>FLAT</option>
-                                                    <option>HOUSE</option>
-                                                </Form.Select>
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                    <Row>
                                         <Form.Group>
-                                            <Form.Label>Display name</Form.Label>
-                                            <Form.Control required type="text" placeholder={currentListing.name}
+                                            <Form.Label>Street Name</Form.Label>
+                                            <Form.Control type="text"
+                                                          placeholder={currentListing.address.street} onChange={e => {
+                                                setStreetName(e.target.value)
+                                            }}/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Form.Group>
+                                            <Form.Label>House Nr.</Form.Label>
+                                            <Form.Control type="text"
+                                                          placeholder={`${currentListing.address.house_number}`}
                                                           onChange={e => {
-                                                              setName(e.target.value)
+                                                              setHouseNumber(e.target.value)
                                                           }}/>
                                         </Form.Group>
-                                    </Row>
-                                    <Row>
-                                        <Form.Group>
-                                            <Form.Label>Description</Form.Label>
-                                            <Form.Control required as="textarea" rows="5"
-                                                          placeholder={currentListing.description}
-                                                          onChange={e => (setDescription(
-                                                              e.target.value
-                                                          ))}/>
-                                        </Form.Group>
-                                    </Row>
-                                </Form>
-                            </Card.Body>
-                            <Card.Footer>
-                                <Row>
-                                    <Col className="d-flex justify-content-center align-content-center">
-                                        <Button variant="primary" type="submit" onClick={handleEdit}>
-                                            <span style={{marginRight: "10px"}}>Save Changes</span>
-                                            <FontAwesomeIcon icon={faSave}/>
-                                        </Button>
                                     </Col>
                                 </Row>
-                            </Card.Footer>
-                        </Card>
-                    </Container>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Postal Code</Form.Label>
+                                            <Form.Control type="text"
+                                                          placeholder={currentListing.address.zip_code} onChange={e => {
+                                                setPostalCode(e.target.value)
+                                            }}/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>City</Form.Label>
+                                            <Form.Control type="text" placeholder={currentListing.address.city}
+                                                          onChange={e => {
+                                                              setCity(e.target.value)
+                                                          }}/>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Area</Form.Label>
+                                            <Form.Control type="text" placeholder={currentListing.sqm}
+                                                          onChange={e => {
+                                                              setArea(e.target.value)
+                                                          }}/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Rooms</Form.Label>
+                                            <Form.Control type="text" placeholder={currentListing.rooms}
+                                                          onChange={e => {
+                                                              setRooms(e.target.value)
+                                                          }}/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Rent</Form.Label>
+                                            <Form.Control type="text" placeholder={currentListing.rent}
+                                                          onChange={e => {
+                                                              setRent(e.target.value)
+                                                          }}/>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Deposit</Form.Label>
+                                            <Form.Control type="text" placeholder={`${currentListing.deposit}`}
+                                                          onChange={e => {
+                                                              setDeposit(e.target.value)
+                                                          }}/>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Available To</Form.Label>
+                                            <Form.Select value={currentListing.availableTo}
+                                                         onChange={e => (setAvailableTo(e.target.value))}>
+                                                <option value="MALE">MALE</option>
+                                                <option>FEMALE</option>
+                                                <option>OTHER</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label>Type</Form.Label>
+                                            <Form.Select onChange={e => (setType(e.target.value))}>
+                                                <option>ROOM</option>
+                                                <option>FLAT</option>
+                                                <option>HOUSE</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Form.Group>
+                                        <Form.Label>Display name</Form.Label>
+                                        <Form.Control type="text" placeholder={currentListing.title}
+                                                      onChange={e => {
+                                                          setName(e.target.value)
+                                                      }}/>
+                                    </Form.Group>
+                                </Row>
+                                <Row>
+                                    <Form.Group>
+                                        <Form.Label>Description</Form.Label>
+                                        <Form.Control as="textarea" rows="5"
+                                                      placeholder={currentListing.description}
+                                                      onChange={e => (setDescription(
+                                                          e.target.value
+                                                      ))}/>
+                                    </Form.Group>
+                                </Row>
+                            </Form>
+                        </Card.Body>
+                        <Card.Footer>
+                            <Row>
+                                <Col className="d-flex justify-content-center align-content-center">
+                                    <Button variant="primary" type="submit" onClick={handleEdit}>
+                                        <span style={{marginRight: "10px"}}>Save Changes</span>
+                                        <FontAwesomeIcon icon={faSave}/>
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Card.Footer>
+                    </Card>
+                </Container>
             ) : (
                 <div className="center-middle">
                     <Spinner animation="border" variant="primary"/>

@@ -8,6 +8,34 @@
   }
 }
 
+.dropdown-container {
+
+}
+.gender-checkbox-dropdown {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 240px;
+  background-color: white;
+  border: 1px solid #e3e3e3;
+  color: #333;
+
+  &:focus {
+    background-color: white;
+    color: #333;
+  }
+  &:hover {
+    background-color: white;
+    color: #333;
+  }
+  &:active{
+    background-color: white;
+    color: #333;
+  }
+
+}
+
 .header-group {
   display: flex;
   flex-direction: column;

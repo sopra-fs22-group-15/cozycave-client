@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import React, {useCallback, useEffect, useState} from 'react';
+import {Button, Card, Col, Container, Dropdown, Form, Row, Spinner} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
@@ -11,16 +11,25 @@ import {api} from "../../helpers/api";
 import {addressCreator} from "../util/addressCreator";
 import ImageCarousel from "../listings/ImageCarousel";
 import {useNavigate} from "react-router-dom";
+import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
+import {forEach} from "lodash";
 
 const CreateAd = props => {
 
 
         //TODO: add authorization check, only display if user is signed in a seller
 
+        const gendersList = ["MALE", "FEMALE"]
 
         const {requestResults} = props;
 
         const user = JSON.parse(localStorage.getItem('user'));
+
+        const initialState = {
+            MALE: false,
+            FEMALE: false,
+            OTHER: false
+        }
 
         const [validated, setValidated] = React.useState(false);
 
@@ -31,8 +40,10 @@ const CreateAd = props => {
         const [state, setState] = React.useState('');
         const [country, setCountry] = React.useState('Switzerland');
         const [postalCode, setPostalCode] = React.useState('');
-        const [availableTo, setAvailableTo] = React.useState("MALE");
-        const [name, setName] = React.useState('');
+        const [availableToChecked, setAvailableToChecked] = useState(initialState);
+        const [genders, setGenders] = useState([]);
+        const [availableTo, setAvailableTo] = useState([]);
+        const [name, setName] = React.useState([]);
         // const [floorplan, setFloorplan] = useState(null);
         const [pictures, setPictures] = React.useState([]);
         const [previewSrc, setPreviewSrc] = useState("");
@@ -58,24 +69,21 @@ const CreateAd = props => {
                 e.preventDefault();
                 e.stopPropagation();
             }
-
             setValidated(true);
             const requestBody = createListing();
             api.post('/listings', requestBody).then(response => {
-                const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    setTimeout(() => {
-                        formData.append('file', files[i]);
+                    if (files) {
+                        const formData = new FormData();
+                        formData.append('file', files[0]);
                         console.log(formData);
                         api.post(`/pictures/listings/${response.data.id}`, formData).then(response => {
                             console.log(response);
                         }).catch(error => {
                             console.log(error);
-                        })
-                    }, 2000)
+                        });
+                    }
                 }
-
-            }).catch(error => {
+            ).catch(error => {
                 console.log(error);
                 if (error.response.status === 400) {
                     toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
@@ -95,7 +103,7 @@ const CreateAd = props => {
             if (name === 'postalCode') {
                 setPostalCode(value);
             } else if (name === 'availableTo') {
-                setAvailableTo(value);
+                setAvailableToChecked(value);
             } else if (name === 'name') {
                 setName(value);
             } else if (name === 'deposit') {
@@ -119,7 +127,7 @@ const CreateAd = props => {
             } else if (name === 'type') {
                 setType(value);
             }
-            if (streetName !== "" && houseNumber && files && type && city && state && postalCode && deposit && rent && area && rooms && name && description) {
+            if (streetName !== "" && houseNumber && availableTo &&files && type && city && state && postalCode && deposit && rent && area && rooms && name && description) {
                 setValidated(true);
                 console.log(validated);
             } else {
@@ -129,6 +137,44 @@ const CreateAd = props => {
 
         }
 
+        const onChangeMale = e => {
+            setAvailableToChecked(prevState => ({
+                ...prevState,
+                MALE: !availableToChecked.MALE,
+            }));
+        }
+
+        const onChangeFemale = e => {
+            setAvailableToChecked(prevState => ({
+                ...prevState,
+                FEMALE: !availableToChecked.FEMALE,
+            }));
+        }
+
+        const onChangeOther = e => {
+            setAvailableToChecked(prevState => ({
+                ...prevState,
+                OTHER: !availableToChecked.OTHER,
+            }));
+        }
+
+        // console.log(availableToChecked);
+
+        const availableToMapper = useCallback(() => {
+            console.log(availableToChecked);
+            if (availableToChecked.isFemale && !availableToChecked.isMale) {
+                setGenders(["FEMALE"]);
+            }
+            if (availableToChecked.isMale && !availableToChecked.isFemale) {
+                setGenders(["MALE"]);
+            }
+            if (availableToChecked.isMale && availableToChecked.isFemale) {
+                setGenders(["FEMALE", "MALE"])
+            }
+        }, [])
+
+
+        // console.log(availableTo)
         const handleImages = e => {
             const files = e.target.files;
             for (let i = 0; i < files.length; i++) {
@@ -150,14 +196,25 @@ const CreateAd = props => {
         };
 
         const createListing = () => {
+            let checkGender = [];
+            for(let key in availableToChecked){
+                if(availableToChecked[key]){
+                    checkGender.push(key);
+                }
+            }
+            let checkData = new Array();
+            for(let i = 0; i < checkGender.length; i++){
+                checkData.push(checkGender[i]);
+            }
+
             setAddress(addressCreator(streetName, houseNumber, city, postalCode, state, country, name));
             // TODO: add image upload handling
-
+            availableToMapper()
             const currentUser = JSON.parse(localStorage.getItem('user'));
             return {
                 title: name,
                 address: addressCreator(streetName, houseNumber, city, postalCode, state, country, name),
-                available_to: [availableTo],
+                available_to: checkData,
                 available: true,
                 // TODO: send pictures when backend is ready
                 // pictures: pictures,
@@ -224,7 +281,8 @@ const CreateAd = props => {
                                     <Col>
                                         <Form.Group controlId="validationCustom01">
                                             <Form.Label>Street Name</Form.Label>
-                                            <Form.Control name="streetName" required type="text" placeholder="Rämistrasse"
+                                            <Form.Control name="streetName" required type="text"
+                                                          placeholder="Rämistrasse"
                                                           onChange={handleChange}/>
                                         </Form.Group>
                                     </Col>
@@ -291,14 +349,37 @@ const CreateAd = props => {
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group controlId="validationCustom10">
+                                        <Form.Group>
                                             <Form.Label>Available To</Form.Label>
-                                            <Form.Select value={availableTo} name="availableTo" required
-                                                         onChange={handleChange}>
-                                                <option>MALE</option>
-                                                <option>FEMALE</option>
-                                                <option>OTHER</option>
-                                            </Form.Select>
+                                            <Dropdown autoClose="outside" className="dropdown-container">
+                                                <Dropdown.Toggle className="gender-checkbox-dropdown"
+                                                                 id="dropdown-autoclose-inside">
+                                                    Please choose
+                                                </Dropdown.Toggle>
+                                                <Dropdown.Menu style={{width: "240px"}}>
+                                                    <Row>
+                                                        <Col>
+                                                            <div style={{paddingLeft: "10px"}}>
+                                                                <Form.Check
+                                                                    name="male"
+                                                                    label="Male"
+                                                                    onChange={onChangeMale}
+                                                                    id={`checkbox-male`}/>
+                                                                <Form.Check
+                                                                    name="female"
+                                                                    label="Female"
+                                                                    onChange={onChangeFemale}
+                                                                    id={`checkbox-female`}/>
+                                                                <Form.Check
+                                                                    name="other"
+                                                                    label="Other"
+                                                                    onChange={onChangeOther}
+                                                                    id={`checkbox-other`}/>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
                                         </Form.Group>
                                     </Col>
                                     <Col>
@@ -316,7 +397,8 @@ const CreateAd = props => {
                                 <Row>
                                     <Form.Group controlId="validationCustom12">
                                         <Form.Label>Display name</Form.Label>
-                                        <Form.Control name="name" required type="text" placeholder="Example display name"
+                                        <Form.Control name="name" required type="text"
+                                                      placeholder="Example display name"
                                                       onChange={handleChange}/>
                                     </Form.Group>
                                 </Row>
@@ -333,7 +415,8 @@ const CreateAd = props => {
                         <Card.Footer>
                             <Row>
                                 <Col className="d-flex justify-content-center align-content-center">
-                                    <Button disabled={!validated} variant="primary" type="submit" onClick={handleSubmit}>
+                                    <Button disabled={!validated} variant="primary" type="submit"
+                                            onClick={handleSubmit}>
                                         <span>Create Listing</span>
                                     </Button>
                                 </Col>
