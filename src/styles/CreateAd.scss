@@ -34,6 +34,19 @@
     color: #333;
   }
 
+
+
+  &:disabled {
+    background-color: white;
+    color: #333;
+    border-color: #e3e3e3;
+    opacity: 100%;
+    min-height: 39px;
+    & .dropdown-toggle::after {
+      display: none;
+    }
+  }
+
 }
 
 .header-group {
