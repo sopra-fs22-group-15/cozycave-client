@@ -36,7 +36,7 @@ Currently, only travel times are calculated - how long a person would need to ar
 For our customers (e.g Universities), which could need to make a revenue through Cozy Cave to offset maintenance costs, we need to design and implement a business model. For instance, the easiest and most simple way would be to display commercials next to the AD of our listings. A more advanced and unethical way is to sell the profile data and search preferences of our customers to third parties (e.g. what a customer would be willing to pay for a flat, where the student is looking for accomodation etc.).
 
 ## Authors and acknowledgment
-@davidcoita, @lukasherz,  @Slava-Berasneu, @matthias-imhof
+[David Coita](https://github.com/davidcoita), [Lukas Herz](https://github.com/lukasherz),  [Viachaslau Berasneu](https://github.com/Slava-Berasneu), [Matthias Imhof](https://github.com/matthias-imhof)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
