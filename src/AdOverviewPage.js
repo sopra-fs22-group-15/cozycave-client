@@ -80,9 +80,9 @@ function AdOverviewPage() {
     }
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const handleReport = () => {
-        toast.error('An admin will review this listing. Thanks for your report')
-    }
+    //const handleReport = () => {
+    //    toast.error('An admin will review this listing. Thanks for your report')
+    //}
     
 
     const handleApply = async () => {
@@ -239,11 +239,8 @@ function AdOverviewPage() {
                             <p>Address 1 {formatTravelDuration(travelTimes[0])}</p>
                             <p>Address 2 {formatTravelDuration(travelTimes[1])}</p>
                             <div className='align-self-end'>
-                                <Button type="button" size='lg' variant="primary"
+                                <Button style={{marginBottom:'3rem'}} type="button" size='lg' variant="primary"
                                         onClick={() => handleApply()}>Apply</Button>
-                                <span> </span>
-                                <Button type="button" size='lg' variant="outline-danger" 
-                                onClick={() => handleReport()}>Report</Button>
                             </div>
                         </Col>
                         <Col>
