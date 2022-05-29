@@ -34,8 +34,6 @@ import {displayPictures} from "../../helpers/displayPictures";
 // TODO: change navbar content when user is not on landing page.
 
 
-
-
 const Navbar = props => {
 
     const auth = useContext(AuthContext);
@@ -136,6 +134,8 @@ const Navbar = props => {
         } else if (name === "zipCode") {
             setZipCodeFilter(value);
             filter.setFilter(name, value);
+        } else if (name === "search") {
+            filter.setFilter(name, value);
         }
     }
 
@@ -147,7 +147,7 @@ const Navbar = props => {
 
     const resetFilters = e => {
         filter.clearFilters();
-        if (filter.city === "" && filter.gender === "" && filter.minPrice === 0 && filter.maxPrice === 0 && filter.listingType === "" && filter.zipCode === "" && filter.minSqm === 0 && filter.maxSqm === 0) {
+        if (filter.search === "" && filter.city === "" && filter.gender === "" && filter.minPrice === 0 && filter.maxPrice === 0 && filter.listingType === "" && filter.zipCode === "" && filter.minSqm === 0 && filter.maxSqm === 0) {
             applyFilters(e)
         }
     }
@@ -166,7 +166,8 @@ const Navbar = props => {
                 </div>
             ) : (
                 <>
-                    <Button variant='info' outlined={true} opts='me-2' onClick={()=> navigate('/read-me')}>Read Me</Button>
+                    <Button variant='info' outlined={true} opts='me-2' onClick={() => navigate('/read-me')}>Read
+                        Me</Button>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
                             opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
@@ -191,11 +192,13 @@ const Navbar = props => {
                                 href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/me`}>My
                                 Profile</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/listings`}>
+                            <Dropdown.Item
+                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/listings`}>
                                 My Listings
                             </Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/applications`}>
+                            <Dropdown.Item
+                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/applications`}>
                                 My Applications
                             </Dropdown.Item>
                             <Dropdown.Divider/>
@@ -224,8 +227,7 @@ const Navbar = props => {
         }
         //setProfilePicture(user.details.picture.picture_url);
         setTimeout(() => {
-            if(auth.isLoggedIn)
-            {
+            if (auth.isLoggedIn) {
                 getUser();
             }
         }, 1000)
@@ -259,18 +261,18 @@ const Navbar = props => {
                             {!isLandingPage && (
                                 <Col className="nav-search">
                                     <Form className="nav-search">
-                                        <SearchBar/>
+                                        <SearchBar requestFilteredResults={props.requestFilteredResults}/>
                                     </Form>
                                 </Col>
                             )}
 
                             {auth.isLoggedIn && !isLandingPage && (
-                                <Col style={{paddingLeft:'2rem'}}>
-                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'danger'} 
-                                    //button color based on whether connection is open
-                                    onClick={()=> {
-                                            navigate("/gather-together");
-                                    }}>Gather Together</Button>
+                                <Col style={{paddingLeft: '2rem'}}>
+                                    <Button variant={gatherTogether.searchStarted ? 'success' : 'danger'}
+                                        //button color based on whether connection is open
+                                            onClick={() => {
+                                                navigate("/gather-together");
+                                            }}>Gather Together</Button>
 
                                 </Col>
                             )}
@@ -325,7 +327,7 @@ const Navbar = props => {
                                             <Form.Select name="gender" aria-label="Default select example"
                                                          onChange={e => handleChange(e)}>
                                                 <option selected disabled hidden
-                                                    defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
+                                                        defaultValue={auth.isLoggedIn && user ? user.details.gender : "Choose your preference"}
                                                 >Please choose
                                                 </option>
                                                 <option value="MALE">Male</option>
@@ -359,7 +361,7 @@ const Navbar = props => {
                                                                          type="text" placeholder="Flat"
                                                                          onChange={e => handleChange(e)}>
                                                                 <option selected disabled hidden
-                                                                    defaultValue="Choose your preference"
+                                                                        defaultValue="Choose your preference"
                                                                 >Please choose
                                                                 </option>
                                                                 <option value="FLAT">Flat</option>
@@ -408,7 +410,8 @@ const Navbar = props => {
                 <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
                 <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
                 {gatherTogether.showDetails ? <GatherTogetherDetails user={gatherTogether.showDetails}/> : ''}
-                {(gatherTogether.showRequest && !gatherTogether.showDetails) ? <GatherTogetherRequest user={gatherTogether.showRequest}/> : ''}
+                {(gatherTogether.showRequest && !gatherTogether.showDetails) ?
+                    <GatherTogetherRequest user={gatherTogether.showRequest}/> : ''}
             </LoginContext.Provider>
         </div>
     )

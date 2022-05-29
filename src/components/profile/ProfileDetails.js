@@ -21,7 +21,7 @@ const ProfileDetails = props => {
     const [bio, setBio] = useState(user.details.biography);
     const [address, setAddress] = useState(user.details.address)
 
-    const [specialAddress, setSpecialAddress] = useState(user.details.special_address[0] ? user.details.special_address[0] : {
+    const [specialAddress, setSpecialAddress] = useState(user.details.special_address ? user.details.special_address[0] : {
         street: '',
         city: '',
         state: '',
@@ -41,12 +41,12 @@ const ProfileDetails = props => {
     const [zipCode, setZipCode] = useState(user.details.address.zip_code);
     const [country, setCountry] = useState(user.details.address.country);
 
-    const [streetSpecial, setStreetSpecial] = useState(user.details.special_address.street);
-    const [houseNrSpecial, setHouseNrSpecial] = useState(user.details.special_address.house_number);
-    const [citySpecial, setCitySpecial] = useState(user.details.special_address.city);
-    const [stateSpecial, setStateSpecial] = useState(user.details.special_address.state);
-    const [zipCodeSpecial, setZipCodeSpecial] = useState(user.details.special_address.zip_code);
-    const [countrySpecial, setCountrySpecial] = useState(user.details.special_address.country);
+    const [streetSpecial, setStreetSpecial] = useState(user.details.special_address ? user.details.special_address[0].street : '');
+    const [houseNrSpecial, setHouseNrSpecial] = useState(user.details.special_address ? user.details.special_address[0].house_number : '');
+    const [citySpecial, setCitySpecial] = useState(user.details.special_address ? user.details.special_address[0].city : '');
+    const [stateSpecial, setStateSpecial] = useState(user.details.special_address ? user.details.special_address[0].state : '');
+    const [zipCodeSpecial, setZipCodeSpecial] = useState(user.details.special_address ? user.details.special_address[0].zip_code : '');
+    const [countrySpecial, setCountrySpecial] = useState(user.details.special_address ? user.details.special_address[0].country : '');
 
 
     const [show, setShow] = useState(false);
