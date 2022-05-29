@@ -144,7 +144,8 @@ function AdOverviewPage() {
                 return <p>Please log in to see estimated travel times</p>
             } else {
                 address = user.details.address;
-                let address2 = await api.get(`users/${user.id}/specialaddress`)[0]
+                let address2 = await api.get(`users/${user.id}/specialaddress`)
+                address2 = address2.data[0]
                 let response = await locationAPI.get(`/connections?from=${address.street}%20${address.house_number}%20${address.zip_code}&to=${street}%20${house_number}%20${zip_code}`)
                 let response2 = null;
                 if (address2) {
@@ -176,7 +177,6 @@ function AdOverviewPage() {
     useEffect(() => {
         requestListing();
     }, []);
-    console.log(listing)
     return (
         <Container fluid={true}>
             <ToastContainer/>

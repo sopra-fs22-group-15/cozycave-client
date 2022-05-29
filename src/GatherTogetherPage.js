@@ -43,16 +43,12 @@ const GatherTogetherPage = () => {
             socket.current = new WebSocket(`wss://sopra-fs22-group-15-server.herokuapp.com/v1/gathertogether?token=${localStorage.getItem('token')}`);
             socket.current.onmessage = function (event) {
                 const json = JSON.parse(event.data);
-                console.log(json)
                 try {
                     if (json.action_id === 9) {
                         intermediateParticipants=json.data;
                         setParticipants(json.data); //set users on joining
                     } else if (json.action_id === 8) { //request denied
-                        console.log('id', json.data.uuid)
-                        console.log(participants)
                         let obj = intermediateParticipants.find(participant => participant.id===json.data.uuid)
-                        console.log('obj', obj)
                         if(obj){
                             showDeniedToast(obj)
                         }
@@ -108,17 +104,17 @@ const GatherTogetherPage = () => {
                         toast.warn('Unauthorized. You need a student account for this')
                     }
                 } catch (err) {
-                    console.log(err);
+                    toast.warn(err);
                     
                 }
             };
             socket.current.onclose = function (event) {
                 if (event.wasClean) {
-                    alert(`[close] Connection closed cleanly, code=${event.code}`);
+                    toast.warn(`Connection closed`);
 
                 } else {
                     //server process killed / network down (1006)
-                    alert(`[close] Connection died, event code=${event.code}`);
+                    toast.warn(`Connection died`);
                 }
                 setSearchStarted(false);
                 setParticipants([]);

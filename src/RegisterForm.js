@@ -63,7 +63,6 @@ const RegisterForm = props => {
             const user = response.data;
             // Store the token into the local storage.
 
-            console.log(response.data);
 
             // localStorage.setItem('token', token);
             auth.login(user, token)
@@ -125,7 +124,7 @@ const RegisterForm = props => {
 
                             <Row className='g-2'>
                                 <Form.Group className="mb-3" controlId="formPassword">
-                                    <Form.Label>Password*</Form.Label>
+                                    <Form.Label>Password (min 8 characters)*</Form.Label>
                                     <InputGroup>
                                         <InputGroup.Text>
                                             <FontAwesomeIcon icon={faLock}/>

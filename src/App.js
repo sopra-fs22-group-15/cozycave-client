@@ -73,7 +73,6 @@ const App = () => {
         // TODO: correct when backend is ready
         try {
             const response = await api.get(`/users/${userId}`);
-            console.log(response.data);
             setUser(response.data);
         } catch (e) {
             console.log(e);
