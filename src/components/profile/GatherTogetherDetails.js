@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Button, Card, Col, Form, Row, Spinner, Container, Stack, CloseButton } from "react-bootstrap";
+import { Button, Card, Col, Form, Row, Spinner, Container, Stack, CloseButton, Modal } from "react-bootstrap";
 import 'react-phone-number-input/style.css'
 import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
@@ -10,17 +10,16 @@ const GatherTogetherDetails = props => {
     const gatherTogether = useContext(GatherContext);
 
     return (
-        <>
+        <Modal show={gatherTogether.showDetails} size='lg' onHide={() => gatherTogether.setShowDetails(null)}>
             {user ? (
                 <div style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Container fluid={true} style={{ maxWidth: '75%', marginTop: '7rem' }}>
-                        <Row style={{ textAlign: 'center' }}>
-                            <Stack direction='horizontal'>
-                                <h5>Your details request for {user.details.first_name} {user.details.last_name} was approved:</h5>
-                                <CloseButton className='ms-auto' onClick={() => gatherTogether.setShowDetails(null)} />
-                            </Stack>
-                        </Row>
-                        <Card.Header className="d-flex justify-content-center" style={{ backgroundColor: "#708AFF" }}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            Your details request for {user.details.first_name} {user.details.last_name} was approved:
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Card.Header className="d-flex justify-content-center" style={{ backgroundColor: "#90EE90" }}>
                             <Row>
 
                                 <Col className="d-flex flex-column align-items-center ">
@@ -69,7 +68,7 @@ const GatherTogetherDetails = props => {
                                 <ToastContainer />
                             </Card.Footer>
                         </Card.Body>
-                    </Container>
+                    </Modal.Body>
                 </div>
             ) : (
                 <div className="d-flex justify-content-center align-items-center" style={{ height: "50rem" }}>
@@ -78,7 +77,7 @@ const GatherTogetherDetails = props => {
             )
 
             }
-        </>
+        </Modal>
     )
 }
 

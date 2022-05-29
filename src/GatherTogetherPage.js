@@ -70,15 +70,18 @@ const GatherTogetherPage = () => {
                     }
                 } catch (err) {
                     console.log(err);
+                    
                 }
             };
             socket.current.onclose = function (event) {
                 if (event.wasClean) {
                     alert(`[close] Connection closed cleanly, code=${event.code}`);
+
                 } else {
                     //server process killed / network down (1006)
                     alert(`[close] Connection died, event code=${event.code}`);
                 }
+                setSearchStarted(false);
             }
             return () => socket.current.close(); //clean up function to prevent multiple websocket instances
         }

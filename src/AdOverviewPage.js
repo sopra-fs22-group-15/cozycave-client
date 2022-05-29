@@ -81,7 +81,7 @@ function AdOverviewPage() {
     const user = JSON.parse(localStorage.getItem('user'));
 
     let applyUser = {
-        id: auth.user.id,
+        id: user.id, //auth.user.id
         role: user.role,
         details: {
             address: user.details.address,
@@ -174,10 +174,10 @@ function AdOverviewPage() {
         <Container fluid={true}>
             <ToastContainer/>
             <Row style={{marginTop: '4em'}}>
-                <Col>
+                <Col md={5}>
                     {<img src={displayPictures(listing.pictures)} alt="listing" style={{width: '100%'}}/>}
                 </Col>
-                <Col>
+                <Col md={7}>
                     <div className='border-bottom border-dark'>
                         <Row>
                             <Col>
@@ -238,7 +238,7 @@ function AdOverviewPage() {
                                 <Button type="button" size='lg' variant="outline-danger">Report</Button>
                             </div>
                         </Col>
-                        <Col md='auto'>
+                        <Col>
                             <iframe src={listingMapURL}
                                     width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                         </Col>
