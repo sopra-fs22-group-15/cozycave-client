@@ -20,8 +20,10 @@ import GatherTogetherPage from './GatherTogetherPage';
 import {api, handleError} from "./helpers/api";
 import {Spinner} from "react-bootstrap";
 import {queryStringBuilder} from "./components/util/queryStringBuilder";
+import { toast, ToastContainer } from 'react-toastify';
+import ReadMe from './ReadMe';
 
-// TEST DEPLOYMENT TO HEROKU
+
 
 
 const App = () => {
@@ -29,7 +31,12 @@ const App = () => {
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
     const [user, setUser] = useState(null);
+
     const [searchStarted, setSearchStarted] = useState(false);
+    const [showRequest, setShowRequest] = useState(null); //these are the gather together hooks, used in context
+    const [showDetails, setShowDetails] = useState(null);
+    const [sendRequest, setSendRequest] = useState([]);
+    const showDeniedToast = (user) => {toast.warn(`${user.details.first_name} ${user.details.last_name} denied your request :(`)}
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -42,7 +49,7 @@ const App = () => {
     const [listingType, setListingType] = useState("");
     const [zipCode, setZipCode] = useState("");
 
-    const [listings, setListings] = useState([]);
+    const [listings, setListings] = useState(null);
 
     const login = useCallback((responseUser, responseToken) => {
         setToken(responseToken);
@@ -72,7 +79,6 @@ const App = () => {
         }
     }
 
-
     const requestResults = async () => {
         if (city === "" && minPrice === 0 && maxPrice === 0 && gender === "" && listingType === "" && zipCode === "" && minSqm === 0 && maxSqm === 0) {
             try {
@@ -82,7 +88,7 @@ const App = () => {
                 setIsLoading(false);
             } catch (error) {
                 alert(`Something went wrong during the registration: \n${handleError(error)}`);
-                // TODO: Remove mock listings when API is ready
+                
                 setIsLoading(false);
             }
         } else {
@@ -98,9 +104,9 @@ const App = () => {
                     "MAX_SQM": maxSqm,
                     "LISTING_TYPE": listingType
                 });
-                // Get the returned listings, create new objects for each.
+                
                 const response = await api.get(`/listings${queryString}`);
-                // setListings([]);
+                
                 setListings(response.data.filter(listing => listing.published === true));
                 setIsLoading(false);
             } catch (error) {
@@ -165,6 +171,13 @@ const App = () => {
                 {
                     searchStarted,
                     setSearchStarted,
+                    showRequest,
+                    setShowRequest,
+                    showDetails,
+                    setShowDetails,
+                    sendRequest,
+                    setSendRequest,
+                    showDeniedToast
                 }
             }>
                 <Router>
@@ -182,8 +195,9 @@ const App = () => {
                             zipCode: zipCode
                         }
                     }>
-                        <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser}
-                                brandName="Cozy Cave"/>
+
+                        <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser} brandName="Cozy Cave"/>
+                        <ToastContainer/>
                         <Routes>
                             <Route exact path="/" element={<LandingPage/>}/>
                             <Route exact path="/overview" element={isLoading ? (
@@ -201,6 +215,7 @@ const App = () => {
                             <Route path="/view-profile/:id"
                                    element={<ForeignViewProfile openAsOwnPage={true}/>}/>
                             <Route exact path="/gather-together" element={<GatherTogetherPage/>}/>
+                            <Route exact path="/read-me" element={<ReadMe/>}/>
                         </Routes>
                     </FilterContext.Provider>
                 </Router>

@@ -18,6 +18,11 @@ import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
 
+import GatherTogetherDetails from "../profile/GatherTogetherDetails.js";
+import GatherTogetherRequest from "../profile/GatherTogetherRequest.js";
+import {displayPictures} from "../../helpers/displayPictures";
+
+
 /**
  * Customizable Navbar component.
  * @component
@@ -161,6 +166,7 @@ const Navbar = props => {
                 </div>
             ) : (
                 <>
+                    <Button variant='info' outlined={true} opts='me-2' onClick={()=> navigate('/read-me')}>Read Me</Button>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
                             opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
@@ -218,7 +224,10 @@ const Navbar = props => {
         }
         //setProfilePicture(user.details.picture.picture_url);
         setTimeout(() => {
-            getUser();
+            if(auth.isLoggedIn)
+            {
+                getUser();
+            }
         }, 1000)
     }, [isLandingPage, isOverviewPage, auth.isLoggedIn, navigate, minPriceFilter]);
 
@@ -398,6 +407,8 @@ const Navbar = props => {
                            hideLogin={hideLogin}/>
                 <RegisterForm registerOpen={registerIsOpen} hideRegister={hideRegister}/>
                 <ResetPasswordForm resetOpen={resetIsOpen} hideReset={() => setResetIsOpen(false)}/>
+                {gatherTogether.showDetails ? <GatherTogetherDetails user={gatherTogether.showDetails}/> : ''}
+                {(gatherTogether.showRequest && !gatherTogether.showDetails) ? <GatherTogetherRequest user={gatherTogether.showRequest}/> : ''}
             </LoginContext.Provider>
         </div>
     )

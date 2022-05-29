@@ -31,7 +31,6 @@ const ForeignViewProfile = props => {
     }
 
     const renderDeleteButton = () => { //this is only rendered for admin
-        console.log()
         if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" && user.role !== "ADMIN") {
             return (<Row>
                 <Col className="d-flex justify-content-center align-content-center">
@@ -61,7 +60,6 @@ const ForeignViewProfile = props => {
                 <div style={{ justifyContent: 'center', alignItems: 'center'}}>
                     <Container fluid={true} style={{maxWidth:'75%', marginTop:'4rem'}}>
                         <Card.Header className="d-flex justify-content-center" style={{ backgroundColor: "#708AFF" }}>
-                            {console.log(user)}
                             <Row>
                                 <Col className="d-flex flex-column align-items-center ">
                                     <img src="https://www.placecage.com/c/300/300" alt="profile"

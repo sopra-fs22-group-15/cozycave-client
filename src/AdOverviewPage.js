@@ -1,4 +1,4 @@
-import {Button, Row, Col, Container, Alert} from 'react-bootstrap'
+import {Button, Row, Col, Container, Alert, ToastHeader} from 'react-bootstrap'
 import {useParams} from 'react-router-dom'
 import React, {useState, useEffect, useContext} from 'react';
 import {api, handleError} from './helpers/api'
@@ -80,23 +80,28 @@ function AdOverviewPage() {
     }
     const user = JSON.parse(localStorage.getItem('user'));
 
+    //const handleReport = () => {
+    //    toast.error('An admin will review this listing. Thanks for your report')
+    //}
+    
     const handleApply = async () => {
-
-        let applyUser = {
-            id: user.id,
-            role: user.role,
-            details: {
-                address: user.details.address,
-                gender: user.details.gender,
-                first_name: user.details.first_name,
-                last_name: user.details.last_name,
-                phone_number: user.details.phone_number
-            }
-        }
+        if(!user){
+            toast.warn("Log in to apply");
 
         if (user.role === "LANDLORD") {
             toast.warn("You can only apply to listings as a student")
         } else {
+            let applyUser = {
+                id: user.id, //auth.user.id
+                role: user.role,
+                details: {
+                    address: user.details.address,
+                    gender: user.details.gender,
+                    first_name: user.details.first_name,
+                    last_name: user.details.last_name,
+                    phone_number: user.details.phone_number
+                }
+            }
             const application = JSON.stringify({
                 applicant: applyUser,
                 listing: listing,
@@ -111,7 +116,7 @@ function AdOverviewPage() {
             } catch (error) {
                 toast.warn(error.response.data.message);
             }
-        }
+        }}
     }
 
     const requestLocation = async (address) => {
@@ -175,10 +180,10 @@ function AdOverviewPage() {
         <Container fluid={true}>
             <ToastContainer/>
             <Row style={{marginTop: '4em'}}>
-                <Col>
+                <Col md={5}>
                     {<img src={displayPictures(listing.pictures)} alt="listing" style={{width: '100%'}}/>}
                 </Col>
-                <Col>
+                <Col md={7}>
                     <div className='border-bottom border-dark'>
                         <Row>
                             <Col>
@@ -233,13 +238,11 @@ function AdOverviewPage() {
                             <p>Address 1 {formatTravelDuration(travelTimes[0])}</p>
                             <p>Address 2 {formatTravelDuration(travelTimes[1])}</p>
                             <div className='align-self-end'>
-                                <Button type="button" size='lg' variant="primary"
+                                <Button style={{marginBottom:'3rem'}} type="button" size='lg' variant="primary"
                                         onClick={() => handleApply()}>Apply</Button>
-                                <span> </span>
-                                <Button type="button" size='lg' variant="outline-danger">Report</Button>
                             </div>
                         </Col>
-                        <Col md='auto'>
+                        <Col>
                             <iframe src={listingMapURL}
                                     width='400' height='300' frameBorder='0' allow='geolocation'></iframe>
                         </Col>

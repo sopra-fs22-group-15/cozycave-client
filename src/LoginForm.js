@@ -10,7 +10,7 @@ import { toast, ToastContainer } from 'react-toastify';
 
 const LoginForm = props => {
     const auth = useContext(AuthContext);
-    const loginContext = useContext(LoginContext)
+    //const loginContext = useContext(LoginContext)
     const { hideLogin } = props;
     const [email, setEmail] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -44,20 +44,20 @@ const LoginForm = props => {
             setLoading(false);
         }
     }
-    const showReset = () => {
-        loginContext.setReset(true);
-        hideLogin();
-    }
+    //const showReset = () => {
+    //    loginContext.setReset(true);
+    //    hideLogin();
+    //}
 
-    const showResetToast = () => {
-        toast.success("You'll receive an email with a password reset link");
-        props.setResetToast(false)
-    }
+    //const showResetToast = () => {
+    //    toast.success("You'll receive an email with a password reset link");
+    //    props.setResetToast(false)
+    //}
 
     useEffect(() => {
-        if(props.resetToast){
-            showResetToast()
-        }
+       // if(props.resetToast){
+       //     showResetToast()
+       //}
         if (auth.isLoggedIn) {
             hideLogin();
         }
@@ -85,10 +85,6 @@ const LoginForm = props => {
                                 <InputGroup.Text><FontAwesomeIcon icon={faLock} /></InputGroup.Text>
                                 <Form.Control type="password" onChange={e => setPassword(e.target.value)} />
                             </InputGroup>
-                        </Form.Group>
-                        <Form.Group style={{display:'flex'}}>
-                            <Button variant='link' onClick={() => showReset() } 
-                            style={{flex:1, textAlign:'right'}}>Forgot your password?</Button>
                         </Form.Group>
 
                         <div className="d-flex justify-content-center mt-3">
