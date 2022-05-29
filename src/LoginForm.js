@@ -10,7 +10,7 @@ import { toast, ToastContainer } from 'react-toastify';
 
 const LoginForm = props => {
     const auth = useContext(AuthContext);
-    const loginContext = useContext(LoginContext)
+    //const loginContext = useContext(LoginContext)
     const { hideLogin } = props;
     const [email, setEmail] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -49,15 +49,15 @@ const LoginForm = props => {
     //    hideLogin();
     //}
 
-    const showResetToast = () => {
-        toast.success("You'll receive an email with a password reset link");
-        props.setResetToast(false)
-    }
+    //const showResetToast = () => {
+    //    toast.success("You'll receive an email with a password reset link");
+    //    props.setResetToast(false)
+    //}
 
     useEffect(() => {
-        if(props.resetToast){
-            showResetToast()
-        }
+       // if(props.resetToast){
+       //     showResetToast()
+       //}
         if (auth.isLoggedIn) {
             hideLogin();
         }
