@@ -14,7 +14,6 @@ export const decideGender = (gender) => {
         gender.map(item => {
             decision = `${item[0] + item.slice(1,).toLowerCase()}` + " " + decision
         })
-        decision.split(" ")
         return decision;
     }
 };

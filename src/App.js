@@ -205,7 +205,7 @@ const App = () => {
                         <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser} brandName="Cozy Cave"/>
                         <ToastContainer/>
                         <Routes>
-                            <Route exact path="/" element={<LandingPage/>}/>
+                            <Route exact path="/" element={<LandingPage requestFilteredResults={requestResults} />}/>
                             <Route exact path="/overview" element={isLoading ? (
                                 <div className="center-middle">
                                     <Spinner animation="border" variant="primary"/>
