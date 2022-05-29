@@ -68,17 +68,16 @@ const App = () => {
         localStorage.clear();
     }, []);
 
-    const getUser = useCallback(
-        async () => {
-            try {
-                const response = await api.get(`/users/${userId}`);
-                console.log(response.data);
-                setUser(response.data);
-            } catch (e) {
-                console.log(e);
-            }
-        }, [userId]);
-
+    const getUser = async () => {
+        // TODO: correct when backend is ready
+        try {
+            const response = await api.get(`/users/${userId}`);
+            console.log(response.data);
+            setUser(response.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const requestResults = async () => {
         if (city === "" && minPrice === 0 && maxPrice === 0 && gender === "" && listingType === "" && zipCode === "" && minSqm === 0 && maxSqm === 0) {
@@ -148,8 +147,7 @@ const App = () => {
     }, [])
 
     useEffect(() => {
-
-        requestResults();
+        requestResults()
         const storedUser = JSON.parse(localStorage.getItem('user'));
         const storedToken = localStorage.getItem('token');
 
@@ -197,6 +195,7 @@ const App = () => {
                             zipCode: zipCode
                         }
                     }>
+
                         <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser} brandName="Cozy Cave"/>
                         <ToastContainer/>
                         <Routes>
@@ -208,11 +207,13 @@ const App = () => {
                             ) : (
                                 <ResultsPage requestResults={requestResults} listings={listings}/>
                             )}/>
-                            <Route path="/profile-page/:id" exact element={<ProfilePage/>}/>
+                            <Route path="/profile-page/:id/:location" element={<ProfilePage/>}/>
                             <Route path="/listings/:id" element={<AdOverviewPage/>}/>
-                            <Route path="/create-listing" element={<CreateAd requestResults={requestResults}/>}/>
-                            <Route path="/edit-listing/:id" element={<EditListing/>}/>
-                            <Route path="/view-profile/:id" element={<ForeignViewProfile openAsOwnPage={true}/>}/>
+                            <Route path="/create-listing"
+                                   element={<CreateAd requestResults={requestResults}/>}/>
+                            <Route path="/edit-listing/:id" element={user && <EditListing getUser={getUser}/>}/>
+                            <Route path="/view-profile/:id"
+                                   element={<ForeignViewProfile openAsOwnPage={true}/>}/>
                             <Route exact path="/gather-together" element={<GatherTogetherPage/>}/>
                             <Route exact path="/read-me" element={<ReadMe/>}/>
                         </Routes>

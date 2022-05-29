@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Card, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import React, {useCallback, useEffect, useState} from 'react';
+import {Button, Card, Col, Container, Dropdown, Form, Row, Spinner} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/CreateAd.scss";
@@ -11,39 +11,49 @@ import {api} from "../../helpers/api";
 import {addressCreator} from "../util/addressCreator";
 import ImageCarousel from "../listings/ImageCarousel";
 import {useNavigate} from "react-router-dom";
-import Button from "../util/Button";
+import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
+import {forEach} from "lodash";
 
 const CreateAd = props => {
 
 
         //TODO: add authorization check, only display if user is signed in a seller
 
+        const gendersList = ["MALE", "FEMALE"]
 
         const {requestResults} = props;
 
         const user = JSON.parse(localStorage.getItem('user'));
 
+        const initialState = {
+            MALE: false,
+            FEMALE: false,
+            OTHER: false
+        }
+
         const [validated, setValidated] = React.useState(false);
 
         const [address, setAddress] = React.useState(null);
         const [streetName, setStreetName] = React.useState('');
-        const [houseNumber, setHouseNumber] = React.useState(null);
+        const [houseNumber, setHouseNumber] = React.useState("");
         const [city, setCity] = React.useState('');
         const [state, setState] = React.useState('');
         const [country, setCountry] = React.useState('Switzerland');
         const [postalCode, setPostalCode] = React.useState('');
-        const [availableTo, setAvailableTo] = React.useState("male");
-        const [name, setName] = React.useState('');
+        const [availableToChecked, setAvailableToChecked] = useState(initialState);
+        const [genders, setGenders] = useState([]);
+        const [availableTo, setAvailableTo] = useState([]);
+        const [name, setName] = React.useState([]);
         // const [floorplan, setFloorplan] = useState(null);
         const [pictures, setPictures] = React.useState([]);
         const [previewSrc, setPreviewSrc] = useState("");
         const [floorplanPreviewSrc, setFloorplanPreviewSrc] = React.useState('');
-        const [deposit, setDeposit] = React.useState(null);
-        const [type, setType] = React.useState("flat");
+        const [deposit, setDeposit] = React.useState("");
+        const [type, setType] = React.useState("ROOM");
         const [description, setDescription] = React.useState('');
-        const [rent, setRent] = React.useState(null);
-        const [area, setArea] = React.useState(null);
-        const [rooms, setRooms] = React.useState(null);
+        const [rent, setRent] = React.useState("");
+        const [area, setArea] = React.useState("");
+        const [rooms, setRooms] = React.useState("");
 
         const [files, setFiles] = React.useState([]);
         const [imageUrl, setImageUrl] = React.useState([]);
@@ -56,37 +66,35 @@ const CreateAd = props => {
             setLoading(true);
             const form = e.currentTarget;
             if (form.checkValidity() === false) {
-                setValidated(false)
                 e.preventDefault();
                 e.stopPropagation();
-            } else {
-                const requestBody = createListing();
-                api.post('/listings', requestBody).then(response => {
-                    console.log("receiving ok first promise");
-                    const formData = new FormData();
-                    formData.append('file', files[0]);
-                    api.post(`/pictures/listings/${response.data.id}`, formData).then(response => {
-
-                        console.log("receiving ok second promise");
-                        console.log(response);
-
-                    }).catch(error => {
-                        console.log(error);
-                        console.log(error);
-                    })
-                }).catch(error => {
-                    console.log(error);
-                    if (error.response.status === 400) {
-                        toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
-                    } else {
-                        toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
+            }
+            setValidated(true);
+            const requestBody = createListing();
+            api.post('/listings', requestBody).then(response => {
+                    if (files) {
+                        const formData = new FormData();
+                        formData.append('file', files[0]);
+                        console.log(formData);
+                        api.post(`/pictures/listings/${response.data.id}`, formData).then(response => {
+                            console.log(response);
+                        }).catch(error => {
+                            console.log(error);
+                        });
                     }
-                });
-                props.requestResults();
-                setLoading(false);
-                if (!loading) {
-                    navigate(`/profile-page/${user.id}`, props.requestResults());
                 }
+            ).catch(error => {
+                console.log(error);
+                if (error.response.status === 400) {
+                    toast.error("Please fill out all required fields!", {position: toast.POSITION.TOP_CENTER});
+                } else if (error.response.status >= 500) {
+                    toast.error("Error occurred when trying to create a listing.", {position: toast.POSITION.TOP_CENTER});
+                }
+            });
+            props.requestResults();
+            setLoading(false);
+            if (!loading && validated) {
+                navigate(`/profile-page/${user.id}/listings`, props.requestResults());
             }
         };
 
@@ -95,7 +103,7 @@ const CreateAd = props => {
             if (name === 'postalCode') {
                 setPostalCode(value);
             } else if (name === 'availableTo') {
-                setAvailableTo(value);
+                setAvailableToChecked(value);
             } else if (name === 'name') {
                 setName(value);
             } else if (name === 'deposit') {
@@ -119,11 +127,54 @@ const CreateAd = props => {
             } else if (name === 'type') {
                 setType(value);
             }
-            if (address && streetName && houseNumber && files && type && city && state && postalCode && deposit && rent && area && rooms && name && description) {
+            if (streetName !== "" && houseNumber && availableTo &&files && type && city && state && postalCode && deposit && rent && area && rooms && name && description) {
                 setValidated(true);
+                console.log(validated);
+            } else {
+                setValidated(false);
+                console.log(validated);
             }
+
         }
 
+        const onChangeMale = e => {
+            setAvailableToChecked(prevState => ({
+                ...prevState,
+                MALE: !availableToChecked.MALE,
+            }));
+        }
+
+        const onChangeFemale = e => {
+            setAvailableToChecked(prevState => ({
+                ...prevState,
+                FEMALE: !availableToChecked.FEMALE,
+            }));
+        }
+
+        const onChangeOther = e => {
+            setAvailableToChecked(prevState => ({
+                ...prevState,
+                OTHER: !availableToChecked.OTHER,
+            }));
+        }
+
+        // console.log(availableToChecked);
+
+        const availableToMapper = useCallback(() => {
+            console.log(availableToChecked);
+            if (availableToChecked.isFemale && !availableToChecked.isMale) {
+                setGenders(["FEMALE"]);
+            }
+            if (availableToChecked.isMale && !availableToChecked.isFemale) {
+                setGenders(["MALE"]);
+            }
+            if (availableToChecked.isMale && availableToChecked.isFemale) {
+                setGenders(["FEMALE", "MALE"])
+            }
+        }, [])
+
+
+        // console.log(availableTo)
         const handleImages = e => {
             const files = e.target.files;
             for (let i = 0; i < files.length; i++) {
@@ -133,6 +184,7 @@ const CreateAd = props => {
                 }
                 setImageUrl([...imageUrl, URL.createObjectURL(file)]);
                 setFiles([...files, file]);
+                console.log(file);
             }
             console.log(files);
         };
@@ -144,14 +196,25 @@ const CreateAd = props => {
         };
 
         const createListing = () => {
+            let checkGender = [];
+            for(let key in availableToChecked){
+                if(availableToChecked[key]){
+                    checkGender.push(key);
+                }
+            }
+            let checkData = new Array();
+            for(let i = 0; i < checkGender.length; i++){
+                checkData.push(checkGender[i]);
+            }
+
             setAddress(addressCreator(streetName, houseNumber, city, postalCode, state, country, name));
             // TODO: add image upload handling
-
+            availableToMapper()
             const currentUser = JSON.parse(localStorage.getItem('user'));
             return {
                 title: name,
                 address: addressCreator(streetName, houseNumber, city, postalCode, state, country, name),
-                available_to: [availableTo],
+                available_to: checkData,
                 available: true,
                 // TODO: send pictures when backend is ready
                 // pictures: pictures,
@@ -213,17 +276,18 @@ const CreateAd = props => {
                             </div>
                         </Card.Header>
                         <Card.Body>
-                            <Form noValidate onSubmit={handleSubmit}>
+                            <Form noValidate validated={validated} onSubmit={handleSubmit}>
                                 <Row>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom01">
                                             <Form.Label>Street Name</Form.Label>
-                                            <Form.Control name="streetName" required type="text" placeholder="Rämistrasse"
+                                            <Form.Control name="streetName" required type="text"
+                                                          placeholder="Rämistrasse"
                                                           onChange={handleChange}/>
                                         </Form.Group>
                                     </Col>
                                     <Col xs={3}>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom02">
                                             <Form.Label>House Nr.</Form.Label>
                                             <Form.Control name="houseNumber" required type="text" placeholder="87"
                                                           onChange={handleChange}/>
@@ -232,21 +296,21 @@ const CreateAd = props => {
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom03">
                                             <Form.Label>Postal Code</Form.Label>
                                             <Form.Control name="postalCode" required type="text" placeholder="8050"
                                                           onChange={handleChange}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom04">
                                             <Form.Label>City</Form.Label>
                                             <Form.Control name="city" required type="text" placeholder="Oerlikon"
                                                           onChange={handleChange}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom05">
                                             <Form.Label>State</Form.Label>
                                             <Form.Control name="state" required type="text" placeholder="Zurich"
                                                           onChange={handleChange}/>
@@ -255,21 +319,21 @@ const CreateAd = props => {
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom06">
                                             <Form.Label>Area</Form.Label>
                                             <Form.Control name="area" required type="text" placeholder="150m²"
                                                           onChange={handleChange}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom07">
                                             <Form.Label>Rooms</Form.Label>
                                             <Form.Control name="rooms" required type="text" placeholder="3.5"
                                                           onChange={handleChange}/>
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom08">
                                             <Form.Label>Rent</Form.Label>
                                             <Form.Control name="rent" required type="text" placeholder="CHF 1000"
                                                           onChange={handleChange}/>
@@ -278,7 +342,7 @@ const CreateAd = props => {
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom09">
                                             <Form.Label>Deposit</Form.Label>
                                             <Form.Control name="deposit" required type="text" placeholder="5000"
                                                           onChange={handleChange}/>
@@ -287,17 +351,42 @@ const CreateAd = props => {
                                     <Col>
                                         <Form.Group>
                                             <Form.Label>Available To</Form.Label>
-                                            <Form.Select name="availableTo" required onChange={handleChange}>
-                                                <option>MALE</option>
-                                                <option>FEMALE</option>
-                                                <option>OTHER</option>
-                                            </Form.Select>
+                                            <Dropdown autoClose="outside" className="dropdown-container">
+                                                <Dropdown.Toggle className="gender-checkbox-dropdown"
+                                                                 id="dropdown-autoclose-inside">
+                                                    Please choose
+                                                </Dropdown.Toggle>
+                                                <Dropdown.Menu style={{width: "240px"}}>
+                                                    <Row>
+                                                        <Col>
+                                                            <div style={{paddingLeft: "10px"}}>
+                                                                <Form.Check
+                                                                    name="male"
+                                                                    label="Male"
+                                                                    onChange={onChangeMale}
+                                                                    id={`checkbox-male`}/>
+                                                                <Form.Check
+                                                                    name="female"
+                                                                    label="Female"
+                                                                    onChange={onChangeFemale}
+                                                                    id={`checkbox-female`}/>
+                                                                <Form.Check
+                                                                    name="other"
+                                                                    label="Other"
+                                                                    onChange={onChangeOther}
+                                                                    id={`checkbox-other`}/>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group>
+                                        <Form.Group controlId="validationCustom11">
                                             <Form.Label>Type</Form.Label>
-                                            <Form.Select name="type" required onChange={e => (setType(e.target.value))}>
+                                            <Form.Select value={type} name="type" required
+                                                         onChange={e => (setType(e.target.value))}>
                                                 <option>ROOM</option>
                                                 <option>FLAT</option>
                                                 <option>HOUSE</option>
@@ -306,14 +395,15 @@ const CreateAd = props => {
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <Form.Group>
+                                    <Form.Group controlId="validationCustom12">
                                         <Form.Label>Display name</Form.Label>
-                                        <Form.Control name="name" required type="text" placeholder="Example display name"
+                                        <Form.Control name="name" required type="text"
+                                                      placeholder="Example display name"
                                                       onChange={handleChange}/>
                                     </Form.Group>
                                 </Row>
                                 <Row>
-                                    <Form.Group>
+                                    <Form.Group controlId="validationCustom13">
                                         <Form.Label>Description</Form.Label>
                                         <Form.Control name="description" required as="textarea" rows="5"
                                                       placeholder="Add a description of the flat here..."
@@ -325,7 +415,8 @@ const CreateAd = props => {
                         <Card.Footer>
                             <Row>
                                 <Col className="d-flex justify-content-center align-content-center">
-                                    <Button disabled={validated} variant="primary" type="submit" onClick={handleSubmit}>
+                                    <Button disabled={!validated} variant="primary" type="submit"
+                                            onClick={handleSubmit}>
                                         <span>Create Listing</span>
                                     </Button>
                                 </Col>

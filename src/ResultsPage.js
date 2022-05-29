@@ -22,7 +22,7 @@ function ResultsPage(props) {
                 </div>
             ) : (
                     <Container className="center-middle">
-                        {props.listings ? <ListingList listings={listings}/> : "Loading..."}
+                        {props.listings ? <ListingList requestResults={props.requestResults} listings={listings}/> : "Loading..."}
                     </Container>
             )}
         </div>

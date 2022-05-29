@@ -83,41 +83,41 @@ function AdOverviewPage() {
     //const handleReport = () => {
     //    toast.error('An admin will review this listing. Thanks for your report')
     //}
-    
 
     const handleApply = async () => {
-        if(!user){
+        if (!user) {
             toast.warn("Log in to apply");
-        }else{
-        if (user.role === "LANDLORD") {
-            toast.warn("You can only apply to listings as a student")
         } else {
-            let applyUser = {
-                id: user.id, //auth.user.id
-                role: user.role,
-                details: {
-                    address: user.details.address,
-                    gender: user.details.gender,
-                    first_name: user.details.first_name,
-                    last_name: user.details.last_name,
-                    phone_number: user.details.phone_number
+            if (user.role === "LANDLORD") {
+                toast.warn("You can only apply to listings as a student")
+            } else {
+                let applyUser = {
+                    id: user.id, //auth.user.id
+                    role: user.role,
+                    details: {
+                        address: user.details.address,
+                        gender: user.details.gender,
+                        first_name: user.details.first_name,
+                        last_name: user.details.last_name,
+                        phone_number: user.details.phone_number
+                    }
+                }
+                const application = JSON.stringify({
+                    applicant: applyUser,
+                    listing: listing,
+                    application_status: "PENDING"
+                })
+                try {
+                    let applyResponse = await api.post(`/listings/${id}/applications`, application);
+
+
+                    toast.success('Successfully applied!');
+
+                } catch (error) {
+                    toast.warn(error.response.data.message);
                 }
             }
-            const application = JSON.stringify({
-                applicant: applyUser,
-                listing: listing,
-                application_status: "PENDING"
-            })
-            try {
-                let applyResponse = await api.post(`/listings/${id}/applications`, application);
-
-
-                toast.success('Successfully applied!');
-
-            } catch (error) {
-                toast.warn(error.response.data.message);
-            }
-        }}
+        }
     }
 
     const requestLocation = async (address) => {
@@ -239,7 +239,7 @@ function AdOverviewPage() {
                             <p>Address 1 {formatTravelDuration(travelTimes[0])}</p>
                             <p>Address 2 {formatTravelDuration(travelTimes[1])}</p>
                             <div className='align-self-end'>
-                                <Button style={{marginBottom:'3rem'}} type="button" size='lg' variant="primary"
+                                <Button style={{marginBottom: '3rem'}} type="button" size='lg' variant="primary"
                                         onClick={() => handleApply()}>Apply</Button>
                             </div>
                         </Col>

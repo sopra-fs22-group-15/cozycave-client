@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import ListingElement from "./ListingElement";
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
@@ -13,6 +13,10 @@ const ListingList = props => {
     const colPerRow = 2;
 
     const [sortedListings, setSortedListings] = React.useState(props.listings);
+
+    useEffect(() => {
+        // props.requestResults();
+    }, []);
 
     const sortHandler = (e) => {
             if (e.target.value === "price_asc") {

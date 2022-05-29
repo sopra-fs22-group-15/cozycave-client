@@ -7,7 +7,7 @@ import ProfileApplications from "./applications/ProfileApplications";
 import ProfileListings from "./listings/ProfileListings";
 import AdminListings from './listings/AdminListings';
 import { AuthContext } from "../../context/auth-context";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import AdminUsers from './users/AdminUsers';
 
 const ProfilePage = () => {
@@ -15,7 +15,9 @@ const ProfilePage = () => {
 
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
+    const [tab, setTab] = useState("me");
 
+    const params = useParams();
     const id = JSON.parse(localStorage.getItem("user")).id;
     const role = JSON.parse(localStorage.getItem('user')).role;
     const navigate = useNavigate();
@@ -32,14 +34,16 @@ const ProfilePage = () => {
             setLoading(false);
         }, [id]);
 
+
+
     //actual admin verification is done in the backend, this just makes sure that admin pages
     //aren't shown to all users
     const renderTabs = () => {
         if (role === "ADMIN") {
             return (
                 <Card className="profile-card">
-                    <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
-                        <Tab eventKey="profile" title="Profile Details">
+                    <Tabs defaultActiveKey={tab} id="uncontrolled-tab-example" className="mb-3">
+                        <Tab eventKey="me" title="Profile Details">
                             {loading ? <div>Loading...</div> :
                                 <ProfileDetails user={user ? user : null} getUser={getUser} />}
                         </Tab>
@@ -61,8 +65,8 @@ const ProfilePage = () => {
         } else {
             return (
                 <Card className="profile-card">
-                    <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
-                        <Tab eventKey="profile" title="Profile Details">
+                    <Tabs defaultActiveKey={tab} id="uncontrolled-tab-example" className="mb-3">
+                        <Tab eventKey="me" title="Profile Details">
                             {loading ? <div>Loading...</div> :
                                 <ProfileDetails user={user ? user : null} getUser={getUser} />}
                         </Tab>
@@ -79,6 +83,7 @@ const ProfilePage = () => {
     }
 
     useEffect(() => {
+        setTab(params.location);
         if (!localStorage.getItem('token')) {
             navigate("/overview");
         } else {

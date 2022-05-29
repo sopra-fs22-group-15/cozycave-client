@@ -17,9 +17,11 @@ import {FilterContext} from "../../context/filter-context";
 import {priceRangeStringBuilder} from "../util/priceRangeBuilder";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes} from "@fortawesome/free-solid-svg-icons";
+
 import GatherTogetherDetails from "../profile/GatherTogetherDetails.js";
 import GatherTogetherRequest from "../profile/GatherTogetherRequest.js";
 import {displayPictures} from "../../helpers/displayPictures";
+
 
 /**
  * Customizable Navbar component.
@@ -38,9 +40,9 @@ const Navbar = props => {
 
     const auth = useContext(AuthContext);
     const [profilePicture, setProfilePicture] = useState("");
-    const {user, getUser} = props
+    const {user, getUser, requestFilteredResults} = props
 
-    const AvatarToggle = React.forwardRef(({children,onClick}, ref) => (
+    const AvatarToggle = React.forwardRef(({onClick}, ref) => (
         <a
             ref={ref}
             onClick={(e) => {
@@ -55,8 +57,6 @@ const Navbar = props => {
 
     // console.log(auth.user.details.picture.picture_url);
 
-
-    const path = window.location.pathname
     const [loginIsOpen, setLoginIsOpen] = useState(false);
     const [registerIsOpen, setRegisterIsOpen] = useState(false);
     const [isLandingPage, setIsLandingPage] = useState(true);
@@ -83,9 +83,9 @@ const Navbar = props => {
         navigate("/overview");
     };
 
-    const handleNavigate = (path, e) => {
+    const handleNavigate = (path, e, func) => {
         e.preventDefault();
-        navigate(path);
+        navigate(path, func);
     };
 
     useEffect(() => {
@@ -188,15 +188,14 @@ const Navbar = props => {
 
                         <Dropdown.Menu className="d-flex flex-column justify-content-center">
                             <Dropdown.Item
-                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}`}>My
+                                href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/me`}>My
                                 Profile</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item>
+                            <Dropdown.Item href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/listings`}>
                                 My Listings
                             </Dropdown.Item>
                             <Dropdown.Divider/>
-
-                            <Dropdown.Item>
+                            <Dropdown.Item href={`/profile-page/${JSON.parse(localStorage.getItem("user")).id}/applications`}>
                                 My Applications
                             </Dropdown.Item>
                             <Dropdown.Divider/>
@@ -249,7 +248,7 @@ const Navbar = props => {
                         <div className="row">
                             <Col style={{marginRight: "1.4rem"}}>
                                 <a href="/overview" onClick={(e) => {
-                                    handleNavigate("/overview", e)
+                                    handleNavigate("/overview", e, requestFilteredResults())
                                 }} className="navbar-brand">
                                     {props.brandName}
                                     <img src="/assets/cozy_cave_logo_v1.svg" alt="logo"
