@@ -86,10 +86,6 @@ const LoginForm = props => {
                                 <Form.Control type="password" onChange={e => setPassword(e.target.value)} />
                             </InputGroup>
                         </Form.Group>
-                        <Form.Group style={{display:'flex'}}>
-                            <Button variant='link' onClick={() => showReset() } 
-                            style={{flex:1, textAlign:'right'}}>Forgot your password?</Button>
-                        </Form.Group>
 
                         <div className="d-flex justify-content-center mt-3">
                             <Button variant="primary" type="submit" style={{ "width": "100%" }}
