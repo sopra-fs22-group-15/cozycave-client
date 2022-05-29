@@ -20,6 +20,7 @@ import GatherTogetherPage from './GatherTogetherPage';
 import {api, handleError} from "./helpers/api";
 import {Spinner} from "react-bootstrap";
 import {queryStringBuilder} from "./components/util/queryStringBuilder";
+import { toast, ToastContainer } from 'react-toastify';
 
 
 
@@ -29,10 +30,12 @@ const App = () => {
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
     const [user, setUser] = useState(null);
+
     const [searchStarted, setSearchStarted] = useState(false);
     const [showRequest, setShowRequest] = useState(null); //these are the gather together hooks, used in context
     const [showDetails, setShowDetails] = useState(null);
     const [sendRequest, setSendRequest] = useState([]);
+    const showDeniedToast = (user) => {toast.warn(`${user.details.first_name} ${user.details.last_name} denied your request :(`)}
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -175,7 +178,8 @@ const App = () => {
                     showDetails,
                     setShowDetails,
                     sendRequest,
-                    setSendRequest
+                    setSendRequest,
+                    showDeniedToast
                 }
             }>
                 <Router>
@@ -194,6 +198,7 @@ const App = () => {
                         }
                     }>
                         <Navbar requestFilteredResults={requestResults} user={user} getUser={getUser} brandName="Cozy Cave"/>
+                        <ToastContainer/>
                         <Routes>
                             <Route exact path="/" element={<LandingPage/>}/>
                             <Route exact path="/overview" element={isLoading ? (

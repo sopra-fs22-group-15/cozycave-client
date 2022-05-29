@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Button, Card, Col, Form, Row, Spinner, Container, Stack, CloseButton } from "react-bootstrap";
+import { Button, Card, Col, Form, Row, Spinner, Container, Stack, Modal } from "react-bootstrap";
 import 'react-phone-number-input/style.css'
 import { useNavigate, useParams } from "react-router-dom";
 import { addressStringBuilder } from "../../helpers/addressStringBuilder";
@@ -22,16 +22,17 @@ const GatherTogetherRequest = props => {
     }
 
     return (
-        <>
+        <Modal show={gatherTogether.showRequest && !gatherTogether.showDetails} size='lg'>
             {user ? (
-                <div style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Container fluid={true} style={{ maxWidth: '75%', marginTop: '5rem' }}>
-                        <Stack direction='horizontal'>
-                            <h5>{user.details.first_name} {user.details.last_name} has requested to see your contact details:</h5>
-                            <Button className='ms-auto' variant='success' 
-                            onClick={() => requestAccepted()}>Accept</Button>
-                            <Button variant='danger' onClick={() => requestDenied()}>Deny</Button>
-                        </Stack>
+                <div style={{ justifyContent: 'center', alignItems: 'center'}}>
+                    <Modal.Header>
+                        <Modal.Title>
+                            You've received a request to view your contact details:
+
+                        </Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
                         <Card.Header className="d-flex justify-content-center" style={{ backgroundColor: "#708AFF" }}>
                             <Row>
                                 <Col className="d-flex flex-column align-items-center ">
@@ -40,7 +41,7 @@ const GatherTogetherRequest = props => {
                                         height="150" />
                                     <h1 style={{ color: "white" }}>{user.details.last_name || user.details.first_name ?
                                         `${user.details.first_name + " " + user.details.last_name}` : "John Doe"}</h1>
-                                    <h4 style={{ color: "white"}}>Gender: {user.details.gender}</h4>
+                                    <h4 style={{ color: "white" }}>Gender: {user.details.gender}</h4>
                                 </Col>
                             </Row>
                         </Card.Header>
@@ -57,8 +58,15 @@ const GatherTogetherRequest = props => {
                                 <ToastContainer />
                             </Card.Footer>
                         </Card.Body>
-                    </Container>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant='success' className='ms-auto' style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem' }}
+                            onClick={() => requestAccepted()}>Accept</Button>
+                        <Button variant='danger' style={{ paddingLeft: '2rem', paddingRight: '2rem' }}
+                            onClick={() => requestDenied()}>Deny</Button>
+                    </Modal.Footer>
                 </div>
+
             ) : (
                 <div className="d-flex justify-content-center align-items-center" style={{ height: "50rem" }}>
                     <Spinner animation="border" variant="primary" />
@@ -66,7 +74,7 @@ const GatherTogetherRequest = props => {
             )
 
             }
-        </>
+        </Modal>
     )
 }
 

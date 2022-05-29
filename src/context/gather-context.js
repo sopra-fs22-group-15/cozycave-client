@@ -8,5 +8,6 @@ export const GatherContext = createContext({
     showDetails: null,
     setShowDetails: () => {},
     sendRequest: [],
-    setSendRequest: () => {}
+    setSendRequest: () => {},
+    showDeniedToast: () => {}
 });
