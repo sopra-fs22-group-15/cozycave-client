@@ -7,9 +7,10 @@ import { toast, ToastContainer } from 'react-toastify';
 
 const GatherTogetherPage = () => {
     const { searchStarted, setSearchStarted, showRequest, setShowRequest,
-        showDetails, setShowDetails, sendRequest, setSendRequest } = useContext(GatherContext);
+        showDetails, setShowDetails, sendRequest, setSendRequest, showDeniedToast } = useContext(GatherContext);
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([])
+    let intermediateParticipants = [];
     let response = null;
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -22,8 +23,7 @@ const GatherTogetherPage = () => {
 
         } else {
             setSearchStarted(false);
-            socket.current.close();
-            setParticipants([]);
+            intermediateParticipants = [];
             toast.warn('Connection stopped')
         }
     }
@@ -46,8 +46,16 @@ const GatherTogetherPage = () => {
                 console.log(json)
                 try {
                     if (json.action_id === 9) {
+                        intermediateParticipants=json.data;
                         setParticipants(json.data); //set users on joining
                     } else if (json.action_id === 8) { //request denied
+                        console.log('id', json.data.uuid)
+                        console.log(participants)
+                        let obj = intermediateParticipants.find(participant => participant.id===json.data.uuid)
+                        console.log('obj', obj)
+                        if(obj){
+                            showDeniedToast(obj)
+                        }
 
                     } else if (json.action_id === 7 &&json.data.id!==user.id) { //request accepted, showDetails
                         setShowDetails(json.data);
@@ -61,11 +69,13 @@ const GatherTogetherPage = () => {
                         if (index > -1) {
                             arr.splice(index, 1); // 2nd parameter means remove one item only
                         }
+                        intermediateParticipants = arr;
                         setParticipants(arr)
 
                     } else if (json.action_id === 1) { //new user
                         let arr = participants.slice();
                         arr.push(json.data);
+                        intermediateParticipants = arr;
                         setParticipants(arr);
                     }
                 } catch (err) {
@@ -82,6 +92,8 @@ const GatherTogetherPage = () => {
                     alert(`[close] Connection died, event code=${event.code}`);
                 }
                 setSearchStarted(false);
+                setParticipants([]);
+                intermediateParticipants = [];
             }
             return () => socket.current.close(); //clean up function to prevent multiple websocket instances
         }
