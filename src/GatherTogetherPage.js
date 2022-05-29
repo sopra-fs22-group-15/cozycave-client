@@ -29,11 +29,12 @@ const GatherTogetherPage = () => {
     }
 
     const requestContactDetails = (id, first_name, last_name) => {
-        console.log(JSON.stringify({
+        socket.current.send(JSON.stringify({
             action_id: 3,
             data: {
-                id: id
-            }}));
+                uuid: id
+            }
+        }));
         toast.success(`Requested contact details from ${first_name} ${last_name}`);
     }
 
@@ -44,17 +45,17 @@ const GatherTogetherPage = () => {
                 const json = JSON.parse(event.data);
                 console.log(json)
                 try {
-                    if (json.action_id === '9') {
+                    if (json.action_id === 9) {
                         setParticipants(json.data); //set users on joining
-                    } else if (json.action_id === '8') { //request denied
+                    } else if (json.action_id === 8) { //request denied
 
-                    } else if (json.action_id === '7') { //request accepted, showDetails
+                    } else if (json.action_id === 7 &&json.data.id!==user.id) { //request accepted, showDetails
                         setShowDetails(json.data);
 
-                    } else if (json.action_id === '4') { //requested from user, showRequest
+                    } else if (json.action_id === 4) { //requested from user, showRequest
                         setShowRequest(json.data);
 
-                    } else if (json.action_id === '2') { //remove user
+                    } else if (json.action_id === 2) { //remove user
                         let arr = participants;
                         const index = arr.indexOf(5);
                         if (index > -1) {
@@ -62,8 +63,8 @@ const GatherTogetherPage = () => {
                         }
                         setParticipants(arr)
 
-                    } else if (json.action_id === '1') { //new user
-                        let arr = participants;
+                    } else if (json.action_id === 1) { //new user
+                        let arr = participants.slice();
                         arr.push(json.data);
                         setParticipants(arr);
                     }
@@ -89,16 +90,18 @@ const GatherTogetherPage = () => {
                 socket.current.send(JSON.stringify({
                     action_id: 5,
                     data: {
-                        id: sendRequest[1]
+                        uuid: sendRequest[1]
                     }
                 }))
+                
             } else {
                 socket.current.send(JSON.stringify({
                     action_id: 6,
                     data: {
-                        id: sendRequest[1]
+                        uuid: sendRequest[1]
                     }
                 }))
+                
 
             }
         }
@@ -126,10 +129,7 @@ const GatherTogetherPage = () => {
                                                 <Image fluid={true} rounded={true} src={participant.details.picture.picture_url} />
                                             </Col>
                                             <Col style={{ width: '80%', minHeight: '100%' }}>
-                                                <Stack direction='horizontal'>
-                                                    <h4>{participant.details.first_name} {participant.details.last_name}</h4>
-                                                    <h5 className='ms-auto'>{participant.details.address.city}</h5>
-                                                </Stack>
+                                                <h4>{participant.details.first_name} {participant.details.last_name}</h4>
                                                 <Stack direction='vertical'>
                                                     <h6 style={{ opacity: '0.8' }}>Gender: {participant.details.gender} </h6>
                                                     <p style={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>

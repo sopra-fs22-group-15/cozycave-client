@@ -57,14 +57,6 @@ const GatherTogetherDetails = props => {
                                         </Form.Group>
                                     </Col>
                                 </Row>
-                                <Row>
-                                    <Form.Group>
-                                        <Form.Label>Occupation</Form.Label>
-                                        <Form.Control type="text"
-                                                placeholder={user.role}
-                                                disabled />
-                                    </Form.Group>
-                                </Row>
                                 <hr />
                                 <Row>
                                     <Form.Group>
