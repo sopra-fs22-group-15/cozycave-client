@@ -4,16 +4,19 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons'
 import Button from "./components/util/Button";
 import {FilterContext} from "./context/filter-context";
+import {useNavigate} from "react-router-dom";
 
 
 const SearchBar = props => {
+
+    const navigate = useNavigate();
 
     const filter = useContext(FilterContext);
 
     const handleClick = e => {
         e.preventDefault();
         props.requestFilteredResults();
-        // navigate('/overview');
+        navigate('/overview');
     }
 
     const handleChange = e => {

@@ -5,18 +5,15 @@ export const decideGender = (gender) => {
             "Any"
         )
     }
-    else if (gender.length >= 3) {
+    else if (gender.length > 2) {
         return (
             "Any"
         )
-    } else if (gender[0] === "FEMALE") {
-        return (
-            "Female"
-        )
-
     } else {
-        return (
-            "Male"
-        )
+        let decision = ""
+        gender.map(item => {
+            decision = `${item[0] + item.slice(1,).toLowerCase()}` + " " + decision
+        })
+        return decision;
     }
 };
