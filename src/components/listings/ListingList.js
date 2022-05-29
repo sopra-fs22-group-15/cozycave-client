@@ -32,7 +32,7 @@ const ListingList = props => {
                 setSortedListings(_.cloneDeep(unsorted));
             }
     }
-    console.log(sortedListings);
+    // console.log(sortedListings);
     return (
         <Container className="listing-results">
             <Row style={{marginTop: "10px"}}>

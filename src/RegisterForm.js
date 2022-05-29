@@ -185,7 +185,7 @@ const RegisterForm = props => {
                                                   onChange={(e) => setState(e.target.value)}/>
                                 </Col>
                                 <Col md>
-                                    <Form.Label>Country</Form.Label>
+                                    <Form.Label>Country*</Form.Label>
                                     <Form.Control type="country" placeholder="Switzerland"
                                                   onChange={(e) => setCountry(e.target.value)}/>
                                 </Col>

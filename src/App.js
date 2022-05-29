@@ -47,6 +47,7 @@ const App = () => {
     const [minSqm, setMinSqm] = useState(0);
     const [maxSqm, setMaxSqm] = useState(0);
     const [listingType, setListingType] = useState("");
+    const [search, setSearch] = useState("");
     const [zipCode, setZipCode] = useState("");
 
     const [listings, setListings] = useState(null);
@@ -80,7 +81,7 @@ const App = () => {
     }
 
     const requestResults = async () => {
-        if (city === "" && minPrice === 0 && maxPrice === 0 && gender === "" && listingType === "" && zipCode === "" && minSqm === 0 && maxSqm === 0) {
+        if (city === "" && minPrice === 0 && maxPrice === 0 && gender === "" && listingType === "" && zipCode === "" && minSqm === 0 && maxSqm === 0 && search === "") {
             try {
                 setIsLoading(true)
                 const response = await api.get('/listings');
@@ -102,7 +103,8 @@ const App = () => {
                     "ZIP_CODE": zipCode,
                     "MIN_SQM": minSqm,
                     "MAX_SQM": maxSqm,
-                    "LISTING_TYPE": listingType
+                    "LISTING_TYPE": listingType,
+                    "SEARCH": search
                 });
                 
                 const response = await api.get(`/listings${queryString}`);
@@ -132,6 +134,8 @@ const App = () => {
             setListingType(value);
         } else if (name === "zipCode") {
             setZipCode(value);
+        } else if (name === "search") {
+            setSearch(value);
         }
     }, [])
 
@@ -144,6 +148,7 @@ const App = () => {
         setMaxSqm(0);
         setListingType("");
         setZipCode("");
+        setSearch("");
     }, [])
 
     useEffect(() => {
@@ -192,7 +197,8 @@ const App = () => {
                             minSqm: minSqm,
                             maxSqm: maxSqm,
                             listingType: listingType,
-                            zipCode: zipCode
+                            zipCode: zipCode,
+                            search: search
                         }
                     }>
 

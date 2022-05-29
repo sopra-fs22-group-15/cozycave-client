@@ -10,6 +10,7 @@ export const FilterContext = createContext({
     maxSqm: 0,
     listingType: "",
     zipCode: "",
+    search: "",
     setFilters: () => {},
     clearFilters: () => {}
 })

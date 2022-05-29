@@ -3,7 +3,13 @@ export const queryStringBuilder = (params) => {
 
     const queryString = Object.keys(params)
         .filter(key => params[key] !== null && params[key] !== 0 && params[key] !== '')
-        .map(key => `${key}=${params[key]}`)
+        .map(key => {
+            if(key === "AVAILABLE_TO" && params[key] === "both"){
+                return `${key}=${""}`
+            } else {
+                return `${key}=${params[key]}`
+            }
+        })
         .join('&');
 
     return queryString.length > 0 ? `?${queryString}` : '';
