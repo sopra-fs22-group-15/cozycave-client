@@ -21,6 +21,7 @@ import {api, handleError} from "./helpers/api";
 import {Spinner} from "react-bootstrap";
 import {queryStringBuilder} from "./components/util/queryStringBuilder";
 import { toast, ToastContainer } from 'react-toastify';
+import ReadMe from './ReadMe';
 
 
 
@@ -69,7 +70,6 @@ const App = () => {
 
     const getUser = useCallback(
         async () => {
-            // TODO: correct when backend is ready
             try {
                 const response = await api.get(`/users/${userId}`);
                 console.log(response.data);
@@ -214,6 +214,7 @@ const App = () => {
                             <Route path="/edit-listing/:id" element={<EditListing/>}/>
                             <Route path="/view-profile/:id" element={<ForeignViewProfile openAsOwnPage={true}/>}/>
                             <Route exact path="/gather-together" element={<GatherTogetherPage/>}/>
+                            <Route exact path="/read-me" element={<ReadMe/>}/>
                         </Routes>
                     </FilterContext.Provider>
                 </Router>

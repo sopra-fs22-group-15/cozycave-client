@@ -166,6 +166,7 @@ const Navbar = props => {
                 </div>
             ) : (
                 <>
+                    <Button variant='info' outlined={true} opts='me-2' onClick={()=> navigate('/read-me')}>Read Me</Button>
                     <Button type="button" onClick={() => setLoginIsOpen(!loginIsOpen)} outlined={true} variant="primary"
                             opts="me-2">Sign In</Button>
                     <Button type="button" onClick={() => setRegisterIsOpen(!registerIsOpen)} variant="primary">Sign
@@ -224,7 +225,10 @@ const Navbar = props => {
         }
         //setProfilePicture(user.details.picture.picture_url);
         setTimeout(() => {
-            getUser();
+            if(auth.isLoggedIn)
+            {
+                getUser();
+            }
         }, 1000)
     }, [isLandingPage, isOverviewPage, auth.isLoggedIn, navigate, minPriceFilter]);
 
