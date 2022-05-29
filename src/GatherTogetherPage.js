@@ -1,4 +1,4 @@
-import { Row, Col, Container, Stack, Spinner, Image, Button, CloseButton } from 'react-bootstrap'
+import { Row, Col, Container, Stack, Spinner, Image, Button, CloseButton, ToastHeader } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { mockParticipants } from './components/util/mockParticipants';
@@ -77,6 +77,35 @@ const GatherTogetherPage = () => {
                         arr.push(json.data);
                         intermediateParticipants = arr;
                         setParticipants(arr);
+                    } else if (json.action_id === 1001){
+                        toast.warn('Unknown action. Not sure how that happened')
+
+                    } else if (json.action_id === 1002){
+                        toast.warn('Unauthorized. You need a student account for this')
+                        
+                    } else if (json.action_id === 1003){
+                        toast.warn('Invalid data')
+                        
+                    } else if (json.action_id === 1004){
+                        toast.warn('Already connected')
+                        
+                    } else if (json.action_id === 1005){
+                        toast.warn('User not in list. Try reloading the page')
+                        
+                    } else if (json.action_id === 1006){
+                        toast.warn(`You've already sent a request to this user`)
+                        
+                    } else if (json.action_id === 1007){
+                        toast.warn('Internal server error. Whoops!')
+                        
+                    } else if (json.action_id === 1008){
+                        toast.warn('Requested user has ended their connection')
+                        
+                    } else if (json.action_id === 1009){
+                        toast.warn(`There was a request, but we can't find it :(`)
+                        
+                    } else if (json.action_id === 1010){
+                        toast.warn('Unauthorized. You need a student account for this')
                     }
                 } catch (err) {
                     console.log(err);
