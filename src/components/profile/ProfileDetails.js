@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Col, Form, Row, Spinner} from "react-bootstrap";
+import {Button, Card, Col, Form, InputGroup, Modal, Row, Spinner} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faSave} from "@fortawesome/free-solid-svg-icons";
 import {api} from "../../helpers/api";
@@ -20,11 +20,90 @@ const ProfileDetails = props => {
     const [gender, setGender] = useState(user.details.gender);
     const [bio, setBio] = useState(user.details.biography);
     const [address, setAddress] = useState(user.details.address)
+
+    const [specialAddress, setSpecialAddress] = useState(user.details.special_address[0] ? user.details.special_address[0] : {
+        street: '',
+        city: '',
+        state: '',
+        zip_code: '',
+        country: '',
+        house_number: '',
+    });
+
+
     const [loading, setLoading] = useState(false);
     const [birthdate, setBirthdate] = useState(moment(user.details.birthday).format('YYYY-MM-DD'));
 
+    const [street, setStreet] = useState(user.details.address.street);
+    const [houseNr, setHouseNr] = useState(user.details.address.house_number);
+    const [city, setCity] = useState(user.details.address.city);
+    const [state, setState] = useState(user.details.address.state);
+    const [zipCode, setZipCode] = useState(user.details.address.zip_code);
+    const [country, setCountry] = useState(user.details.address.country);
+
+    const [streetSpecial, setStreetSpecial] = useState(user.details.special_address.street);
+    const [houseNrSpecial, setHouseNrSpecial] = useState(user.details.special_address.house_number);
+    const [citySpecial, setCitySpecial] = useState(user.details.special_address.city);
+    const [stateSpecial, setStateSpecial] = useState(user.details.special_address.state);
+    const [zipCodeSpecial, setZipCodeSpecial] = useState(user.details.special_address.zip_code);
+    const [countrySpecial, setCountrySpecial] = useState(user.details.special_address.country);
+
+
+    const [show, setShow] = useState(false);
+    const [showSpecialAddress, setShowSpecialAddress] = useState(false);
+
+    const handleCloseSpecial = () => setShowSpecialAddress(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const [previewSrc, setPreviewSrc] = useState(null);
     const [file, setFile] = useState();
+
+    const handleNewAddress = () => {
+        setAddress({
+            street: street,
+            house_number: houseNr,
+            city: city,
+            state: state,
+            zip_code: zipCode,
+            country: country
+        })
+        setShow(false);
+    }
+
+    const sendSpecialAddress = async () => {
+
+        let specialAddress = {
+            street: streetSpecial ? streetSpecial : specialAddress.street,
+            house_number: houseNrSpecial ? houseNrSpecial : "",
+            city: citySpecial ? citySpecial : "",
+            state: stateSpecial ? stateSpecial : "",
+            zip_code: zipCodeSpecial ? zipCodeSpecial : "",
+            country: countrySpecial
+        }
+        // setLoading(true);
+
+        if (user.details.special_address) {
+            console.log(specialAddress);
+            console.log(user.details.special_address);
+
+            const response = await api.put(`/users/${user.id}/specialaddress/${user.details.special_address[0].id}`, specialAddress).then(res => {
+                setSpecialAddress(res.data);
+            }).catch(err => {
+                console.log(err);
+            });
+        } else {
+            const response = await api.post('/users/' + user.id + '/specialaddress', specialAddress).then(res => {
+                // console.log(res);
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+        props.getUser();
+        window.location.reload();
+        setLoading(false);
+    }
 
     const saveChanges = async () => {
         if (file) {
@@ -50,7 +129,14 @@ const ProfileDetails = props => {
                     last_name: lastName,
                     gender,
                     birthday: birthdate,
-                    address: address,
+                    address: {
+                        street: street,
+                        house_number: houseNr,
+                        city: city,
+                        state: state,
+                        zip_code: zipCode,
+                        country: country
+                    },
                     biography: bio,
                     phone_number: phoneNumber,
                 }
@@ -83,10 +169,9 @@ const ProfileDetails = props => {
 
     useEffect(() => {
         props.getUser();
-
     }, []);
 
-
+    // console.log(address);
     return (
         <>
             {loading ? (
@@ -95,6 +180,124 @@ const ProfileDetails = props => {
                 </div>
             ) : (
                 <>
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit 1st Address</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Row className='g-2'>
+                                <Col md>
+                                    <Form.Label>Street Name*</Form.Label>
+                                    <Form.Control type="streetName" placeholder={street}
+                                                  onChange={(e) => setStreet(e.target.value)}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Label>House Number*</Form.Label>
+                                    <Form.Control type="houseNr" placeholder={houseNr}
+                                                  onChange={(e) => setHouseNr(e.target.value)}/>
+                                </Col>
+                            </Row>
+
+                            <Row className='g-2'>
+                                <Col md>
+                                    <Form.Label>City*</Form.Label>
+                                    <Form.Control type="city" placeholder={city}
+                                                  onChange={(e) => setCity(e.target.value)}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Label>Postcode*</Form.Label>
+                                    <Form.Control type="zip_code" placeholder={zipCode}
+                                                  onChange={(e) => setZipCode(e.target.value)}/>
+                                </Col>
+                            </Row>
+
+                            {
+                            }
+
+                            <Row className='g-2'>
+                                <Col md>
+                                    <Form.Label>State</Form.Label>
+                                    <Form.Control type="state" placeholder={state}
+                                                  onChange={(e) => setState(e.target.value)}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Label>Country</Form.Label>
+                                    <Form.Control type="country" placeholder={country}
+                                                  onChange={(e) => setCountry(e.target.value)}/>
+                                </Col>
+                            </Row>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Close
+                            </Button>
+                            <Button variant="primary" onClick={handleNewAddress}>
+                                Save Changes
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <Modal show={showSpecialAddress} onHide={handleCloseSpecial}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit 2nd Address</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Row className='g-2'>
+                                <Col md>
+                                    <Form.Label>Street Name*</Form.Label>
+                                    <Form.Control type="streetName"
+                                                  placeholder={specialAddress.street ? specialAddress.street : ''}
+                                                  onChange={(e) => {
+                                                      setStreetSpecial(e.target.value)
+                                                      console.log(streetSpecial);
+                                                  }}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Label>House Number*</Form.Label>
+                                    <Form.Control type="houseNr"
+                                                  placeholder={specialAddress.house_number ? specialAddress.house_number : ''}
+                                                  onChange={(e) => setHouseNrSpecial(e.target.value)}/>
+                                </Col>
+                            </Row>
+
+                            <Row className='g-2'>
+                                <Col md>
+                                    <Form.Label>City*</Form.Label>
+                                    <Form.Control type="city"
+                                                  placeholder={specialAddress.city ? specialAddress.city : ''}
+                                                  onChange={(e) => setCitySpecial(e.target.value)}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Label>Postcode*</Form.Label>
+                                    <Form.Control type="zip_code"
+                                                  placeholder={specialAddress.zip_code ? specialAddress.zip_code : ''}
+                                                  onChange={(e) => setZipCodeSpecial(e.target.value)}/>
+                                </Col>
+                            </Row>
+
+                            <Row className='g-2'>
+                                <Col md>
+                                    <Form.Label>State</Form.Label>
+                                    <Form.Control type="state"
+                                                  placeholder={specialAddress.state ? specialAddress.state : ''}
+                                                  onChange={(e) => setStateSpecial(e.target.value)}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Label>Country</Form.Label>
+                                    <Form.Control type="country"
+                                                  placeholder={specialAddress.country ? specialAddress.country : ''}
+                                                  onChange={(e) => setCountrySpecial(e.target.value)}/>
+                                </Col>
+                            </Row>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Close
+                            </Button>
+                            <Button variant="primary" onClick={sendSpecialAddress}>
+                                Save Changes
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                     <Card.Header className="d-flex justify-content-center" style={{backgroundColor: "#708AFF"}}>
                         <Row>
                             <Col className="d-flex flex-column align-items-center ">
@@ -147,7 +350,8 @@ const ProfileDetails = props => {
                                         <Form.Select aria-label="MALE" onChange={e => {
                                             setGender(e.target.value)
                                         }}>
-                                            <option value={user.details.gender}>{user.details.gender}</option>
+                                            <option
+                                                value={user.details.gender}>{user.details.gender[0] + user.details.gender.slice(1,).toLowerCase()}</option>
                                             {getGenderOptions(user.details.gender)}
                                         </Form.Select>
                                     </Form.Group>
@@ -175,21 +379,31 @@ const ProfileDetails = props => {
                             </Row>
                             <hr/>
                             <Row>
-                                <Form.Group>
-                                    <Form.Label>1st Address</Form.Label>
+                                <Form.Label>1st Address</Form.Label>
+                                <InputGroup>
+                                    <Button variant="outline-secondary" id="button-addon1">
+                                        <FontAwesomeIcon icon={faEdit} onClick={handleShow}/>
+                                    </Button>
                                     <Form.Control disabled value={addressStringBuilder(address)} type="text"
                                                   placeholder={addressStringBuilder(user.details.address)}
-                                                  onChange={e => {
-                                                      setAddress(e.target.value)
-                                                  }}/>
-                                </Form.Group>
+
+                                    />
+                                </InputGroup>
                             </Row>
                             <Row>
                                 <Form.Group>
                                     <Form.Label>2nd Address</Form.Label>
-                                    <Form.Control type="text" placeholder="Add a second address" onChange={e => {
-                                        setAddress(e.target.value)
-                                    }}/>
+                                    <InputGroup>
+                                        <Button variant="outline-secondary" id="button-addon1">
+                                            <FontAwesomeIcon icon={faEdit} onClick={() => setShowSpecialAddress(true)}/>
+                                        </Button>
+                                        <Form.Control disabled
+                                                      value={user.details.special_address ? addressStringBuilder(user.details.special_address[0]) : "No special address yet"}
+                                                      type="text"
+                                                      placeholder={user.details.special_address ? addressStringBuilder(user.details.special_address[0]) : "No special address yet"}
+
+                                        />
+                                    </InputGroup>
                                 </Form.Group>
                             </Row>
                             <hr/>
