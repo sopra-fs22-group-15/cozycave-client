@@ -80,9 +80,9 @@ function AdOverviewPage() {
     }
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const handleReport = () => {
-        toast.error('An admin will review this listing. Thanks for your report')
-    }
+    //const handleReport = () => {
+    //    toast.error('An admin will review this listing. Thanks for your report')
+    //}
     
 
     const handleApply = async () => {

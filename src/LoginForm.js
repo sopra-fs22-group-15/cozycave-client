@@ -44,10 +44,10 @@ const LoginForm = props => {
             setLoading(false);
         }
     }
-    const showReset = () => {
-        loginContext.setReset(true);
-        hideLogin();
-    }
+    //const showReset = () => {
+    //    loginContext.setReset(true);
+    //    hideLogin();
+    //}
 
     const showResetToast = () => {
         toast.success("You'll receive an email with a password reset link");
