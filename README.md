@@ -43,6 +43,11 @@ If you wish to test the local front-end version with the real server, you can se
 **Note: The front-end depends on having a running server and database - refer to the server repository instructions for running these.**
 
 ## Illustrations
+The user starts off at the landing page, with a search bar available and a navbar at the top (which presents the options to log in and register). Upon using the search bar or logging in, the user is redirected to the Results Page, with the navbar being extended with filter and sorting functionality.<br><br> If the user clicks on a listing, they are taken to the listing's page, which shows it in details (description, specifications, map location). <br><br>
+When a user logs in, the log in and register buttons on the navbar are replaced by their profile icon (if no picture is set yet, a default is provided, which can be changed).<br><br> If the user clicks on the profile icon, they are taken to the profile page, which has 3 tabs - Profile Details, MyApplications and MyListings.<br><br>
+Profile Details shows the user's details and option to change them. MyApplications shows all listings that the user applied to and the status of these applications. MyListings shows all listings that a user created and the students that applied to them, with the option to accept or deny them, as well as an option to create new listings<br><br>
+If a user is logged in, the Navbar will also have the GatherTogether button - this takes the user to the GatherTogether page, where they can then connect with other students.
+
 
 ## Roadmap
 ### EXTENDED TRAVEL DIRECTIONS
