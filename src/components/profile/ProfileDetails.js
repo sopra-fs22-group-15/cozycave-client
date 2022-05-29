@@ -7,6 +7,7 @@ import 'react-phone-number-input/style.css'
 import {addressStringBuilder} from "../../helpers/addressStringBuilder";
 import "../../styles/ProfilePage.scss";
 import {getGenderOptions} from "../util/getGenderOptions";
+import moment from "moment";
 
 
 const ProfileDetails = props => {
@@ -20,6 +21,7 @@ const ProfileDetails = props => {
     const [bio, setBio] = useState(user.details.biography);
     const [address, setAddress] = useState(user.details.address)
     const [loading, setLoading] = useState(false);
+    const [birthdate, setBirthdate] = useState(moment(user.details.birthday).format('YYYY-MM-DD'));
 
     const [previewSrc, setPreviewSrc] = useState(null);
     const [file, setFile] = useState();
@@ -47,7 +49,7 @@ const ProfileDetails = props => {
                     first_name: firstName,
                     last_name: lastName,
                     gender,
-                    birthday: "1950-05-14T02:41:20.182+00:00",
+                    birthday: birthdate,
                     address: address,
                     biography: bio,
                     phone_number: phoneNumber,
@@ -81,7 +83,7 @@ const ProfileDetails = props => {
 
     useEffect(() => {
         props.getUser();
-        
+
     }, []);
 
 
@@ -164,14 +166,11 @@ const ProfileDetails = props => {
                             </Row>
                             <Row>
                                 <Form.Group>
-                                    <Form.Label>Occupation</Form.Label>
-                                    <Form.Select type="text" value={user.role === "STUDENT" ? 1 : 2}
-                                                 onChange={() => {
-                                                     alert("To change your account type please create a new account.")
-                                                 }}>
-                                        <option value="1">Student</option>
-                                        <option value="2">Landlord</option>
-                                    </Form.Select>
+                                    <Form.Label>Birthdate</Form.Label>
+                                    <Form.Control value={birthdate} type="date" name="dob" placeholder="Date of Birth"
+                                                  onChange={e => {
+                                                      setBirthdate(e.target.value)
+                                                  }}/>
                                 </Form.Group>
                             </Row>
                             <hr/>

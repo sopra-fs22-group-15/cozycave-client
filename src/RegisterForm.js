@@ -21,6 +21,7 @@ const RegisterForm = props => {
     const [phone, setPhone] = useState(null)
     const [country, setCountry] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [birthdate, setBirthdate] = useState(null)
     const navigate = useNavigate();
 
     const auth = useContext(AuthContext)
@@ -39,7 +40,7 @@ const RegisterForm = props => {
                     first_name: firstName,
                     last_name: lastName,
                     gender,
-                    birthday: "1950-05-14T02:41:20.182+00:00",
+                    birthday: birthdate,
                     address: {
                         name: null,
                         description: null,
@@ -184,7 +185,7 @@ const RegisterForm = props => {
                                                   onChange={(e) => setState(e.target.value)}/>
                                 </Col>
                                 <Col md>
-                                    <Form.Label>Country*</Form.Label>
+                                    <Form.Label>Country</Form.Label>
                                     <Form.Control type="country" placeholder="Switzerland"
                                                   onChange={(e) => setCountry(e.target.value)}/>
                                 </Col>
@@ -195,6 +196,15 @@ const RegisterForm = props => {
                                     <Form.Label>Phone Number</Form.Label>
                                     <Form.Control type="tel" placeholder="+41 012 345 678"
                                                   onChange={(e) => setPhone(e.target.value)}/>
+                                </Col>
+                                <Col md>
+                                    <Form.Group controlId="dob">
+                                        <Form.Label>Birthdate</Form.Label>
+                                        <Form.Control type="date" name="dob" placeholder="Date of Birth"
+                                                      onChange={e => {
+                                                          setBirthdate(e.target.value)
+                                                      }}/>
+                                    </Form.Group>
                                 </Col>
                             </Row>
 
@@ -209,10 +219,11 @@ const RegisterForm = props => {
                                 </Col>
                             </Row>
                             <div className="d-flex justify-content-center mt-3">
-                                <Button variant="primary" onClick={() => requestRegister()} type="submit" style={{"width": "100%"}}
-                                    disabled={!firstName || !lastName || !email || !password || !(password === confirmPassword) ||
-                                    !street || !houseNr || !city ||
-                                    !zip_code || !gender}>Register
+                                <Button variant="primary" onClick={() => requestRegister()} type="submit"
+                                        style={{"width": "100%"}}
+                                        disabled={!firstName || !lastName || !email || !password || !(password === confirmPassword) ||
+                                            !street || !houseNr || !city ||
+                                            !zip_code || !gender}>Register
                                 </Button>
                             </div>
                         </Form>
